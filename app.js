@@ -68,7 +68,20 @@ app.get("/events/new", function(req,res) {
 
 // CREATE ROUTE
 app.post("/events", function(req,res) {
-    res.send("this is the create route");
+    var newEvent = {
+        name: req.body.name,
+        date: req.body.date,
+        location: req.body.location,
+        image: req.body.image,
+        description: req.body.description
+    };
+    Event.create(newEvent, function(err, newEvent) {
+        if(err) {
+            console.log(err);
+        } else {
+            res.redirect("/events");
+        }
+    });
 });
 
 
