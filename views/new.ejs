@@ -1,1 +1,48 @@
-<h1>new page</h1>
+<% include partials/header %>
+
+
+
+<div class="container">
+    
+    
+    <form action="/events" method="POST">
+        
+          <h1>Create new event</h1>
+        
+          <div class="form-group">
+            <label for="eventName">Name</label>
+            <input name="name" type="text" class="form-control" id="eventName" placeholder="Harry Potter's 20th Birthday Bash">
+          </div>
+          
+          <div class="form-group">
+            <label for="date">Date</label>
+            <input name="date" type="date" class="form-control" id="date" min="2016-01-01" max="2017-12-01"> <!-- Change this later to min: next day, max: one year later -->
+          </div>
+          
+          <div class="form-group">
+            <label for="location">Location</label>
+            <input name="location" type="text" class="form-control" id="location" placeholder="Hogwarts School, 127 Long Island">
+          </div>
+          
+          <div class="form-group">
+            <label for="image">Image URL</label>
+            <input name="image" type="text" class="form-control" id="image" placeholder="https://farm8.staticflickr.com/7550/16159104526_9ecbfed8e0.jpg">
+          </div>
+          
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea name="description" class="form-control" id="description" rows="5" placeholder="This is the event of the year. You'll eat magic muffins and and get high on red bull"></textarea>
+         </div>
+          
+         <button type="submit" class="btn btn-primary">Submit</button>
+         
+    </form>
+    
+    
+
+</div> <!-- Container End -->
+
+
+
+
+<% include partials/footer %>
