@@ -1,6 +1,31 @@
 
 <% include partials/header %>
 
-<h1>EVENTS PAGE</h1>
+
+
+<div class="container">
+    
+    <h1>EVENTS PAGE</h1>
+    
+    <% events.forEach(function(event) { %>
+        <h3><%= event.name %> </h3>
+        <p><em><%=event.date %></em></p>
+        <p><%=event.location %></p>   
+        <img src="<%= event.image %>">
+        <p><%=event.description %></p>
+        <hr>
+    <% }); %>
+    
+</div> <!-- Container End -->
+
+
+
+
+
+
+
+
+
+
 
 <% include partials/footer %>
