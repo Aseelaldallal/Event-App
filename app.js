@@ -87,7 +87,13 @@ app.post("/events", function(req,res) {
 
 // SHOW ROUTE
 app.get("/events/:id", function(req,res) {
-   res.send("This is the show route"); 
+   Event.findById(req.params.id, function(err, foundEvent) {
+       if(err) {
+           console.log(err);
+       } else {
+           res.render("show", {event: foundEvent});
+       }
+   })
 });
 
 // EDIT ROUTE
