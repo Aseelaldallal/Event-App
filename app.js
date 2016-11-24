@@ -4,12 +4,14 @@
 
 var express             = require("express"),
     bodyParser          = require("body-parser"),
+    methodOverride      = require("method-override"),
     mongoose            = require("mongoose");
     
 var app = express();
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
+app.use(methodOverride("_method"));
     
 mongoose.connect("mongodb://localhost/event_app");
 
@@ -24,21 +26,7 @@ var eventSchema = new mongoose.Schema({
 
 var Event = mongoose.model("Event", eventSchema);
 
-/*Event.create( 
-    {   name: "Mo's Birthday",
-        date: new Date(2017,05,11),
-        location: "Pokemon World",
-        image: "https://farm4.staticflickr.com/3692/12414882233_cfa96bb2b2.jpg",
-        description: "Great bday"
-    }, function(err, createdEvent) {
-        if(err) {
-            console.log(err);
-        } else {
-            console.log(createdEvent)
-        }
-    }
-);
-*/
+
 
 /***************************************************/
 /********************* ROUTES **********************/
@@ -93,17 +81,29 @@ app.get("/events/:id", function(req,res) {
        } else {
            res.render("show", {event: foundEvent});
        }
-   })
+   });
 });
 
 // EDIT ROUTE
 app.get("/events/:id/edit", function(req,res) {
-    res.send("this is the edit route");
+       Event.findById(req.params.id, function(err, foundEvent) {
+       if(err) {
+           console.log(err);
+       } else {
+           res.render("edit", {event: foundEvent});
+       }
+   });
 });
 
 // UPDATE ROUTE
 app.put("/events/:id", function(req, res) {
-    res.send("this is the update route");
+    Event.findByIdAndUpdate(req.params.id, req.body.event, function(err, foundEvent) {
+       if(err) {
+           console.log(err);
+       } else {
+           res.redirect("/events/" + req.params.id);
+       }
+    });
 });
 
 // DESTROY ROUTE
