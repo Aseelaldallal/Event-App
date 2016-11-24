@@ -56,7 +56,7 @@ app.get("/events", function(req,res) {
         if(err) {
             console.log(err);
         } else {
-            res.render("events", {events: foundEvents}); // Change to index later 
+            res.render("index", {events: foundEvents}); // Change to index later 
         }
     });
 });
