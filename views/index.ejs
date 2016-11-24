@@ -1,21 +1,39 @@
 
 <% include partials/header %>
 
-
-
 <div class="container">
     
-    <h1>EVENTS PAGE</h1>
+    <div class ="jumbotron">
+            <div class="container">
+            <h1> EventFul</h1>
+            <p> The best place to see events</p>
+            <button class="btn btn-primary">New Event</button>
+        </div>
+    </div> <!-- Jumbotron End -->
     
-    <% events.forEach(function(event) { %>
-        <h3><%= event.name %> </h3>
-        <p><em><%=event.date %></em></p>
-        <p><%=event.location %></p>   
-        <img src="<%= event.image %>">
-        <p><%=event.description %></p>
-        <a class="btn btn-default" href="/events/<%=event._id%>">More</a>
-        <hr>
-    <% }); %>
+    <div class="row";>
+        
+        <% events.forEach(function(event) { %>
+        
+            <div class="col-lg-3 col-md-4 col-sm-6">
+                <div class="thumbnail">
+                    <img src="<%= event.image %>">
+                    <div class="caption">
+                        <h5><strong><%= event.name %></strong></h5>
+                        <p><strong>Date: </strong><%=event.date %></p>
+                        <p><strong>Location: </strong><%=event.location %></p>   
+                        <div class="text-center">
+                            <a href="/events/<%=event._id%>/" class="btn btn-primary btn-xs inline">More Info</a>
+                            <a href="/events/<%=event._id%>/edit" class="btn btn-warning btn-xs inline">Edit</a>
+                            <a href="#" class="btn btn-danger btn-xs inline">Delete</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        <% }); %>
+        
+    </div> <!-- Row End -->
     
 </div> <!-- Container End -->
 

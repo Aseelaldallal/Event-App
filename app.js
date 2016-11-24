@@ -12,6 +12,7 @@ var app = express();
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
 app.use(methodOverride("_method"));
+app.use(express.static(__dirname + "/public"));
     
 mongoose.connect("mongodb://localhost/event_app");
 
