@@ -29,8 +29,10 @@
                         <h5><Strong>Submitted by: </Strong> Anonymous </h5>
                         <p><%=event.description %></p>
                         
-                        <a href="/events/<%=event._id%>/edit" class="btn btn-warning btn-xs inline">Edit</a>
-                        <a href="#" class="btn btn-danger btn-xs inline">Delete</a>
+                        <a href="/events/<%=event._id%>/edit" class="btn btn-warning btn-md">Edit</a>
+                        <form class="inline" action="/events/<%=event._id%>?_method=DELETE" method="POST">
+                                <button class="inline btn btn-danger btn-md">Delete</button>
+                        </form>
                 </div>
         </div> <!-- CONTENT END -->
 

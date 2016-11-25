@@ -109,7 +109,13 @@ app.put("/events/:id", function(req, res) {
 
 // DESTROY ROUTE
 app.delete("/events/:id", function(req,res) {
-    res.send("this is the delete route");
+    Event.findByIdAndRemove(req.params.id, function(err, removedEvent) {
+       if(err) {
+           console.log(err);
+       } else {
+           res.redirect("/events")
+       }
+    });
 });
 
 
