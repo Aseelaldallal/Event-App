@@ -11,29 +11,44 @@
         </div>
     </div> <!-- Jumbotron End -->
     
-    <div class="row";>
+
+    <!-- SIDEBAR -->
+    <div class="col-md-3">
+        <p class="lead">YelpCamp</p>
+        <div class="list-group">
+            <li class="list-group-item">Info 1</li>
+            <li class="list-group-item">Info 1</li>
+            <li class="list-group-item">Info 1</li>
+        </div>
+    </div> <!-- SIDEBAR END -->
         
-        <% events.forEach(function(event) { %>
+    <!-- CONTENT -->    
+    <div class="col-md-9">
         
-            <div class="col-lg-3 col-md-4 col-sm-6">
+      
+            
+            <% events.forEach(function(event) { %>
                 <div class="thumbnail">
-                    <img src="<%= event.image %>">
-                    <div class="caption">
-                        <h5><strong><%= event.name %></strong></h5>
-                        <p><strong>Date: </strong><%=event.date %></p>
-                        <p><strong>Location: </strong><%=event.location %></p>   
-                        <div class="text-center">
+                    <div class= "row">
+                        <div class="col-md-3">
+                            <img class="img-responsive" src="<%=event.image%>">
+                        </div>
+                        <div class="col-md-9">
+                            <h5><strong><%= event.name %></strong></h5>
+                            <p><strong>Date: </strong><%=event.date %></p>
+                            <p><strong>Location: </strong><%=event.location %></p>   
                             <a href="/events/<%=event._id%>/" class="btn btn-primary btn-xs inline">More Info</a>
                             <a href="/events/<%=event._id%>/edit" class="btn btn-warning btn-xs inline">Edit</a>
                             <a href="#" class="btn btn-danger btn-xs inline">Delete</a>
                         </div>
-                    </div>
-                </div>
-            </div>
+                    </div> <!--row end-->
+                </div> <!-- thumbnail end -->
+            <% }); %>
             
-        <% }); %>
-        
-    </div> <!-- Row End -->
+
+     
+     </div> <!-- CONTENT END-->
+
     
 </div> <!-- Container End -->
 

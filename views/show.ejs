@@ -1,18 +1,42 @@
 <% include partials/header %>
 
+<div class="container bottomed">
+
+        <!-- SIDEBAR -->
+        <div class="col-md-3">
+           <p class="lead">EventFUL</p>
+            <div class="list-group">
+                <dl class="list-group-item">
+                   <dt>Date</dt>
+                   <dd><%=event.date %></dd>
+                </dl>
+                <dl class="list-group-item">
+                   <dt>Location</dt>
+                  <dd><%=event.location %></dd>
+                </dl>
+            </div>
+        </div> <!-- SIDEBAR END -->
+        
+        
+        
+        <!-- CONTENT -->
+        
+        <div class="col-md-9">
+                <div class="thumbnail">
+                        <h1><%= event.name %> </h1>
+                        <img class="img-responsive" src="<%= event.image %>">
+                        <h4><a><%= event.name %></a></h4>
+                        <h5><Strong>Submitted by: </Strong> Anonymous </h5>
+                        <p><%=event.description %></p>
+                        
+                        <a href="/events/<%=event._id%>/edit" class="btn btn-warning btn-xs inline">Edit</a>
+                        <a href="#" class="btn btn-danger btn-xs inline">Delete</a>
+                </div>
+        </div> <!-- CONTENT END -->
 
 
 
-        <h1><%= event.name %> </h1>
-        <p><em><%=event.date %></em></p>
-        <p><%=event.location %></p>   
-        <img src="<%= event.image %>">
-        <p><%=event.description %></p>
-    
-
-
-
-
+</div> <!-- CONTAINTER END -->
 
 
 <% include partials/footer %>
