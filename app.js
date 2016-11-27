@@ -15,6 +15,15 @@ app.set("view engine", "ejs");
 app.use(methodOverride("_method"));
 app.use(express.static(__dirname + "/public"));
     
+
+// Route Setup
+
+var indexRoutes = require("./routes/index")
+
+app.use("/", indexRoutes);
+
+// DB Setup
+
 mongoose.connect("mongodb://localhost/event_app");
 
 
@@ -25,10 +34,6 @@ mongoose.connect("mongodb://localhost/event_app");
 /***************************************************/
 
 
-// LANDING PAGE
-app.get("/", function(req,res) {
-   res.render("landing"); 
-});
 
 // INDEX ROUTE - DISPLAY A LIST OF ALL EVENTS
 app.get("/events", function(req,res) {
