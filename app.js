@@ -5,7 +5,8 @@
 var express             = require("express"),
     bodyParser          = require("body-parser"),
     methodOverride      = require("method-override"),
-    mongoose            = require("mongoose");
+    mongoose            = require("mongoose"),
+    Event               = require("./models/event");
     
 var app = express();
 
@@ -16,16 +17,6 @@ app.use(express.static(__dirname + "/public"));
     
 mongoose.connect("mongodb://localhost/event_app");
 
-// SCHEMA SETUP
-var eventSchema = new mongoose.Schema({
-   name: String,
-   date: Date,
-   location: String,
-   image: String,
-   description: String
-});
-
-var Event = mongoose.model("Event", eventSchema);
 
 
 
