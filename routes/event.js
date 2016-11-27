@@ -20,7 +20,7 @@ router.get("/", function(req,res) {
         if(err) {
             console.log(err);
         } else {
-            res.render("index", {events: foundEvents}); 
+            res.render("event/index", {events: foundEvents}); 
         }
     });
 });
@@ -30,7 +30,7 @@ router.get("/", function(req,res) {
 // DISPLAY FORM TO CREATE A NEW EVENT
 
 router.get("/new", function(req,res) {
-    res.render("new"); 
+    res.render("event/new"); 
 });
 
 /* --------------------------- CREATE ROUTE -------------------------- */
@@ -64,7 +64,7 @@ router.get("/:id", function(req,res) {
        if(err) {
            console.log(err);
        } else {
-           res.render("show", {event: foundEvent});
+           res.render("event/show", {event: foundEvent});
        }
    });
 });
@@ -78,7 +78,7 @@ router.get("/:id/edit", function(req,res) {
        if(err) {
            console.log(err);
        } else {
-           res.render("edit", {event: foundEvent});
+           res.render("event/edit", {event: foundEvent});
        }
    });
 });
