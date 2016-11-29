@@ -54,8 +54,10 @@ router.post("/", middleware.isLoggedIn, function(req,res) {
     };
     Event.create(newEvent, function(err, newEvent) {
         if(err) {
-            console.log(err);
+            req.flash("error", err);
+            res.redirect("/events");
         } else {
+            req.flash("success", "Successfully created your event");
             res.redirect("/events/" + newEvent._id);
         }
     });
@@ -73,6 +75,8 @@ router.get("/:id", function(req,res) {
    Event.findById(req.params.id, function(err, foundEvent) {
        if(err) {
            console.log(err);
+           req.flash("error", err);
+           res.redirect("/events");
        } else {
            res.render("event/show", {event: foundEvent});
        }
@@ -84,13 +88,15 @@ router.get("/:id", function(req,res) {
 // EDIT DETAILS OF SPECIFIC EVENT
 // Only user who owns the event can see edit form for this event
 router.get("/:id/edit", middleware.checkEventOwnership, function(req,res) {
-       Event.findById(req.params.id, function(err, foundEvent) {
-       if(err) {
-           console.log(err);
-       } else {
-           res.render("event/edit", {event: foundEvent});
-       }
-   });
+        Event.findById(req.params.id, function(err, foundEvent) {
+           if(err) {
+               console.log(err);
+               req.flash("error", err);
+               res.redirect("back");
+           } else {
+               res.render("event/edit", {event: foundEvent});
+           }
+        });
 });
 
 /* --------------------------- UPDATE ROUTE -------------------------- */
@@ -101,9 +107,11 @@ router.put("/:id", middleware.checkEventOwnership, function(req, res) {
     Event.findByIdAndUpdate(req.params.id, req.body.event, function(err, foundEvent) {
        if(err) {
            console.log(err);
+           req.flash("error", err);
        } else {
-           res.redirect("/events/" + req.params.id);
+           req.flash("success", "Successfully edited your event");
        }
+       res.redirect("/events/" + req.params.id);
     });
 });
 
@@ -115,8 +123,11 @@ router.delete("/:id", middleware.checkEventOwnership, function(req,res) {
     Event.findByIdAndRemove(req.params.id, function(err, removedEvent) {
        if(err) {
            console.log(err);
+           req.flash("error", err);
+           res.redirect("back");
        } else {
-           res.redirect("/events")
+           req.flash("success", "Your event has been deleted");
+           res.redirect("/events");
        }
     });
 });

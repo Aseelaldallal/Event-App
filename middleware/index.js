@@ -5,8 +5,7 @@
 /* ------------------------------------------------------------------- */
 
 
-var User        = require("../models/user"),
-    Event       = require("../models/event");
+var Event       = require("../models/event");
     
 var middlewareObj = {}; 
 
@@ -20,9 +19,9 @@ middlewareObj.isLoggedIn = function(req,res,next) {
     if(req.isAuthenticated()) {
         return next();
     } 
-    console.log("Not logged in");
+    req.flash("error", "You need to be logged in to do that");
     res.redirect("/login");
-}
+};
 
 // Checks whether the event stored in the request belongs to the currently logged in user
 middlewareObj.checkEventOwnership = function(req,res,next) {
@@ -30,17 +29,19 @@ middlewareObj.checkEventOwnership = function(req,res,next) {
         Event.findById(req.params.id, function(err, foundEvent) { // Find the event
            if(err) {
                console.log(err);
+               req.flash("error", err);
+               res.redirect("back");
            } else {
                if(foundEvent.author.id.equals(req.user._id)) { // Check if the event's author's id is the same as logged in user's ids
                    return next(); 
                } else {
-                   console.log("You don't have permission to do that");
+                   req.flash("error", "You don't have permission to do that");
                    res.redirect("/events/" + foundEvent._id);
                }
            }
         });
     } else {
-        console.log("you need to be logged in to do that");
+        req.flash("error", "You need to be logged in to do that");
         res.redirect("/login");
     }
 };

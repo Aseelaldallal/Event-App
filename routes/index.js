@@ -29,15 +29,20 @@ router.get("/login", function(req,res) {
 
 // Login
 router.post("/login", passport.authenticate("local", 
-    {   successRedirect: "/events",
-        failureRedirect: "/login"
+    {   failureRedirect: "/login",
+        failureFlash: true,
     }), function(req, res){
-});
+        req.flash("success", "Welcome " + req.user.username + "!" );
+        res.redirect("/events");
+    }
+);
+
 
 
 // Logout
 router.get("/logout", function(req,res) {
      req.logout();
+     req.flash("success", "Logged you out");
      res.redirect("/events"); 
 });
 
@@ -58,11 +63,14 @@ router.post("/register", function(req,res) {
     User.register(newUser, req.body.password, function(err, response) {
         if(err) {
             console.log(err);
-            return res.render("register");
+            req.flash("error", err.message);
+            res.redirect("back");
+        } else {
+            passport.authenticate('local')(req,res, function() {
+                req.flash("success", "Thank you for registering " + newUser.username + ". You are now logged in");
+                res.redirect("/events");
+            });
         }
-        passport.authenticate('local')(req,res, function() {
-            res.redirect("/events");
-        });
     });
 });
 

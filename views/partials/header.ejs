@@ -1,13 +1,31 @@
 <!DOCTYPE HTML>
 
+   
     <head>
         <title>Events</title>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
         <link rel="stylesheet" type="text/css" href="/stylesheets/main.css">
     </head>
     
-    <% include navbar %>
     
     <body>
-        
-        
+    
+    
+    <% include navbar %>
+    
+    <!-- SETUP FLASH MESSAGES -->
+    
+    <div class="container">
+        <% if(error && error.length > 0) { %>
+            <div class="alert alert-danger">
+                  <strong> <%= error %> </strong> 
+            </div>
+        <% } 
+        if(success && success.length > 0) { %>
+            <div class="alert alert-success">
+                  <strong> <%= success %> </strong>
+            </div>
+        <% } %>
+    </div>
+    
+  
