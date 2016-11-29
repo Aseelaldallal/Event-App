@@ -15,7 +15,14 @@ var eventSchema = new mongoose.Schema({
    date: Date,
    location: String,
    image: String,
-   description: String
+   description: String,
+   author: {
+      id: {
+         type: mongoose.Schema.Types.ObjectId,
+         ref: "User"
+      },
+      username: String
+   }
 });
 
 

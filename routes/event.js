@@ -30,6 +30,7 @@ router.get("/", function(req,res) {
 
 // DISPLAY FORM TO CREATE A NEW EVENT
 // Only logged in user can see this form
+
 router.get("/new", middleware.isLoggedIn, function(req,res) {
     res.render("event/new"); 
 });
@@ -38,19 +39,24 @@ router.get("/new", middleware.isLoggedIn, function(req,res) {
 
 // UPDATE DATABASE WITH NEWLY CREATED EVENT
 // Only logged in user can create event
+
 router.post("/", middleware.isLoggedIn, function(req,res) {
     var newEvent = {
         name: req.body.name,
         date: req.body.date,
         location: req.body.location,
         image: req.body.image,
-        description: req.body.description
+        description: req.body.description,
+        author: {
+            id: req.user._id, 
+            username: req.user.username
+        }
     };
     Event.create(newEvent, function(err, newEvent) {
         if(err) {
             console.log(err);
         } else {
-            res.redirect("/events");
+            res.redirect("/events/" + newEvent._id);
         }
     });
 });

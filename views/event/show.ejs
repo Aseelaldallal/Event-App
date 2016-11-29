@@ -26,7 +26,7 @@
                         <h1><%= event.name %> </h1>
                         <img class="img-responsive" src="<%= event.image %>">
                         <h4><a><%= event.name %></a></h4>
-                        <h5><Strong>Submitted by: </Strong> Anonymous </h5>
+                        <h5><Strong>Submitted by: </Strong> <%= event.author.username %> </h5>
                         <p><%=event.description %></p>
                         
                         <a href="/events/<%=event._id%>/edit" class="btn btn-warning btn-md">Edit</a>

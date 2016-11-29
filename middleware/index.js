@@ -19,7 +19,7 @@ middlewareObj.isLoggedIn = function(req,res,next) {
         return next();
     } 
     console.log("Not logged in");
-    res.redirect("/events");
+    res.redirect("/login");
 }
 
 
