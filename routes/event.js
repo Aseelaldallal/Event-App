@@ -7,7 +7,8 @@
 
 
 var express         = require("express"),
-    Event           = require("../models/event");
+    Event           = require("../models/event"),
+    middleware      = require("../middleware"); // If we require a directory, it automatically requires index.js
 
 var router          = express.Router();
 
@@ -28,16 +29,16 @@ router.get("/", function(req,res) {
 /* ---------------------------- NEW ROUTE ---------------------------- */
 
 // DISPLAY FORM TO CREATE A NEW EVENT
-
-router.get("/new", function(req,res) {
+// Only logged in user can see this form
+router.get("/new", middleware.isLoggedIn, function(req,res) {
     res.render("event/new"); 
 });
 
 /* --------------------------- CREATE ROUTE -------------------------- */
 
 // UPDATE DATABASE WITH NEWLY CREATED EVENT
-
-router.post("/", function(req,res) {
+// Only logged in user can create event
+router.post("/", middleware.isLoggedIn, function(req,res) {
     var newEvent = {
         name: req.body.name,
         date: req.body.date,
@@ -53,6 +54,9 @@ router.post("/", function(req,res) {
         }
     });
 });
+
+
+
 
 
 /* ---------------------------- SHOW ROUTE --------------------------- */
