@@ -82,8 +82,8 @@ router.get("/:id", function(req,res) {
 /* ---------------------------- EDIT ROUTE --------------------------- */
 
 // EDIT DETAILS OF SPECIFIC EVENT
-
-router.get("/:id/edit", function(req,res) {
+// Only user who owns the event can see edit form for this event
+router.get("/:id/edit", middleware.checkEventOwnership, function(req,res) {
        Event.findById(req.params.id, function(err, foundEvent) {
        if(err) {
            console.log(err);
@@ -96,8 +96,8 @@ router.get("/:id/edit", function(req,res) {
 /* --------------------------- UPDATE ROUTE -------------------------- */
 
 // UPDATE SPECIFIC EVENT IN DATABASE
-
-router.put("/:id", function(req, res) {
+// Only user who owns the event can edit the event in the db
+router.put("/:id", middleware.checkEventOwnership, function(req, res) {
     Event.findByIdAndUpdate(req.params.id, req.body.event, function(err, foundEvent) {
        if(err) {
            console.log(err);
@@ -110,8 +110,8 @@ router.put("/:id", function(req, res) {
 /* --------------------------- DESTROY ROUTE ------------------------- */
 
 // REMOVE SPECIFIC EVENT FROM DATABASE
-
-router.delete("/:id", function(req,res) {
+// Only user who owns the event can delete it in the db
+router.delete("/:id", middleware.checkEventOwnership, function(req,res) {
     Event.findByIdAndRemove(req.params.id, function(err, removedEvent) {
        if(err) {
            console.log(err);
