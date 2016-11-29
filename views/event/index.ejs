@@ -28,23 +28,33 @@
       
             
             <% events.forEach(function(event) { %>
+            
                 <div class="thumbnail">
+                    
                     <div class= "row">
+                        
                         <div class="col-md-3">
                             <img class="img-responsive" src="<%=event.image%>">
                         </div>
+                        
                         <div class="col-md-9">
                             <h5><strong><%= event.name %></strong></h5>
                             <p><strong>Date: </strong><%=event.date %></p>
                             <p><strong>Location: </strong><%=event.location %></p>   
                             <a href="/events/<%=event._id%>/" class="btn btn-primary btn-xs">More Info</a>
-                            <a href="/events/<%=event._id%>/edit" class="btn btn-warning btn-xs">Edit</a>
-                            <form class="inline" action="/events/<%=event._id%>?_method=DELETE" method="POST">
-                                <button class="inline btn btn-danger btn-xs">Delete</button>
-                            </form>
-                        </div>
+                            <!-- Only user who owns event can see edit and delete buttons -->
+                            <% if(currentUser && currentUser._id.equals(event.author.id)) { %>
+                                <a href="/events/<%=event._id%>/edit" class="btn btn-warning btn-xs">Edit</a>
+                                <form class="inline" action="/events/<%=event._id%>?_method=DELETE" method="POST">
+                                    <button class="inline btn btn-danger btn-xs">Delete</button>
+                                </form>
+                            <% } %>
+                        </div> <!-- col end -->
+                        
                     </div> <!--row end-->
+                    
                 </div> <!-- thumbnail end -->
+                
             <% }); %>
             
 
