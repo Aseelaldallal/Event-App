@@ -3,6 +3,7 @@
 /***************************************************/
 
 var express             = require("express"),
+    app                 = express(), 
     bodyParser          = require("body-parser"),
     methodOverride      = require("method-override"),
     mongoose            = require("mongoose"),
@@ -12,48 +13,45 @@ var express             = require("express"),
     Event               = require("./models/event"),
     User                = require("./models/user");
     
-var app = express();
+// Require routes
 
-app.use(bodyParser.urlencoded({extended: true}));
-app.set("view engine", "ejs");
-app.use(methodOverride("_method"));
-app.use(express.static(__dirname + "/public"));
-    
+var indexRoutes         = require("./routes/index"),
+    eventRoutes         = require("./routes/event");
 
-// Route Setup
-
-var indexRoutes = require("./routes/index"),
-    eventRoutes = require("./routes/event");
-
-app.use("/", indexRoutes);
-app.use("/events", eventRoutes);
-
-// DB Setup
-
+// DB Connect
 mongoose.connect("mongodb://localhost/event_app");
 
-// Run Express Session
+// Configure
+
+app.set("view engine", "ejs");
+app.use(express.static(__dirname + "/public"));
+app.use(methodOverride("_method"));
+app.use(bodyParser.urlencoded({extended: true}));
+
+    
+// Configure passport
 
 app.use(expressSession({
-    secret: "The cat sat on the mat", 
+    secret: "Helo is the cutest baby",
     resave: false,
     saveUninitialized: false
 }));
 
-// Set up passport
-
 app.use(passport.initialize());
 app.use(passport.session());
-passport.use(new localStrategy(User.authenticate())); 
+passport.use(new localStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-// Set up middleware. app.use calls this function on every route
-// passport is what creates req.user, it puts id in it
-app.use(function(req,res, next) {
-    res.locals.currentUser = req.user; // whatever we put in res.locals is what is available in our template. this is empty if no one is logged in
-    next(); // move on to next code
-})
+app.use(function(req, res, next){
+   res.locals.currentUser = req.user;
+   next();
+});
+
+// Use Routes
+
+app.use("/", indexRoutes);
+app.use("/events", eventRoutes);
 
 
 /***************************************************/

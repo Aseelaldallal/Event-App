@@ -28,19 +28,43 @@ router.get("/login", function(req,res) {
 });
 
 // Login
+router.post("/login", passport.authenticate("local", 
+    {   successRedirect: "/events",
+        failureRedirect: "/login"
+    }), function(req, res){
+});
 
 
 // Logout
+router.get("/logout", function(req,res) {
+     req.logout();
+     res.redirect("/events"); 
+});
 
 
 /* ------------------------- REGISTER ROUTES -------------------------- */
 
 // Show Register Form
-router.get("/Register", function(req,res) {
+router.get("/register", function(req,res) {
     res.render("register");
 });
 
 // Register
+router.post("/register", function(req,res) {
+    var newUser = new User({
+        username: req.body.username
+    });
+    console.log(newUser);
+    User.register(newUser, req.body.password, function(err, response) {
+        if(err) {
+            console.log(err);
+            return res.render("register");
+        }
+        passport.authenticate('local')(req,res, function() {
+            res.redirect("/events");
+        });
+    });
+});
 
 
 /* ------------------------------------------------------------------ */
