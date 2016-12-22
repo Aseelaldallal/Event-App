@@ -11,14 +11,11 @@ var express         = require("express"),
     passport        = require("passport"),
     User            = require("../models/user");
 
-
-
 /* -------------------------- LANDING PAGE --------------------------- */
 
 router.get("/", function(req,res) {
    res.render("landing"); 
 });
-
 
 /* -------------------------- LOGIN ROUTES --------------------------- */
 

@@ -1,28 +1,97 @@
 <% include ../partials/header %>
 
 
+<script type="text/javascript" src="/js/newevent.js"></script>
+        
 
-<div class="container">
+<div class="content container">
     
     
-    <form action="/events" method="POST">
+    <form name="myForm" action="/events" method="POST" onsubmit="return validateForm()">
         
-          <h1>Create new event</h1>
+          <h1 class="addEventTitle">Add an Event</h1>
         
+          <hr> 
+        
+          <p><em> Don't get too excited. You can only post events happening within the next year </em></p>
+          <!-------------------------- EVENT TITLE -------------------------->
           <div class="form-group">
-            <label for="eventName">Name</label>
-            <input name="name" type="text" class="form-control" id="eventName" placeholder="Harry Potter's 20th Birthday Bash">
+            <label for="eventName" class="required">Event Title</label>
+            <input name="name" type="text" class="form-control" id="eventName" placeholder="Harry Potter's 20th Birthday Bash" required>
+          </div>
+          <!-- FRONT END VALIDATION LAYER -->
+          <div id="nameError" class="hidden error">
+          </div>
+
+          <!---------------------- EVENT DATE AND TIME ---------------------->
+          <div class="row">
+              <!-- DATE -->
+              <div class="form-group col-md-4 col-sm-4 col-xs-12">
+                  <label for="theDateGroup" class="required">Date</label>   
+                  <div id="theDateGroup" class="input-group">
+                      <span class="input-group-addon" id="dateIcon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+                      <input name="date" id="date" type="date" class="form-control" placeholder="yyyy-mm-dd" min="2015-12-12" aria-describedby="dateIcon" required >
+                  </div>
+              </div>
+              <!--START TIME -->
+              <div class="form-group col-md-4 col-sm-4 col-xs-6">
+                  <label for="startTimeGroup" class="required">Start Time</label>
+                  <div id="startTimeGroup" class="input-group">
+                      <span class="input-group-addon" id="startIcon"><i class="fa fa-clock-o" aria-hidden="true"></i></span>
+                      <input name="starttime" type="text" class="form-control" id="starttime" placeholder="7:00 AM" aria-describedby="startIcon" required>
+                  </div>
+              </div>
+
+              <!--END TIME -->
+              <div class="form-group col-md-4 col-sm-4 col-xs-6">
+                  <label for="endTimeGroup" class="required">End Time</label>
+                  <div id="endTimeGroup" class="input-group">
+                      <span class="input-group-addon" id="endIcon"><i class="fa fa-clock-o" aria-hidden="true"></i></span>
+                      <input name="endtime" type="text" class="form-control" id="endtime" placeholder="7:00 PM" aria-describedby="endIcon" required>
+                  </div>
+              </div>
+          </div> <!-- END OF ROW -->  
+          
+          <!-- FRONT END VALIDATION LAYER -->
+          
+          <div id ="dateTimeValidate" class="row error hidden">
+                <div id="dateError" class="col-md-4 col-sm-4 col-xs-12 invisible">
+                        
+                </div>
+                <div id="startError" class="col-md-4 col-sm-4 col-xs-12 invisible">
+                        
+                </div>
+                <div id="endError" class="col-md-4 col-sm-4 col-xs-12 invisible">
+                        
+                </div>
           </div>
           
-          <div class="form-group">
-            <label for="date">Date</label>
-            <input name="date" type="date" class="form-control" id="date"> <!-- Change this later to min: next day, max: one year later, default: today's date -->
-          </div>
           
+        
+      
+          
+          
+          
+          
+          
+          
+          
+        
+          <!------------ EVENT LOCATION ------------>      
           <div class="form-group">
-            <label for="location">Location</label>
-            <input name="location" type="text" class="form-control" id="location" placeholder="Hogwarts School, 127 Long Island">
+              <label for="fullAddress">Event Location</label>
+              <input name="fullAddress" type="text" class="form-control" id="fullAddress" placeholder="Hogwarts School, 127 Long Island">
           </div>
+<!--          <div id="scratchAddress">
+              <input name="venueName" type="text" placeholder="Enter event venue's name">
+              <input name="address1" type="text" placeholder="Address 1">
+              <input name="address2" type="text" placeholder="Address 2">
+              <input name="city" type="text" placeholder="City">
+              <input name="province" type="text" placeholder="Province">
+              <input name="postalCode" type="text" placeholder="Postal Code">
+          </div>-->
+          
+          
           
           <div class="form-group">
             <label for="image">Image URL</label>
@@ -33,15 +102,32 @@
             <label for="description">Description</label>
             <textarea name="description" class="form-control" id="description" rows="5" placeholder="This is the event of the year. You'll eat magic muffins and and get high on red bull"></textarea>
          </div>
+         
+        <div class="form-group">
+            <label for="description">Website</label>
+            <textarea name="description" class="form-control" id="description" rows="5" placeholder="This is the event of the year. You'll eat magic muffins and and get high on red bull"></textarea>
+        </div>
+        
+        <div class="form-group">
+            <label for="description">Organizer Name</label>
+            <textarea name="description" class="form-control" id="description" rows="5" placeholder="This is the event of the year. You'll eat magic muffins and and get high on red bull"></textarea>
+        </div>
+        
+        <div class="form-group">
+            <label for="description">Organizer Contact Info</label>
+            <textarea name="description" class="form-control" id="description" rows="5" placeholder="This is the event of the year. You'll eat magic muffins and and get high on red bull"></textarea>
+        </div>
           
-         <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="submit" class="btn btn-primary">Submit</button>
          
     </form>
-    
     
 
 </div> <!-- Container End -->
 
+
+
+<!------- SCRIPT ------->
 
 
 

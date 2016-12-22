@@ -1,0 +1,231 @@
+* {
+    font-family: 'Roboto', sans-serif;
+}
+
+body {
+  font-weight: 300;
+}
+
+h1, h2, h3, h4 {
+    font-family: 'Roboto Slab', serif;
+    font-weight: 700;
+}
+
+
+/*------------ STYLING FOR INDIVIDUAL PAGES ------------*/
+
+
+
+/*-------------------- FORM STYLING --------------------*/
+
+
+
+form h1 {
+    color: midnightblue;
+    background-color: rgba(231, 231, 231,0.5);
+    padding: 1.5rem 2rem;
+    margin: 0;
+}
+
+form hr {
+  margin-top: 0;
+  margin-bottom: 3rem;
+	border-top: 3px solid midnightblue;
+}
+
+form label {
+    font-weight: 700;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focus, input[type="url"]:focus, textarea:focus{
+  border-color: midnightblue;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 4px rgba(25, 25, 112,0.5);
+  outline: 0 none;
+}
+
+
+/* Disable native datepicker popup */
+input::-webkit-calendar-picker-indicator{
+    display: none;
+}
+
+.error {
+  color: rgb(206, 17, 0);
+  margin-top: -1rem;
+
+}
+
+.error p:before {
+    font-family: FontAwesome;
+    content: "\f071";
+    margin-right: 1rem;
+}
+
+.invisible {
+  visibility: hidden;
+}
+
+
+
+
+/*----------------- SPECIFIC PAGE STYLING ----------------*/
+
+.addEventTitle:before {
+     font-family: FontAwesome;
+     content: "\f271";
+     margin-right: 2rem;
+}
+
+
+/*------------------------ NAVBAR -----------------------*/
+
+.navbar-full {
+  margin-bottom: 6rem;
+}
+.navbar-custom {
+  background-color:midnightblue;
+  border-color: #131360;
+}
+
+.navbar-custom .navbar-brand {
+  color: #fff;
+}
+
+.navbar-custom .navbar-brand:hover,
+.navbar-custom .navbar-brand:focus {
+  color: #fff;
+  font-weight: bold;
+  background-color: transparent;
+}
+
+.navbar-custom .navbar-text {
+  color: #fff;
+}
+.navbar-custom .navbar-nav > li > a {
+  color: #fff;
+}
+.navbar-custom .navbar-nav > li > a:hover,
+navbar-custom .navbar-nav > li > a:focus {
+  color: #fff;
+  font-weight: bold;
+  background-color: transparent;
+}
+navbar-custom .navbar-nav > .active > a,
+navbar-custom .navbar-nav > .active > a:hover,
+navbar-custom .navbar-nav > .active > a:focus {
+  color: pink;
+  background-color: green;
+}
+navbar-custom .navbar-nav > .disabled > a,
+navbar-custom .navbar-nav > .disabled > a:hover,
+navbar-custom .navbar-nav > .disabled > a:focus {
+  color: pink;
+  background-color: transparent;
+}
+navbar-custom .navbar-toggle {
+  border-color: orange;
+}
+navbar-custom .navbar-toggle:hover,
+navbar-custom .navbar-toggle:focus {
+  background-color: olive;
+}
+navbar-custom .navbar-toggle .icon-bar {
+  background-color: peru;
+}
+navbar-custom .navbar-collapse,
+navbar-custom .navbar-form {
+  border-color: red;
+}
+navbar-custom .navbar-nav > .open > a,
+navbar-custom .navbar-nav > .open > a:hover,
+navbar-custom .navbar-nav > .open > a:focus {
+  color: navy;
+  background-color: orange;
+}
+@media (max-width: 767px) {
+  navbar-custom .navbar-nav .open .dropdown-menu > li > a {
+    color: pink;
+  }
+  navbar-custom .navbar-nav .open .dropdown-menu > li > a:hover,
+  navbar-custom .navbar-nav .open .dropdown-menu > li > a:focus {
+    color: #333;
+    background-color: transparent;
+  }
+  navbar-custom .navbar-nav .open .dropdown-menu > .active > a,
+  navbar-custom .navbar-nav .open .dropdown-menu > .active > a:hover,
+  navbar-custom .navbar-nav .open .dropdown-menu > .active > a:focus {
+    color: #555;
+    background-color: red;
+  }
+  navbar-custom .navbar-nav .open .dropdown-menu > .disabled > a,
+  navbar-custom .navbar-nav .open .dropdown-menu > .disabled > a:hover,
+  navbar-custom .navbar-nav .open .dropdown-menu > .disabled > a:focus {
+    color: #ccc;
+    background-color: transparent;
+  }
+}
+navbar-custom .navbar-link {
+  color: #777;
+}
+navbar-custom .navbar-link:hover {
+  color: #333;
+}
+navbar-custom .btn-link {
+  color: #777;
+}
+navbar-custom .btn-link:hover,
+navbar-custom .btn-link:focus {
+  color: #333;
+}
+navbar-custom .btn-link[disabled]:hover,
+fieldset[disabled] navbar-custom .btn-link:hover,
+navbar-custom .btn-link[disabled]:focus,
+fieldset[disabled] navbar-custom .btn-link:focus {
+  color: orange;
+}
+
+
+/*----------------------- IMAGES -----------------------*/
+
+.thumbnail {
+    padding: 15px;
+}
+
+.thumbnail img {
+    width: 100%;
+}
+
+.thumbnail .caption-full {
+    padding-top: 10px;
+    padding-bottom: 0px;
+}
+
+label.required:after {
+  content:" *";
+  margin-left: 0.5rem;
+  color:red;
+}
+
+/*------------------------ OTHER -----------------------*/
+
+
+.inline {
+    display: inline;
+}
+
+.bottomed {
+    margin-top: 20px;
+}
+
+/*----------------- API: GOOGLE PLACES ------------------*/
+
+.pac-container {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 300;
+}
+
+.hidden {
+    display: none;
+}

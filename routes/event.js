@@ -40,11 +40,15 @@ router.get("/new", middleware.isLoggedIn, function(req,res) {
 // UPDATE DATABASE WITH NEWLY CREATED EVENT
 // Only logged in user can create event
 
+//router.post("/", middleware.isLoggedIn, function(req,res) { RESTORE THIS LINE
+    
 router.post("/", middleware.isLoggedIn, function(req,res) {
     var newEvent = {
         name: req.body.name,
         date: req.body.date,
-        location: req.body.location,
+        starttime: req.body.starttime,
+        endtime: req.body.endtime,
+        location: req.body.fullAddress,
         image: req.body.image,
         description: req.body.description,
         author: {
