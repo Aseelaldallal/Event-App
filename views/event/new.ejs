@@ -1,124 +1,254 @@
 <% include ../partials/header %>
 
 
-<script type="text/javascript" src="/js/newevent.js"></script>
+<script type="text/javascript" src="/js/eventform.js"></script>
         
 
-<div class="content container">
+<div class="container">
     
     
-    <form name="myForm" action="/events" method="POST" onsubmit="return validateForm()">
+    <form action="/events" method="POST">
         
-          <h1 class="addEventTitle">Add an Event</h1>
+        <h1 class="addEventTitle">Add an Event</h1>
         
-          <hr> 
-        
-          <p><em> Don't get too excited. You can only post events happening within the next year </em></p>
-          <!-------------------------- EVENT TITLE -------------------------->
-          <div class="form-group">
-            <label for="eventName" class="required">Event Title</label>
-            <input name="name" type="text" class="form-control" id="eventName" placeholder="Harry Potter's 20th Birthday Bash" required>
-          </div>
-          <!-- FRONT END VALIDATION LAYER -->
-          <div id="nameError" class="hidden error">
-          </div>
+        <hr class="firsthr"> 
 
-          <!---------------------- EVENT DATE AND TIME ---------------------->
-          <div class="row">
-              <!-- DATE -->
-              <div class="form-group col-md-4 col-sm-4 col-xs-12">
-                  <label for="theDateGroup" class="required">Date</label>   
-                  <div id="theDateGroup" class="input-group">
-                      <span class="input-group-addon" id="dateIcon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
-                      <input name="date" id="date" type="date" class="form-control" placeholder="yyyy-mm-dd" min="2015-12-12" aria-describedby="dateIcon" required >
-                  </div>
-              </div>
-              <!--START TIME -->
-              <div class="form-group col-md-4 col-sm-4 col-xs-6">
-                  <label for="startTimeGroup" class="required">Start Time</label>
-                  <div id="startTimeGroup" class="input-group">
+        <!-------------------------- EVENT TITLE -------------------------->
+
+        <div class="form-group">
+            <label for="name" class="required">Event Title</label>
+            <!-- INPUT FIELD -->
+            <input  id="name" name="name" type="text" class="form-control"placeholder="Harry Potter's 20th Birthday Bash" required>
+            <!-- TOOLTIP -->
+            <p id="nameTip" class="tip hidden"> Remaining: <span id="charsLeft"></span></p>
+            <!-- ERROR BOX -->
+            <div id="nameError" class="error hidden">
+            </div>
+        </div>
+
+
+        <!---------------------- EVENT DATE AND TIME ---------------------->
+
+        <div class="row">
+            
+            <!--------- DATE --------->
+            <div class="form group col-md-4 col-sm-12 col-xs-12">
+                <label for="theDateGroup" class="required">Date</label>   
+                <!-- INPUT FIELD -->
+                <div id="theDateGroup" class="input-group">
+                    <span class="input-group-addon" id="dateIcon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+                    <input name="date" id="date" type="date" class="form-control" aria-describedby="dateIcon" required >
+                </div>
+                <!-- TOOLTIP -->
+                <p id="dateTip" class="tip hidden"> You can only post events happening within the next year </p>
+                <!-- ERROR BOX -->
+                <div id="dateError" class="error hidden">
+                </div>
+            </div>  
+              
+            <!------ START TIME ------>
+            <div class="form-group col-md-4 col-sm-6 col-xs-12">
+                <label for="startTimeGroup" class="required">Start Time</label>  
+                <!-- INPUT FIELD -->
+                <div id="startTimeGroup" class="input-group">
                       <span class="input-group-addon" id="startIcon"><i class="fa fa-clock-o" aria-hidden="true"></i></span>
                       <input name="starttime" type="text" class="form-control" id="starttime" placeholder="7:00 AM" aria-describedby="startIcon" required>
-                  </div>
-              </div>
+                </div>
+                <!-- TOOLTIP -->
+                <p id="startTip" class="tip hidden"></p>
+                <!-- ERROR BOX -->
+                <div id="startError" class="error hidden">
+                </div>
+            </div> 
 
-              <!--END TIME -->
-              <div class="form-group col-md-4 col-sm-4 col-xs-6">
-                  <label for="endTimeGroup" class="required">End Time</label>
-                  <div id="endTimeGroup" class="input-group">
+
+            <!------ END TIME ------>
+            <div class="form-group col-md-4 col-sm-6 col-xs-12">
+                <label for="endTimeGroup" class="required">End Time</label>  
+                <!-- INPUT FIELD -->
+                <div id="endTimeGroup" class="input-group">
                       <span class="input-group-addon" id="endIcon"><i class="fa fa-clock-o" aria-hidden="true"></i></span>
-                      <input name="endtime" type="text" class="form-control" id="endtime" placeholder="7:00 PM" aria-describedby="endIcon" required>
-                  </div>
-              </div>
-          </div> <!-- END OF ROW -->  
-          
-          <!-- FRONT END VALIDATION LAYER -->
-          
-          <div id ="dateTimeValidate" class="row error hidden">
-                <div id="dateError" class="col-md-4 col-sm-4 col-xs-12 invisible">
-                        
+                      <input name="endtime" type="text" class="form-control" id="endtime" placeholder="7:00 AM" aria-describedby="endIcon" required>
                 </div>
-                <div id="startError" class="col-md-4 col-sm-4 col-xs-12 invisible">
-                        
+                <!-- TOOLTIP -->
+                <p id="endTip" class="tip hidden"> </p>
+                <!-- ERROR BOX -->
+                <div id="endError" class="error hidden">
                 </div>
-                <div id="endError" class="col-md-4 col-sm-4 col-xs-12 invisible">
-                        
-                </div>
-          </div>
-          
-          
+            </div> 
+            
         
-      
-          
-          
-          
-          
-          
-          
-          
+        </div>
         
-          <!------------ EVENT LOCATION ------------>      
-          <div class="form-group">
-              <label for="fullAddress">Event Location</label>
-              <input name="fullAddress" type="text" class="form-control" id="fullAddress" placeholder="Hogwarts School, 127 Long Island">
-          </div>
-<!--          <div id="scratchAddress">
-              <input name="venueName" type="text" placeholder="Enter event venue's name">
-              <input name="address1" type="text" placeholder="Address 1">
-              <input name="address2" type="text" placeholder="Address 2">
-              <input name="city" type="text" placeholder="City">
-              <input name="province" type="text" placeholder="Province">
-              <input name="postalCode" type="text" placeholder="Postal Code">
-          </div>-->
-          
-          
-          
-          <div class="form-group">
-            <label for="image">Image URL</label>
-            <input name="image" type="text" class="form-control" id="image" placeholder="https://farm8.staticflickr.com/7550/16159104526_9ecbfed8e0.jpg">
-          </div>
+
+        <!------------------------- EVENT LOCATION ------------------------>  
+
+        <div class="form-group">
+            
+            <label for="locationContainer">Event Location</label>
+        
+            <div id="locationContainer">
+            
+                <!---------- GOOGLE AUTOCOMPLETE ---------->
+                <div id="locationSearch" class="form-group">
+                    <!-- INPUT FIELD -->
+                    <input name="location" type="text" class="form-control" id="location" placeholder="Search for your address here">
+                    <a id="enterAddress">Enter address manually</a>
+                </div>
+            
+                <!----------- LOCATION DETAILS ------------>
+                <div id="locationDetails" class="row hidden">
+                    
+                    <!------ TEXT ------>
+                    <div id="locationDetailsText" class="col-md-6 col-sm-12">
+                        <!------ VENUE ------>
+                        <div class="form-group">
+                            <label for="venueName" class="sr-only">Venue Name</label>
+                            <input class="form-control" id="venueName" name="venueName" type="text" placeholder="Venue Name">
+                        </div>
+                        <!------ ADDRESS ------>
+                        <div class="form-group">
+                            <label for="address" class="sr-only">Address</label>
+                            <input class="form-control" id="address" name="address" type="text" placeholder="Address">
+                        </div>
+                        <div class="row">
+                            <!------ UNIT ------>
+                            <div class="form-group col-md-6 col-xs-6">
+                                <label for="unit" class="sr-only">Unit Number</label>
+                                <input class="form-control" id="unit" name="unit" type="text" placeholder="Unit No.">
+                            </div>
+                            <!------ CITY ------>
+                            <div class="form-group col-md-6 col-xs-6">
+                                <label for="city" class="sr-only">City</label>
+                                <input class="form-control" id="city" name="city" type="text" placeholder="City">
+                            </div>
+                        </div> 
+                        <div class="row"> 
+                            <!------ PROVINCE ------>
+                            <div class="form-group col-md-6 col-xs-6">
+                                <label for="province" class="sr-only">Province</label>
+                                <input class="form-control" id="province" name="province" type="text" placeholder="Province" >
+                            </div>
+                            <!------ POSTAL CODE ------>
+                            <div class="form-group col-md-6 col-xs-6">
+                                <label for="postalCode" class="sr-only">Postal Code</label>
+                                <input class="form-control" id="postalCode" name="postalCode" type="text" placeholder="Postal Code" >
+                            </div>
+                        </div>
+                        <a id="resetLocation"> Reset location</a>
+                    </div> <!-- locationDetailsText row end -->
+            
+                    <!------ MAP ------>
+                    <div id="mapContainer" class="container">
+                        <div id="mapBorder" class="container col-md-6 col-sm-12">
+                            <div id="googleMap" class="hidden">
+                            </div>
+                            <div id="noMapAvailContainer">
+                                <div id="noMapAvailable">
+                                    <i class="fa fa-map-marker" aria-hidden="true"></i>
+                                    <p> NO MAP</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+
+                </div> <!-- End of locationDetails -->
+            </div> <!-- End of locationContainer -->
+        
+        </div> <!-- End of form group -->
+        
+        <!------------------------------ IMAGE ---------------------------->  
           
         <div class="form-group">
-            <label for="description">Description</label>
-            <textarea name="description" class="form-control" id="description" rows="5" placeholder="This is the event of the year. You'll eat magic muffins and and get high on red bull"></textarea>
-         </div>
+            <label for="image">Event Image</label>
+            <!-- TOOLTIP -->
+            <p class="tip"> Maximum File Size: 1 MB </p>
+            <!-- FIELD -->
+            <input name="image" type="file" class="form-control" id="image" >
+            <!-- ERROR BOX -->
+            <div id="imageError" class="error">
+                <p> Error goes here </p>  
+            </div>
+        </div>
+          
+        <!--------------------------- DESCRIPTION -------------------------->
+          
+        <div class="form-group">
+            <label for="description" class="required">Description</label>
+            <!-- TOOLTIP -->
+            <p class="tip"> Tooltip goes here </p>
+            <!-- INPUT -->
+            <textarea name="description" class="form-control" id="description" rows="5" placeholder="This is the event of the year. You'll eat magic muffins and and get high on red bull" required></textarea>
+            <!-- ERROR BOX -->
+            <div id="imageError" class="error">
+                <p> Error goes here </p>  
+            </div>
+        </div>
          
+        <!----------------------------- WEBSITE ----------------------------> 
+
         <div class="form-group">
-            <label for="description">Website</label>
-            <textarea name="description" class="form-control" id="description" rows="5" placeholder="This is the event of the year. You'll eat magic muffins and and get high on red bull"></textarea>
+            <label for="website">Event Website</label>
+            <!-- TOOLTIP -->
+            <p class="tip"> Tooltip goes here </p>
+            <!-- INPUT -->
+            <input name="website" type="url" class="form-control" id="website" placeholder="www.eventwebsite.ca">
+            <!-- ERROR BOX -->
+            <div id="websiteError" class="error">
+                <p> Error goes here </p>  
+            </div>
         </div>
         
+        <!----------------------------- TICKETS ----------------------------> 
         <div class="form-group">
-            <label for="description">Organizer Name</label>
-            <textarea name="description" class="form-control" id="description" rows="5" placeholder="This is the event of the year. You'll eat magic muffins and and get high on red bull"></textarea>
+            <label for="ticket">Ticket Sale URL</label>
+            <!-- TOOLTIP -->
+            <p class="tip"> Tooltip goes here </p>
+            <!-- INPUT -->
+            <input name="ticket" type="url" class="form-control" id="ticket" placeholder="www.myticketsaresoldhere.ca">
+            <!-- ERROR BOX -->
+            <div id="websiteError" class="error">
+                <p> Error goes here </p>  
+            </div>
         </div>
         
-        <div class="form-group">
-            <label for="description">Organizer Contact Info</label>
-            <textarea name="description" class="form-control" id="description" rows="5" placeholder="This is the event of the year. You'll eat magic muffins and and get high on red bull"></textarea>
+        <!---------------------------- ORGANIZER --------------------------->        
+        
+        <div class="row">
+            
+            <!------ ORGANIZER NAME ------>
+            <div class="form-group col-md-4 col-xs-12">
+                <label for="organizerName">Organizer Name</label>
+                <input name="organizerName" type="text" class="form-control" id="organizerName" placeholder="Darth Vader Co.">
+            </div>
+            
+            <!------ ORGANIZER PHONE NUMBER ------>
+            <div class="form-group col-md-4 col-xs-12">
+                <label for="organizerPhone">Organizer Phone Number</label>
+                <input name="organizerPhone" type="tel" class="form-control" id="organizerPhone" placeholder="647-222-3333">
+                <!-- ERROR BOX -->
+                <div id="phoneError" class="error">
+                    <p> Error goes here </p>  
+                </div>
+            </div>
+            
+            <!------ ORGANIZER EMAIL ADDRESS ------>
+            <div class="form-group col-md-4 col-xs-12">
+                <label for="organizerEmail" class="required">Organizer Email</label>
+                <input name="organizerEmail" type="email" class="form-control" id="organizerEmail" placeholder="barneystinson@gmail.com">
+                <!-- ERROR BOX -->
+                <div id="emailError" class="error">
+                    <p> Error goes here </p>  
+                </div>
+            </div>
+            
         </div>
+        
+        
+        <hr class="lasthr"> 
           
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="submit" class="btn btn-primary btn-lg btn-block formSubmit">Submit</button>
          
     </form>
     
@@ -127,7 +257,6 @@
 
 
 
-<!------- SCRIPT ------->
 
 
 

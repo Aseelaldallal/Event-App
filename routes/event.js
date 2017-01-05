@@ -31,7 +31,8 @@ router.get("/", function(req,res) {
 // DISPLAY FORM TO CREATE A NEW EVENT
 // Only logged in user can see this form
 
-router.get("/new", middleware.isLoggedIn, function(req,res) {
+//router.get("/new", middleware.isLoggedIn, function(req,res) { RESTORE THIS
+router.get("/new", function(req,res) {
     res.render("event/new"); 
 });
 
