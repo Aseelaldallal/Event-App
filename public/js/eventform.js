@@ -9,6 +9,7 @@ var map;
 /* ------------------ CONSTANTS ------------------ */
 
 const MAX_INPUT_LENGTH = 100;
+const MAX_DESC_LENGTH = 1500;
 
 
 /* ---------------- DOCUMENT.READY ---------------- */
@@ -23,11 +24,13 @@ $(document).ready(function() {
     eventDateSetup();
     eventTimeSetup(); 
     eventLocationSetup();
-    //setMaxInputLength
+    eventImageSetup();
+    setMaxInputLength(MAX_INPUT_LENGTH, MAX_DESC_LENGTH);
+
 });
 
 
-
+ 
 /* ----------------- EVENT TITLE ------------------ */
 
 // Limit input field size to 100 chars
@@ -304,23 +307,21 @@ function eventLocationSetup() {
             },1000); 
         } 
     });
+    $('#address').on('blur', function()    { findGeocodeAndMap(); });
+    $('#city').on('blur', function()       { findGeocodeAndMap(); });
+    $('#province').on('blur', function()   { findGeocodeAndMap(); });
+    $('#postalCode').on('blur', function() { findGeocodeAndMap(); });
     
-    
-    $('#address').on('blur', function() {
-        findGeocodeAndMap(); 
-    });
-    
-    $('#city').on('blur', function() {
-        findGeocodeAndMap(); 
-    });
-    
-    $('#province').on('blur', function() {
-        findGeocodeAndMap(); 
-    });
-    
-    $('#postalCode').on('blur', function() {
-        findGeocodeAndMap(); 
-    });
+    // If user checks show map, set the value of checkbox to map geometry
+    $('#showMap').on('click', function() {
+        if($( "#showMap:checked" ).length > 0) {// checked
+            if(map) { // If map is defined
+                $('#showMap').val(map.getCenter());
+            }
+        } else {
+            $('#showMap').val('');
+        }
+    })
     
 }
 
@@ -339,6 +340,9 @@ function findGeocodeAndMap() {
             map = new google.maps.Map(document.getElementById('googleMap'));
             map.setCenter(results[0].geometry.location);
             map.setZoom(14);
+            if($( "#showMap:checked" ).length > 0) {// checked
+                $('#showMap').val(map.getCenter());
+            }
             var infowindow = new google.maps.InfoWindow();
             var marker = new google.maps.Marker({
                 map: map,
@@ -384,6 +388,10 @@ function displayMap(place) {
         map.setCenter(place.geometry.location);
     }
     map.setZoom(12);
+    
+    if($( "#showMap:checked" ).length > 0) {// checked
+        $('#showMap').val(map.getCenter());
+    }
     
     marker.setIcon(/** @type {google.maps.Icon} */({
         url: place.icon,
@@ -517,6 +525,95 @@ function fillOutDetailedAddressForm(place) {
         $('#unit').val(details["subpremise"]);
     }
     
+}
+
+
+/* ----------------- IMAGE UPLOAD ----------------- */
+
+
+function eventImageSetup() {
+    
+    var dropbox = document.getElementById("dropbox"),
+        fileElem = document.getElementById("fileElem"),
+        fileSelect = document.getElementById("fileSelect");
+
+    fileSelect.addEventListener("click", function(e) {
+        if (fileElem) {
+            fileElem.click(); 
+        }
+    }, false);
+
+    dropbox.addEventListener("dragenter", dragenter, false);
+    dropbox.addEventListener("dragover", dragover, false);
+    dropbox.addEventListener("drop", drop, false);
+
+}
+
+function dragenter(e) { 
+    e.stopPropagation();
+    e.preventDefault();
+}
+
+function dragover(e) { 
+    e.stopPropagation();
+    e.preventDefault();
+}
+
+function drop(e) {
+    e.stopPropagation();
+    e.preventDefault();
+    var dt = e.dataTransfer;
+    var files = dt.files;
+    handleFiles(files);
+}
+
+function handleFiles(files) {
+    var file = files[0];
+    var imageType = /^image\//;
+    if (!imageType.test(file.type)) {
+        alert("NOT AN IMAGE");
+        return;
+    }
+    var img = document.createElement("img");
+    img.classList.add("obj");
+    img.file = file;
+    img.height = Math.max($('#dropbox').height(),$('#preview').height()) ;
+    img.width = Math.max($('#dropbox').width(),$('#preview').width()) ;
+
+    $('#dropbox').addClass('hidden');
+    $('#preview').removeClass('hidden');
+    $('#preview').empty(); 
+    $('#preview').append(img);
+    $('#fileSelect').text('Replace Image');
+    
+    var reader = new FileReader();
+    reader.onload = (function(aImg) {
+        return function(e) {
+            aImg.src = e.target.result;
+        };
+    })(img);
+    reader.readAsDataURL(file)
+}
+
+
+/* ----------------- INPUT LENGTHS ---------------- */
+
+// Iterate through all input fields and set maxlength attribute to num.
+// Set the maxlength attribute of description textarea to dlength
+function setMaxInputLength(num, dlength) {
+    var inputs = document.getElementsByTagName('input');
+    Array.prototype.forEach.call(inputs, function(inputField) {
+        limitLength(inputField, num);
+    });
+    limitLength(document.getElementById('description'), dlength); 
+}
+
+
+// Set the maxlength attribute of inputField to inputLength
+function limitLength(inputField, inputLength) {
+    var att = document.createAttribute("maxlength");
+    att.value = inputLength;
+    inputField.setAttributeNode(att);   
 }
 
 

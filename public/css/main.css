@@ -1,3 +1,9 @@
+#showMapp {
+  background: pink;
+  width: 100%;
+  height: 200px;
+}
+
 * {
     font-family: 'Roboto', sans-serif;
 }
@@ -5,10 +11,8 @@
 body {
     font-weight: 300;
     margin-bottom: 15rem;
+    font-size: 1.4rem;
 }
-
-
-
 
 
 h1, h2, h3, h4 {
@@ -16,14 +20,7 @@ h1, h2, h3, h4 {
     font-weight: 700;
 }
 
-
-
-
-/*-------------------- FORM STYLING --------------------*/
-
-
-/*------- Heading -------*/
-form h1 {
+h1 {
     color: midnightblue;
     background-color: rgba(231, 231, 231,0.5);
     padding: 1.5rem 2rem;
@@ -31,26 +28,31 @@ form h1 {
 }
 
 
-/*---------- hr ---------*/
-
-form hr {
-	border-top: 3px solid midnightblue;
-}
-
-form hr.firsthr {
+hr.firsthr {
+  border-top: 3px solid midnightblue;
   margin-top: 0;
-  margin-bottom: 3rem;
+  margin-bottom: 6rem;
 }
 
-form hr.lasthr {
+hr.lasthr {
+  border-top: 3px solid midnightblue;
   margin-top:3rem;
+}
+
+/*-------------------- FORM STYLING --------------------*/
+
+
+/*------ Form Group -----*/
+
+.form-group {
+  margin-bottom: 5rem;
 }
 
 /*-------- label --------*/
 
 form label {
     font-weight: 700;
-    margin-top: 2rem;
+   /* margin-top: 2rem;*/
     margin-bottom: 1rem;
 }
 
@@ -76,8 +78,28 @@ input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focu
 .pac-item a {
   color: #337ab7;
 }
-#resetLocation, #enterAddress {
+
+.checkbox {
+  display: inline;
+}
+
+
+#resetLocation {
+  margin-right: 4rem;
+}
+
+.checkbox label  {
+    padding-left: 0px;
+    margin-left: 2.7rem;
+}
+
+.checkbox input[type=checkbox] {
+  margin-left: 0px;
+}
+
+#resetLocation, #enterAddress, .checkboxLabel {
   font-size: 1.3rem;
+  font-weight: 300;
 }
 
 #resetLocation:before {
@@ -138,9 +160,72 @@ input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focu
     margin-top: 1rem;
 }
 
-
+#locationDetails .form-group {
+  margin-bottom: 15px;
+}
 #locationDetails .row:nth-last-child(2) .form-group {
    margin-bottom: 3px;
+}
+
+@media (max-width: 991px) {
+  #resetLocation {
+    display: block;
+    margin-bottom: 1rem;
+    margin-top: 0.6rem;
+
+  }
+}
+
+/*---- Image Section ----*/
+
+
+
+#imageBorder {
+  padding: 1rem;
+  border-radius: 5px;
+  box-sizing: border-box;
+  height: 200px;
+  width: 300px;
+  border: 1px solid #ccc;
+}
+
+#imageContainer {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+#dropbox {
+  border-radius: 5px;
+  text-align: center;
+  color: gray;
+  text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
+  background-color: #e7e7e7;
+  height: 100%;
+  margin-bottom: 0.8rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+#dropbox i {
+  font-size: 3.5rem;
+}
+
+#dropbox p {
+
+  margin-top: 1rem;
+}
+
+#preview {
+  text-align: center;
+  height: 100%;
+  margin-bottom: 2%;
+}
+
+img {
+  border-radius: 5px; 
 }
 
 
@@ -256,12 +341,75 @@ fieldset[disabled] .btn-primary.focus {
   background-color: #fff;
 }
 
-/*----------------- SPECIFIC PAGE STYLING ----------------*/
+/*--------------------- PAGE STYLING ---------------------*/
 
 .addEventTitle:before {
      font-family: FontAwesome;
      content: "\f271";
      margin-right: 2rem;
+}
+
+.eventTitle:before {
+     font-family: FontAwesome;
+     content: "\f073";
+     margin-right: 2rem;
+}
+
+
+#eventInfo.col-md-3 {
+  padding-left: 0;
+  padding-right:3rem;
+}
+
+#eventDescArea .list-group,
+#eventInfo .list-group {
+   margin-bottom: 0rem;
+   margin-top: 0rem;
+}
+
+#eventDescArea .list-group-item,
+#eventInfo .list-group-item {
+   border-radius: 0px;
+   border-left: 0px;
+   border-right: 0px;
+}
+
+#eventDescArea {
+  border-left: 3px solid midnightblue;
+}
+
+#eventDescArea.col-md-9 {
+  padding-left:3rem;
+  
+}
+
+#eventInfo dt,
+#eventDescArea dt {
+   margin-bottom: 1rem;
+}
+
+.list-group-item {
+  text-align: justify;
+  padding: 2rem 0 2rem 0.3rem;
+}
+
+@media (max-width: 991px) {
+  #eventInfo {
+  }
+  #eventInfo.col-md-3 {
+    padding-right:0rem;
+  }
+  #eventDescArea {
+    border-left: 0px;
+  }
+  #eventDescArea.col-md-9 {
+    padding-left:0rem;
+    padding-right: 0px;
+  }
+  #eventDescArea .list-group-item:first-child {
+    border-top: 0px;
+  }
+
 }
 
 

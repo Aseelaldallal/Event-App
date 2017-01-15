@@ -8,9 +8,22 @@
 
 var express         = require("express"),
     Event           = require("../models/event"),
-    middleware      = require("../middleware"); // If we require a directory, it automatically requires index.js
+    middleware      = require("../middleware"), // If we require a directory, it automatically requires index.js
+    multer          = require("multer"),
+    router          = express.Router();
 
-var router          = express.Router();
+
+var storage =   multer.diskStorage({
+  destination: function (req, file, callback) {
+    console.log(req);
+    callback(null, './public/uploads/eventImages');
+  },
+  filename: function (req, file, callback) {
+    callback(null, req.user._id + Date.now() + file.originalname);
+  }
+});
+
+var upload = multer({storage: storage});
 
 /* --------------------------- INDEX ROUTE --------------------------- */
 
@@ -31,8 +44,7 @@ router.get("/", function(req,res) {
 // DISPLAY FORM TO CREATE A NEW EVENT
 // Only logged in user can see this form
 
-//router.get("/new", middleware.isLoggedIn, function(req,res) { RESTORE THIS
-router.get("/new", function(req,res) {
+router.get("/new", middleware.isLoggedIn, function(req,res) {  
     res.render("event/new"); 
 });
 
@@ -41,22 +53,42 @@ router.get("/new", function(req,res) {
 // UPDATE DATABASE WITH NEWLY CREATED EVENT
 // Only logged in user can create event
 
-//router.post("/", middleware.isLoggedIn, function(req,res) { RESTORE THIS LINE
+router.post("/", middleware.isLoggedIn, upload.single('image'), function(req,res) { 
     
-router.post("/", middleware.isLoggedIn, function(req,res) {
+    // Remove Empty Fields
+    for(var key in req.body) {
+        if(req.body[key] == "") {
+            req.body[key] = undefined;
+        } 
+    }
+    
+    var filepath = undefined;
+    if(req.file) {
+        filepath = req.file.path.substr(7); // Substr to remove "/public"
+    }
+   
+    console.log("Filepath: " , filepath);
+    
     var newEvent = {
         name: req.body.name,
         date: req.body.date,
         starttime: req.body.starttime,
         endtime: req.body.endtime,
-        location: req.body.fullAddress,
-        image: req.body.image,
+        venueName: req.body.venueName,
+        address: req.body.address,
+        city: req.body.city,
+        unit: req.body.unit,
+        province: req.body.province,
+        postalCode: req.body.postalCode,
+        image: filepath, 
+        mapCenter: req.body.showMap,
         description: req.body.description,
         author: {
             id: req.user._id, 
             username: req.user.username
         }
     };
+    
     Event.create(newEvent, function(err, newEvent) {
         if(err) {
             req.flash("error", err);
@@ -77,16 +109,18 @@ router.post("/", middleware.isLoggedIn, function(req,res) {
 // DISPLAY DETAILS OF SPECIFIC EVENT
 
 router.get("/:id", function(req,res) {
+
    Event.findById(req.params.id, function(err, foundEvent) {
-       if(err) {
+        if(err) {
            console.log(err);
            req.flash("error", err);
            res.redirect("/events");
-       } else {
+        } else {
            res.render("event/show", {event: foundEvent});
-       }
-   });
+        }
+    });
 });
+
 
 /* ---------------------------- EDIT ROUTE --------------------------- */
 

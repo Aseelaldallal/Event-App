@@ -7,8 +7,7 @@
 <div class="container">
     
     
-    <form action="/events" method="POST">
-        
+    <form action="/events" method="POST" enctype="multipart/form-data">
         <h1 class="addEventTitle">Add an Event</h1>
         
         <hr class="firsthr"> 
@@ -18,7 +17,7 @@
         <div class="form-group">
             <label for="name" class="required">Event Title</label>
             <!-- INPUT FIELD -->
-            <input  id="name" name="name" type="text" class="form-control"placeholder="Harry Potter's 20th Birthday Bash" required>
+            <input  id="name" name="name" type="text" class="form-control"placeholder="Harry Potter's 20th Birthday Bash">
             <!-- TOOLTIP -->
             <p id="nameTip" class="tip hidden"> Remaining: <span id="charsLeft"></span></p>
             <!-- ERROR BOX -->
@@ -135,7 +134,15 @@
                                 <input class="form-control" id="postalCode" name="postalCode" type="text" placeholder="Postal Code" >
                             </div>
                         </div>
+                        
                         <a id="resetLocation"> Reset location</a>
+                        
+                        <div class="checkbox">
+                            <input type="checkbox" id="showMap" name="showMap" value=""> <label class="checkboxLabel" for="showMap">Show Map on Page</label>
+                        </div>
+
+                      
+                    
                     </div> <!-- locationDetailsText row end -->
             
                     <!------ MAP ------>
@@ -161,14 +168,18 @@
         <!------------------------------ IMAGE ---------------------------->  
           
         <div class="form-group">
-            <label for="image">Event Image</label>
-            <!-- TOOLTIP -->
-            <p class="tip"> Maximum File Size: 1 MB </p>
-            <!-- FIELD -->
-            <input name="image" type="file" class="form-control" id="image" >
-            <!-- ERROR BOX -->
-            <div id="imageError" class="error">
-                <p> Error goes here </p>  
+            <label for="fileElem">Event Image</label>
+            <input name="image" type="file" id="fileElem" accept="image/*" style="display:none" onchange="handleFiles(this.files)">
+            <div id="imageBorder" >
+	            <div id="imageContainer">
+            	    <div id="dropbox">
+            	      <i class="fa fa-picture-o" aria-hidden="true"></i>
+            	      <p> Drop image here or click to upload</p>
+            	    </div>
+            	    <div id="preview" class="hidden">
+            	    </div>
+	                <button id="fileSelect" class="btn btn-primary btn-block">Upload Image</button>
+	            </div>
             </div>
         </div>
           
