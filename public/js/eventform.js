@@ -290,8 +290,8 @@ function eventLocationSetup() {
 // Remove any errors associated with event location
 function removeLocationErrors() {
     removeError($('#addressError'),$('#address'));
-    removeError($('#provinceError'),$('#city'));
-    removeError($('#cityError'),$('#province')); 
+    removeError($('#cityError'),$('#city'));
+    removeError($('#provinceError'),$('#province')); 
     removeError($('#postalCodeError'),$('#postalCode')); 
 }
 
@@ -307,7 +307,7 @@ function checkAddressFieldErrors() {
     });
 }
 
-// Ensures that city field is not empty, and that the city exists in Canada
+// Ensures that city field is not empty, and that the city exists in Canada (using google geocoding api)
 function checkCityErrors() {
     
     $('#city').on('blur', function() {
@@ -351,8 +351,10 @@ function checkCityErrors() {
 // Ensures that province is not empty, and is a valid province
 function checkProvinceErrors() {
     $('#province').on('blur', function() {
-       var canadianProvinces = ['ON', 'AB', 'BC', 'MB', 'NB', 'NL', 'NS', 'NT', 'NU', 'PE', 'QC', 'SK', 'YT'];
-       var prov = $.trim($('#province').val());
+       var canadianProvinces = ['ON', 'AB', 'BC', 'MB', 'NB', 'NL', 'NS', 'NT', 'NU', 'PE', 'QC', 'SK', 'YT', 
+                                'ONTARIO', "ALBERTA", "BRITISH COLUMBIA", "MANITOBA", "NEW BRUNSWICK", "NEWFOUNDLAND AND LABRADOR",
+                                'NOVA SCOTIA', 'NORTHWEST TERRITORIES', 'NUNAVUT', 'PRINCE EDWARD ISLAND', 'QUEBEC', 'SASKATCHEWAN', 'YUKON'];
+       var prov = ($.trim($('#province').val())).toUpperCase();
        if(prov.length === 0) {
            displayError($('#provinceError'), $('#province'), "Province is required");
        } else if(canadianProvinces.indexOf(prov) === -1) {
@@ -367,9 +369,15 @@ function checkProvinceErrors() {
 
 function checkPostalErrors() {
     $('#postalCode').on('blur', function() {
-       if($('#postalCode').val().length === 0) {
-           displayError($('#postalCodeError'), $('#postalCode'), "Postal Code is required");
-       } 
+       var postalCode = $.trim($('#postalCode').val()); 
+       console.log("Postal Code: ", postalCode);
+       console.log(postalCode.length);
+       var postalCodePatt = /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/;
+       if(postalCode.length === 0) {
+            displayError($('#postalCodeError'), $('#postalCode'), "Postal Code is required");
+       } else if(!postalCode.match(postalCodePatt)) {
+            displayError($('#postalCodeError'), $('#postalCode'), postalCode + "is not a valid canadian postal code");   
+       }
     });
     $('#postalCode').on('focus', function() {
         removeError($('#postalCodeError'),$('#postalCode')); 
@@ -377,7 +385,7 @@ function checkPostalErrors() {
 }
 
 
-
+// When a user fills in any of teh fields: address, city, province, postalcode -- this function attempts to map the address
 function findGeocodeAndMap() {
     var geocoder = new google.maps.Geocoder();
     var address = $('#address').val() + " " + $('#city').val() + " " + $('#province').val() + " " + $('#postalCode').val() + " ";
@@ -720,6 +728,7 @@ function displayError(errorDiv, inputField, message) {
 function removeError(errorDiv, inputField) {
     var index = errors.indexOf(inputField.parents('section')[0].id);
     if(index > -1) {
+        console.log("Removing error")
         errorDiv.empty();
         errorDiv.addClass('hidden');
         inputField.removeClass('errorBackground');

@@ -172,11 +172,15 @@
                                     <label for="venueName" class="sr-only">Venue Name</label>
                                     <input class="form-control" id="venueName" name="venueName" type="text" placeholder="Venue Name - optional">
                                 </div>
-                                <!------ ADDRESS ------>
-                                <div class="form-group">
-                                    <label for="address" class="sr-only">Address</label>
-                                    <input class="form-control" id="address" name="address" type="text" placeholder="Address - required">
-                                </div>
+                                <!------ 
+                                ADDRESS ------>
+                                <section id="3a_address"> <!-- This extra section here is for error handling purposes-->
+                                    <div class="form-group">
+                                        <label for="address" class="sr-only">Address</label>
+                                        <input class="form-control" id="address" name="address" type="text" placeholder="Address - required">
+                                    </div>
+                                </section>
+                                
                                 <div class="row">
                                     <!------ UNIT ------>
                                     <div class="form-group col-md-6 col-xs-6">
@@ -184,22 +188,29 @@
                                         <input class="form-control" id="unit" name="unit" type="text" placeholder="Unit No. - optional">
                                     </div>
                                     <!------ CITY ------>
-                                    <div class="form-group col-md-6 col-xs-6">
-                                        <label for="city" class="sr-only">City</label>
-                                        <input class="form-control" id="city" name="city" type="text" placeholder="City - required">
-                                    </div>
+                                    <section id="3b_city">
+                                        <div class="form-group col-md-6 col-xs-6">
+                                            <label for="city" class="sr-only">City</label>
+                                            <input class="form-control" id="city" name="city" type="text" placeholder="City - required">
+                                        </div>
+                                    </section>
                                 </div> 
+                                
                                 <div class="row"> 
                                     <!------ PROVINCE ------>
-                                    <div class="form-group col-md-6 col-xs-6">
-                                        <label for="province" class="sr-only">Province</label>
-                                        <input class="form-control" id="province" name="province" type="text" placeholder="Province - required" >
-                                    </div>
+                                    <section id="3c_province">
+                                        <div class="form-group col-md-6 col-xs-6">
+                                            <label for="province" class="sr-only">Province</label>
+                                            <input class="form-control" id="province" name="province" type="text" placeholder="Province - required" >
+                                        </div>
+                                    </section>
                                     <!------ POSTAL CODE ------>
-                                    <div class="form-group col-md-6 col-xs-6">
-                                        <label for="postalCode" class="sr-only">Postal Code</label>
-                                        <input class="form-control" id="postalCode" name="postalCode" type="text" placeholder="Postal Code - required" >
-                                    </div>
+                                    <section id="3d_postal">
+                                        <div class="form-group col-md-6 col-xs-6">
+                                            <label for="postalCode" class="sr-only">Postal Code</label>
+                                            <input class="form-control" id="postalCode" name="postalCode" type="text" placeholder="Postal Code - required" >
+                                        </div>
+                                    </section>
                                 </div>
                                 
                                 <a id="resetLocation"> Reset location</a>
