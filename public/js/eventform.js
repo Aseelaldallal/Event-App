@@ -289,72 +289,63 @@ function eventLocationSetup() {
 
 // Remove any errors associated with event location
 function removeLocationErrors() {
-    removeError($('#locationError'),$('#address'));
-    removeError($('#locationError'),$('#city'));
-    removeError($('#locationError'),$('#province')); 
-    removeError($('#locationError'),$('#postalCode')); 
+    removeError($('#addressError'),$('#address'));
+    removeError($('#provinceError'),$('#city'));
+    removeError($('#cityError'),$('#province')); 
+    removeError($('#postalCodeError'),$('#postalCode')); 
 }
 
 // Ensures that address field is not empty
 function checkAddressFieldErrors() {
     $('#address').on('blur', function() {
        if($('#address').val().length === 0) {
-           displayError($('#locationError'), $('#address'), "Address field is required");
+           displayError($('#addressError'), $('#address'), "Address field is required");
        } 
     });
     $('#address').on('focus', function() {
-        removeError($('#locationError'),$('#address')); 
+        removeError($('#addressError'),$('#address')); 
     });
 }
 
-// Ensures that city field is not empty
+// Ensures that city field is not empty, and that the city exists in Canada
 function checkCityErrors() {
     
     $('#city').on('blur', function() {
         var city = $('#city').val(); 
-        console.log('--------------------------');
-        var inCanada = checkIfCityExistsInCanada(city);
-        console.log("IS CITY IN CANADA? " , inCanada); 
-        console.log('--------------------------');
         if(city.length === 0) {
-           displayError($('#locationError'), $('#city'), "City is required");
-        } else if(inCanada == false) {
-            displayError($('#locationError'), $('#city'), city + " does not exist in Canada"); 
+           displayError($('#cityError'), $('#city'), "City is required");
+        } else {
+            city = city.toLowerCase();
+            console.log("This is the city: ", city);
+            var geocoder = new google.maps.Geocoder();
+            geocoder.geocode(
+                { address: city, 
+                  componentRestrictions: { country: 'CA'}
+                }, function(results, status) {
+                    if (status === 'OK') {
+                        var isCity = false;
+                        results[0].address_components.forEach(function (address_component) {
+                            if (address_component.types[0] == "locality"){
+                            	if(address_component.long_name.toLowerCase().trim() == city || address_component.short_name.toLowerCase().trim() == city) {
+                                    isCity = true;
+                                } 
+                    		}
+                        });
+                        if(!isCity) {
+                            displayError($('#cityError'), $('#city'), city + " is not a city in Canada");
+                        }
+                    } else {
+                        console.err("Geocoding service failed. Can't check if city exists in Canada.");
+                    }
+                }
+            );
         }
     });
+    
     $('#city').on('focus', function() {
-        removeError($('#locationError'),$('#city')); 
+        removeError($('#cityError'),$('#city')); 
     });
-}
-
-function checkIfCityExistsInCanada(city) {
-    var isCity = false
-    city = city.toLowerCase().trim(); 
-    console.log("This is the city we're searching for: " + city);
-    var geocoder = new google.maps.Geocoder();
-    geocoder.geocode({ 
-        address: city, 
-        componentRestrictions: {
-            country: 'CA'
-        }
-    }, function(results, status) {
-    if (status === 'OK') {
-        console.log("status ok");
-        results[0].address_components.forEach(function (address_component) {
-            if (address_component.types[0] == "locality"){
-                console.log("address_component.long_name.toLowerCase(): ", address_component.long_name.toLowerCase() == city);
-                console.log("address_component.short_name.toLowerCase(): ", address_component.short_name.toLowerCase() == city);
-            	if(address_component.long_name.toLowerCase().trim() == city || address_component.short_name.toLowerCase().trim() == city) {
-                    console.log("Will return true");
-                    isCity = true;
-                } 
-    		 }
-        });   
-    } else {
-      alert('Geocode was not successful for the following reason: ' + status);
-    }
-  });
-  return isCity; 
+    
 }
 
 // Ensures that province is not empty, and is a valid province
@@ -363,25 +354,25 @@ function checkProvinceErrors() {
        var canadianProvinces = ['ON', 'AB', 'BC', 'MB', 'NB', 'NL', 'NS', 'NT', 'NU', 'PE', 'QC', 'SK', 'YT'];
        var prov = $.trim($('#province').val());
        if(prov.length === 0) {
-           displayError($('#locationError'), $('#province'), "Province is required");
+           displayError($('#provinceError'), $('#province'), "Province is required");
        } else if(canadianProvinces.indexOf(prov) === -1) {
-            displayError($('#locationError'), $('#province'), prov + " is not a valid province");
+            displayError($('#provinceError'), $('#province'), prov + " is not a valid province");
        }
     });
     
     $('#province').on('focus', function() {
-        removeError($('#locationError'),$('#province')); 
+        removeError($('#provinceError'),$('#province')); 
     });
 }
 
 function checkPostalErrors() {
     $('#postalCode').on('blur', function() {
        if($('#postalCode').val().length === 0) {
-           displayError($('#locationError'), $('#postalCode'), "Postal Code is required");
+           displayError($('#postalCodeError'), $('#postalCode'), "Postal Code is required");
        } 
     });
     $('#postalCode').on('focus', function() {
-        removeError($('#locationError'),$('#postalCode')); 
+        removeError($('#postalCodeError'),$('#postalCode')); 
     });
 }
 
