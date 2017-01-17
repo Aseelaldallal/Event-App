@@ -21,9 +21,14 @@ var mongoose = require("mongoose");
       city: String,
       province: String,
       postalCode: String,
-      image: String, 
       mapCenter: String,
+      image: String, 
       description: String,
+      eventURL: String,
+      ticketURL: String,
+      organizerName: String,
+      organizerPhone: String,
+      organizerEmail: String,
       author: {
          id: {
             type: mongoose.Schema.Types.ObjectId,

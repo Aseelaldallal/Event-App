@@ -39,20 +39,41 @@ hr.lasthr {
   margin-top:3rem;
 }
 
-/*-------------------- FORM STYLING --------------------*/
-
-
-/*------ Form Group -----*/
-
-.form-group {
-  margin-bottom: 5rem;
+hr.divider {
+   margin-top: 0;
+   margin-bottom: 2.5rem;
 }
 
+/*-------------------- FORM STYLING --------------------*/
+
+form section:first-child {
+    border-top: 1px solid rgb(231, 231, 231);
+}
+
+form section {
+  padding-top: 2.5rem;
+  padding-bottom: 3rem;
+  border-bottom: 1px solid rgb(231, 231, 231);
+}
+
+form section .form-group {
+  margin-bottom: 0;
+}
+
+form section p {
+  margin-bottom: 0;
+}
+
+form section section {
+  padding: 0;
+  display: inline;
+  border-bottom: 0px;
+  
+}
 /*-------- label --------*/
 
 form label {
     font-weight: 700;
-   /* margin-top: 2rem;*/
     margin-bottom: 1rem;
 }
 
@@ -115,50 +136,7 @@ input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focu
 }
 
 
-#mapBorder {  
-  padding: 5px;
-  border-radius: 5px;
-  box-sizing: border-box;
-  height: 100%;
-  border: 1px solid #ccc;
-}
 
-#googleMap {
-   border-radius: 5px;
-   width: 100%;
-   height: 100%;
-
-}
-
-#mapContainer {
-  box-sizing: border-box;
-}
-
-#noMapAvailContainer {
-   border-radius: 5px;
-   width: 100%;
-   height: 100%;
-   background-color: #e7e7e7;
-   display: flex;
-   flex-direction: column;
-   justify-content: center;
-}
-
-#noMapAvailable {
-     margin: 0 auto;
-     text-align: center;
-     color: gray;
-     text-shadow: 1px 1px 5px rgba(0,0,0,0.3);
-}
-
-#noMapAvailable i {
-    font-size:4rem;
-}
-
-#noMapAvailable p {
-    font-size: 2rem;
-    margin-top: 1rem;
-}
 
 #locationDetails .form-group {
   margin-bottom: 15px;
@@ -179,13 +157,16 @@ input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focu
 /*---- Image Section ----*/
 
 
+#imageRec {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
 
 #imageBorder {
   padding: 1rem;
-  border-radius: 5px;
   box-sizing: border-box;
-  height: 200px;
-  width: 300px;
+  border-radius: 5px;
+  width: 100%;
   border: 1px solid #ccc;
 }
 
@@ -200,9 +181,8 @@ input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focu
   border-radius: 5px;
   text-align: center;
   color: gray;
-  text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
-  background-color: #e7e7e7;
-  height: 100%;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+  background-color: rgba(231, 231, 231,0.5);
   margin-bottom: 0.8rem;
   display: flex;
   flex-direction: column;
@@ -210,11 +190,11 @@ input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focu
 }
 
 #dropbox i {
-  font-size: 3.5rem;
+  font-size: 3rem;
 }
 
 #dropbox p {
-
+  font-size: 1.3rem;
   margin-top: 1rem;
 }
 
@@ -222,9 +202,10 @@ input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focu
   text-align: center;
   height: 100%;
   margin-bottom: 2%;
+  padding: 0px;
 }
 
-img {
+#uploadedImage {
   border-radius: 5px; 
 }
 
@@ -264,15 +245,22 @@ input::-webkit-calendar-picker-indicator{ /* Disable native datepicker popup */
     margin-right: 1rem;
 }
 
+.errorBackground {
+   background-color: rgba(248, 237, 237, 0.5);
+}
+
 .tip {
   color: darkgreen;
-  margin-bottom: 3px;
 }
 
 .tip:before {
     font-family: FontAwesome;
     content: "\f05a";
     margin-right: 1rem;
+}
+
+.imageTip {
+  color: darkgreen;
 }
 
 /*-------- Submit -------*/
@@ -355,36 +343,34 @@ fieldset[disabled] .btn-primary.focus {
      margin-right: 2rem;
 }
 
-
-#eventInfo.col-md-3 {
+.sidebar.col-md-3 {
   padding-left: 0;
   padding-right:3rem;
 }
 
-#eventDescArea .list-group,
-#eventInfo .list-group {
+.contentArea .list-group,
+.sidebar .list-group {
    margin-bottom: 0rem;
    margin-top: 0rem;
 }
 
-#eventDescArea .list-group-item,
-#eventInfo .list-group-item {
+.contentArea .list-group-item,
+.sidebar .list-group-item {
    border-radius: 0px;
    border-left: 0px;
    border-right: 0px;
 }
 
-#eventDescArea {
+.contentArea {
   border-left: 3px solid midnightblue;
 }
 
-#eventDescArea.col-md-9 {
+.contentArea.col-md-9 {
   padding-left:3rem;
-  
 }
 
-#eventInfo dt,
-#eventDescArea dt {
+.sidebar dt,
+.contentArea dt {
    margin-bottom: 1rem;
 }
 
@@ -394,19 +380,18 @@ fieldset[disabled] .btn-primary.focus {
 }
 
 @media (max-width: 991px) {
-  #eventInfo {
-  }
-  #eventInfo.col-md-3 {
+
+  .sidebar.col-md-3 {
     padding-right:0rem;
   }
-  #eventDescArea {
+  .contentArea {
     border-left: 0px;
   }
-  #eventDescArea.col-md-9 {
+  .conentArea.col-md-9 {
     padding-left:0rem;
     padding-right: 0px;
   }
-  #eventDescArea .list-group-item:first-child {
+  .contentArea .list-group-item:first-child {
     border-top: 0px;
   }
 
@@ -550,8 +535,14 @@ label.required:after {
 }
 
 .bottomed {
-    margin-top: 20px;
+    margin-top: 1.5rem;
 }
+
+.hidden {
+    display: none;
+}
+
+
 
 /*----------------- API: GOOGLE PLACES ------------------*/
 
@@ -560,6 +551,49 @@ label.required:after {
     font-weight: 300;
 }
 
-.hidden {
-    display: none;
+#googleMap {
+   border-radius: 5px;
+   width: 100%;
+   height: 100%;
+
 }
+
+#mapContainer {
+  box-sizing: border-box;
+}
+
+#mapBorder {  
+  padding: 5px;
+  border-radius: 5px;
+  width: 100%; 
+  box-sizing: border-box;
+  height: 100%;
+  border: 1px solid #ccc;
+}
+
+#noMapAvailContainer {
+   border-radius: 5px;
+   width: 100%;
+   height: 100%;
+   background-color: #e7e7e7;
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+}
+
+#noMapAvailable {
+     margin: 0 auto;
+     text-align: center;
+     color: gray;
+     text-shadow: 1px 1px 5px rgba(0,0,0,0.3);
+}
+
+#noMapAvailable i {
+    font-size:4rem;
+}
+
+#noMapAvailable p {
+    font-size: 2rem;
+    margin-top: 1rem;
+}
+

@@ -8,7 +8,7 @@
         
         <!------------------------------- SIDEBAR ------------------------------->
         
-        <div id="eventInfo" class="col-md-3">
+        <div class="sidebar col-md-3">
 
             <div class="list-group">
                 
@@ -72,30 +72,54 @@
                     </script>
                 </dl>
                 
+                <!---------- Website --------->
                 
+                <dl class="list-group-item">
+                   <dt>Website</dt>
+                   <dd><%=event.eventURL %></dd>
+                </dl>
                 
+                <!------ Ticket Sale URL ----->
                 
+                <dl class="list-group-item">
+                   <dt>Ticket Sale URL</dt>
+                   <dd><%=event.ticketURL %></dd>
+                </dl>
                 
+                <!--------- Organizer -------->
+
+                 <dl class="list-group-item">
+                   <dt>Organizer Details</dt>
+                   <dd> Name: <%=event.organizerName %></dd>
+                   <dd> Phone: <%=event.organizerPhone %></dd>
+                   <dd> Email: <%=event.organizerEmail %></dd>
+                </dl>
                 
-            </div>
+
+            </div> <!-- list-group end -->
         </div> <!-- SIDEBAR END -->
         
         
         
-        <!-- CONTENT -->
+        <!------------------------------- MAIN AREA ------------------------------->
         
-        <div id="eventDescArea" class="col-md-9">
+        <div class="contentArea col-md-9">
                 
             <div class="list-group">  
+                
+                <!-------- DESCRIPTION ------->
                 
                 <dl class="list-group-item">
                      <dt>Event Description</dt>
                      <dd><%=event.description %></dd>
                 </dl>
                 
+                <!------------ IMAGE ---------->
                 <dl class="list-group-item">
                      <dd><img src="../<%=event.image%>"</dd>
                 </dl>       
+                
+                <!----------- AUTHOR ---------->
                         
                 <dl class="list-group-item">  
                      <h5><Strong>Submitted by: </Strong> <%= event.author.username %> </h5>

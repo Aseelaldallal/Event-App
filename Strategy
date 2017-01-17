@@ -1,0 +1,24 @@
+
+
+
+
+
+
+Work on Image Upload --- DONE
+Work on passing other event details to DB --- DONE
+Work on Front End Error Checking for new Event
+Work on Front End of New Event Page
+Work on back end error handling for new route
+Work on frontend of show page
+Work on edit page
+Work on Front End of main page
+Let users have a profile... ?
+
+
+Little things not to forget
+dont forget to delete image from uploads folder when you delete event
+dont forget to add sanitizer
+dont forget to allow users to add html and spaces etc.
+
+http://xahlee.info/js/js_form_validation.html
+http://xahlee.info/js/js_form_validation2.html#

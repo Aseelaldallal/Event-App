@@ -6,18 +6,41 @@ var place; // move this to event section later
 var picklist; 
 var map;
 
-/* ------------------ CONSTANTS ------------------ */
+/* ------------------- CONSTANTS ------------------ */
 
 const MAX_INPUT_LENGTH = 100;
 const MAX_DESC_LENGTH = 1500;
 
+/* ----------------- Error Handling --------------- */
+
+// This array keeps track of user input errors. It stores the element id associated with the error
+// as a string
+var errors = []; 
+
+
+/* -------------- VALIDATE ON SUBMIT --------------- */
+
+function validate(form) {
+    errors.sort();
+    if(errors.length > 0 ) {
+        var idName = "#" + errors[0];
+        if( $(idName).parents('section').length === 1 ) { // Dealing with nested sections
+            idName = "#" + $(idName).parents('section')[0].id;
+        }
+        $(window).scrollTop($(idName).offset().top);
+        return false;
+    }
+    // Do more validation here -- check for empty fields that were skipped during instant validation
+    return false;
+}
+
+
 
 /* ---------------- DOCUMENT.READY ---------------- */
 
-/* When the document loads:
- * 1. Setup Input Fields
- * 2. Add Validation Listeners to Input Fields
- */
+// When the document loads:
+// 1. Setup Input Fields
+// 2. Add Validation Listeners to Input Fields
 $(document).ready(function() {
    
     eventTitleSetup();
@@ -33,7 +56,6 @@ $(document).ready(function() {
  
 /* ----------------- EVENT TITLE ------------------ */
 
-// Limit input field size to 100 chars
 // Tooltip:
 //      Let user now how many characters remaining
 //      When input field looses focus, remove tooltip
@@ -43,28 +65,19 @@ $(document).ready(function() {
 
 function eventTitleSetup() {
     
-    // Limit input field size to 100 chars
-    $('#name').attr('maxlength', MAX_INPUT_LENGTH);
-    
-    // Display Tooltip on Focus. 
+    // On Focus: Remove Errors, Display Tooltip
     $('#name').on('focus', function() {
-        safeRemoveClass($('#nameTip'), 'hidden');
-        safeAddClass($('#nameError'), 'hidden');
+        $('#nameTip').removeClass('hidden');
+        removeError($('#nameError'), $('#name'));
         showRemainingChars();
     });
     
-    // When focus is lost
-    //      Remove tooltip
-    //      Display error if event title empty
+    // On Blur, remove tooltip. If error, display error.
     $('#name').on('blur', function() {
-        safeAddClass($('#nameTip'), 'hidden');
+        $('#nameTip').addClass('hidden');
         if($('#name').val().length == 0) {
-            safeRemoveClass($('#nameError'), 'hidden');
-            $('#nameError').empty();
-            $('#nameError').append("<p> This field is required </p>");
-        } else {
-            safeAddClass($('#nameError'), 'hidden');
-        }
+            displayError($('#nameError'), $('#name'), "This field is required");
+        } 
     });
     
     // Let user know how many characters remaining dynamically
@@ -79,9 +92,6 @@ function showRemainingChars() {
     var numChars = $('#name').val().length;
     var remaining = MAX_INPUT_LENGTH - numChars;
     $('#charsLeft').text(remaining);
-    if(numChars > 0) {
-        safeAddClass($('#nameError'), 'hidden');
-    }
 }
 
 
@@ -100,13 +110,13 @@ function eventDateSetup() {
     
     // Dealing with color: By default, HTML 5 inserts yyyy-mm-dd into input field, meaning there is no placeholder
     // and text will be black. Change it to placeholder color.
-    safeAddClass($('#date'), 'placeholderColor');
+    $('#date').addClass('placeholderColor');
     
     $('#date').on('change', function() {
        if($('#date').val() == '') {
-            safeAddClass($('#date'), 'placeholderColor');
+            $('#date').addClass('placeholderColor');
        } else {
-            safeRemoveClass($('#date'), 'placeholderColor');
+             $('#date').removeClass('placeholderColor');
        }
     });
      
@@ -119,17 +129,12 @@ function eventDateSetup() {
         
     // When date has focus, display tooltip, hide errors
     $('#date').on('focus', function() {
-        safeRemoveClass($('#dateTip'), 'hidden');
-        safeAddClass($('#dateError'), 'hidden');
+         removeError($('#dateError'), $('#date'));
     });
     
     
-    // When date looses focus
-    //      Remove tooltip
-    //      Check for errors
+    // On blur, check for errors
     $('#date').on('blur', function() {
-        
-        safeAddClass($('#dateTip'), 'hidden');
         
         var userInput = $('#date').val();
         var eventDate = new Date(userInput);
@@ -146,13 +151,8 @@ function eventDateSetup() {
         } 
         
         if(error != "") {
-            safeRemoveClass($('#dateError'), 'hidden');
-            $('#dateError').empty(); 
-            $('#dateError').append("<p>" + error + "</p>");
-        } else {
-            safeAddClass($('#dateError'), 'hidden');
-             $('#dateError').empty(); 
-        }
+            displayError($('#dateError'), $('#date'), error );
+        } 
         
     });
     
@@ -166,95 +166,52 @@ function eventDateSetup() {
 // 	    Start time is invalid
 //  	End time is invalid
 //  	Start time is empty
-// 	    End time is empty
-// 	    End time is before start time
-//      Event must be at least half an hour
 function eventTimeSetup() {
     
     var starttime = $('#starttime'),
         endtime = $('#endtime'),
         startErrorDiv = $('#startError'),
-        endErrorDiv = $('#endError'),
-        startConflict = false,
-        endConflict = false;
+        endErrorDiv = $('#endError');
         
-    
     var options = {
         timeFormat: 'h:mm p',
         dynamic: false,
         dropdown: false
     }
+    
     starttime.timepicker(options);
     endtime.timepicker(options);
 
-    // On Focus, hide errors
+    // On Focus remove errors
     starttime.on('focus', function() {
-        startErrorDiv.empty();
-        safeAddClass(startErrorDiv, 'hidden');
+        removeError(startErrorDiv, starttime);
     });
     
     // On blur
     //      Check that field is not empty
     //      Check that time is valid
     starttime.on('blur', function(event) {
-        console.log("event.target : " + event.target);
-        var isEqual = (event.target === starttime[0]);
-        console.log("event.target === starttime input field : ", isEqual);
         var dummyStart = new Date("December 11 2016 " + starttime.val());
-        var dummyEnd =  new Date("December 11 2016 " + endtime.val());
         if(starttime.val().length == 0 ) { // If start field is empty
-            displayError(startErrorDiv, "This field is required");
+            displayError(startErrorDiv, starttime, "This field is required");
         } if( dummyStart == "Invalid Date") { // If time is invalid
-            displayError(startErrorDiv, "Invalid Time");
-        } else if (endtime.val().length > 0 && dummyEnd != "Invalid Date") { // If start and end time are valid and entered
-            if(dummyStart > dummyEnd ) { // Time Pair Error
-                if(endConflict) {
-                    endConflict = false;
-                    removeError(endErrorDiv);
-                }
-                startConflict = true;
-                displayError(startErrorDiv,"Invalid Time. Start time must be earlier than end time.");
-            } else {
-                endConflict = false;
-                removeError(endErrorDiv);
-                startConflict = false;
-                removeError(startErrorDiv);
-            }
-        }
+            displayError(startErrorDiv, starttime, "Invalid Time");
+        } 
     });
     
-    //On Focus, hide errors
+    //On Focus hide errors
     endtime.on('focus', function() {
-        endErrorDiv.empty();
-        safeAddClass(endErrorDiv, 'hidden');
+        removeError(endErrorDiv, endtime);
     });
     
     // On blur
     //      Check that field is not empty
     //      Check that time is valid
     endtime.on('blur', function() {
-        var dummyStart = new Date("December 11 2016 " + starttime.val());
         var dummyEnd =  new Date("December 11 2016 " + endtime.val());
-        if(endtime.val().length == 0 ) { // If start field is empty
-            displayError(endErrorDiv, "This field is required");
-        } if( dummyEnd == "Invalid Date") { // If time is invalid
-            displayError(endErrorDiv, "Invalid Time");
-        } else if (starttime.val().length > 0 && dummyStart != "Invalid Date") { // If start and end time are valid and entered
-            if(dummyStart > dummyEnd ) { // Time Pair Error
-                console.log("Time Pair Error");
-                if(startConflict) {
-                    startConflict = false;
-                    removeError(startErrorDiv);
-                }
-                endConflict = true;
-                displayError(endErrorDiv, "Invalid Time. End time must be after start time.");
-            } else {
-                endConflict = false;
-                removeError(endErrorDiv);
-                startConflict = false;
-                removeError(startErrorDiv);
-            }
-        }
+        if( dummyEnd == "Invalid Date") { // If time is invalid
+            displayError(endErrorDiv, endtime, "Invalid Time");
+        } 
     });
     
 }
@@ -288,8 +245,9 @@ function eventLocationSetup() {
     // Allow user to reset location
     $('#resetLocation').on('click', function() {
         displayLocationSearchField();
-        safeAddClass($('#googleMap'), 'hidden');
-        safeRemoveClass($('#noMapAvailContainer'),'hidden');
+        $('#googleMap').addClass('hidden');
+        $('#noMapAvailContainer').removeClass('hidden');
+        removeLocationErrors(); 
     });
     
     // Setup Google Autocomplete. Restrict Searches to Canada
@@ -323,7 +281,111 @@ function eventLocationSetup() {
         }
     })
     
+    checkAddressFieldErrors();
+    checkCityErrors(); 
+    checkProvinceErrors();
+    checkPostalErrors();
 }
+
+// Remove any errors associated with event location
+function removeLocationErrors() {
+    removeError($('#locationError'),$('#address'));
+    removeError($('#locationError'),$('#city'));
+    removeError($('#locationError'),$('#province')); 
+    removeError($('#locationError'),$('#postalCode')); 
+}
+
+// Ensures that address field is not empty
+function checkAddressFieldErrors() {
+    $('#address').on('blur', function() {
+       if($('#address').val().length === 0) {
+           displayError($('#locationError'), $('#address'), "Address field is required");
+       } 
+    });
+    $('#address').on('focus', function() {
+        removeError($('#locationError'),$('#address')); 
+    });
+}
+
+// Ensures that city field is not empty
+function checkCityErrors() {
+    
+    $('#city').on('blur', function() {
+        var city = $('#city').val(); 
+        console.log('--------------------------');
+        var inCanada = checkIfCityExistsInCanada(city);
+        console.log("IS CITY IN CANADA? " , inCanada); 
+        console.log('--------------------------');
+        if(city.length === 0) {
+           displayError($('#locationError'), $('#city'), "City is required");
+        } else if(inCanada == false) {
+            displayError($('#locationError'), $('#city'), city + " does not exist in Canada"); 
+        }
+    });
+    $('#city').on('focus', function() {
+        removeError($('#locationError'),$('#city')); 
+    });
+}
+
+function checkIfCityExistsInCanada(city) {
+    var isCity = false
+    city = city.toLowerCase().trim(); 
+    console.log("This is the city we're searching for: " + city);
+    var geocoder = new google.maps.Geocoder();
+    geocoder.geocode({ 
+        address: city, 
+        componentRestrictions: {
+            country: 'CA'
+        }
+    }, function(results, status) {
+    if (status === 'OK') {
+        console.log("status ok");
+        results[0].address_components.forEach(function (address_component) {
+            if (address_component.types[0] == "locality"){
+                console.log("address_component.long_name.toLowerCase(): ", address_component.long_name.toLowerCase() == city);
+                console.log("address_component.short_name.toLowerCase(): ", address_component.short_name.toLowerCase() == city);
+            	if(address_component.long_name.toLowerCase().trim() == city || address_component.short_name.toLowerCase().trim() == city) {
+                    console.log("Will return true");
+                    isCity = true;
+                } 
+    		 }
+        });   
+    } else {
+      alert('Geocode was not successful for the following reason: ' + status);
+    }
+  });
+  return isCity; 
+}
+
+// Ensures that province is not empty, and is a valid province
+function checkProvinceErrors() {
+    $('#province').on('blur', function() {
+       var canadianProvinces = ['ON', 'AB', 'BC', 'MB', 'NB', 'NL', 'NS', 'NT', 'NU', 'PE', 'QC', 'SK', 'YT'];
+       var prov = $.trim($('#province').val());
+       if(prov.length === 0) {
+           displayError($('#locationError'), $('#province'), "Province is required");
+       } else if(canadianProvinces.indexOf(prov) === -1) {
+            displayError($('#locationError'), $('#province'), prov + " is not a valid province");
+       }
+    });
+    
+    $('#province').on('focus', function() {
+        removeError($('#locationError'),$('#province')); 
+    });
+}
+
+function checkPostalErrors() {
+    $('#postalCode').on('blur', function() {
+       if($('#postalCode').val().length === 0) {
+           displayError($('#locationError'), $('#postalCode'), "Postal Code is required");
+       } 
+    });
+    $('#postalCode').on('focus', function() {
+        removeError($('#locationError'),$('#postalCode')); 
+    });
+}
+
+
 
 function findGeocodeAndMap() {
     var geocoder = new google.maps.Geocoder();
@@ -333,7 +395,6 @@ function findGeocodeAndMap() {
         'componentRestrictions': {'country':'CA'}
     }, 
     function(results, status) {
-        console.log("results: ", results);
         if (status === 'OK') {
             safeRemoveClass($('#googleMap'), 'hidden');
             safeAddClass($('#noMapAvailContainer'),'hidden');
@@ -532,69 +593,96 @@ function fillOutDetailedAddressForm(place) {
 
 
 function eventImageSetup() {
-    
     var dropbox = document.getElementById("dropbox"),
         fileElem = document.getElementById("fileElem"),
         fileSelect = document.getElementById("fileSelect");
-
+    $(dropbox).height($(imageBorder).height());
     fileSelect.addEventListener("click", function(e) {
         if (fileElem) {
-            fileElem.click(); 
+          fileElem.click();
         }
     }, false);
-
     dropbox.addEventListener("dragenter", dragenter, false);
     dropbox.addEventListener("dragover", dragover, false);
     dropbox.addEventListener("drop", drop, false);
-
 }
 
-function dragenter(e) { 
-    e.stopPropagation();
-    e.preventDefault();
+
+function dragenter(e) {
+  e.stopPropagation();
+  e.preventDefault();
 }
 
-function dragover(e) { 
-    e.stopPropagation();
-    e.preventDefault();
+function dragover(e) {
+  e.stopPropagation();
+  e.preventDefault();
 }
 
 function drop(e) {
-    e.stopPropagation();
-    e.preventDefault();
-    var dt = e.dataTransfer;
-    var files = dt.files;
-    handleFiles(files);
+  e.stopPropagation();
+  e.preventDefault();
+  var dt = e.dataTransfer;
+  var files = dt.files;
+  handleFiles(files);
 }
 
 function handleFiles(files) {
-    var file = files[0];
-    var imageType = /^image\//;
-    if (!imageType.test(file.type)) {
-        alert("NOT AN IMAGE");
-        return;
-    }
-    var img = document.createElement("img");
-    img.classList.add("obj");
-    img.file = file;
-    img.height = Math.max($('#dropbox').height(),$('#preview').height()) ;
-    img.width = Math.max($('#dropbox').width(),$('#preview').width()) ;
+  var file = files[0];
+  var imageType = /^image\//;
+  if (!imageType.test(file.type)) {
+    alert("NOT AN IMAGE");
+    return;
+  }
+  var origWidth, origHeight;
+  var img = document.createElement("img");
+  img.id = "uploadedImage";
+  img.file = file;
+  img.onload = function() {
+    adjustImageSize(img);
+  };
 
-    $('#dropbox').addClass('hidden');
-    $('#preview').removeClass('hidden');
-    $('#preview').empty(); 
-    $('#preview').append(img);
-    $('#fileSelect').text('Replace Image');
-    
-    var reader = new FileReader();
-    reader.onload = (function(aImg) {
-        return function(e) {
-            aImg.src = e.target.result;
-        };
-    })(img);
-    reader.readAsDataURL(file)
+  $('#dropbox').addClass('hidden');
+  $('#preview').removeClass('hidden');
+  $('#preview').empty();
+  $('#preview').append(img);
+  $('#fileSelect').text('Replace Image');
+
+  var reader = new FileReader();
+  reader.onload = (function(aImg) {
+    return function(e) {
+      aImg.src = e.target.result;
+    };
+  })(img);
+  reader.readAsDataURL(file)
 }
 
+$(window).on('resize', function() {
+    var img = document.getElementById("uploadedImage");
+    adjustImageSize(img);
+});
+
+function adjustImageSize(img) {
+    if(img) {
+        $(img).width("100%");
+        $(img).height("auto");    
+    }    
+}
+
+/* ----------------- DESCRIPTION ------------------ */
+
+// Northing here for now
+
+/* -------------------- WEBSITE ------------------- */
+
+// Nothing here for now
+
+/* ---------------- TICKET SALE URL --------------- */
+
+// Nothing here for now
+
+/* ---------- ORGANIZER DETAILS ------------------- */
+
+// Nothing here for now
 
 /* ----------------- INPUT LENGTHS ---------------- */
 
@@ -622,22 +710,53 @@ function limitLength(inputField, inputLength) {
 /* --------------- HELPER FUNCTIONS --------------- */
 
 
+// errorDiv, inputField are JQuery Objects
+// message is a string
+// Method makes errorDiv visible, sets background color of inputField to 'errorBackground' and
+// attaches message to errorDiv. It also stores the id of inputField parent section in the errors global array
+function displayError(errorDiv, inputField, message) {
+    errorDiv.empty(); // clear previous errors
+    errorDiv.removeClass('hidden'); // Make Error visible
+    inputField.addClass('errorBackground'); // Change background color of associated inputfield 
+    errorDiv.append("<p>" + message + "</p>"); // Display Error Message
+    errors.push(inputField.parents('section')[0].id);
+}
+
+
+// errorDiv, inputField are JQuery objects
+// Hides errorDiv, deletes error message stored in it, changes the background color of inputField to normal.
+// Removes id of inputField parent section from global errors array
+function removeError(errorDiv, inputField) {
+    var index = errors.indexOf(inputField.parents('section')[0].id);
+    if(index > -1) {
+        errorDiv.empty();
+        errorDiv.addClass('hidden');
+        inputField.removeClass('errorBackground');
+        errors.splice(index,1);
+    }
+}
+
+
+
+
+
 /* Removes hidden class from errorDiv
 /* Adds a p tag as a child of errorDiv, with message
  */
-function displayError(errorDiv, message) {
+/*function displayError(errorDiv, message) {
+        console.log("in display error 2");
     errorDiv.empty(); // clear previous errors
     safeRemoveClass(errorDiv, 'hidden');
     errorDiv.append("<p>" + message + "</p>");
-}
+}*/
 
 /* Adds hidden class to errorDiv
 /* Removes all children from errorDiv
  */
-function removeError(errorDiv) {
+/*function removeError(errorDiv) {
     errorDiv.empty();
     safeAddClass(errorDiv,'hidden');
-}
+}*/
 
 /* element: An html element node
  * theClass: the name of a class

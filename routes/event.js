@@ -15,7 +15,6 @@ var express         = require("express"),
 
 var storage =   multer.diskStorage({
   destination: function (req, file, callback) {
-    console.log(req);
     callback(null, './public/uploads/eventImages');
   },
   filename: function (req, file, callback) {
@@ -44,7 +43,8 @@ router.get("/", function(req,res) {
 // DISPLAY FORM TO CREATE A NEW EVENT
 // Only logged in user can see this form
 
-router.get("/new", middleware.isLoggedIn, function(req,res) {  
+//router.get("/new", middleware.isLoggedIn, function(req,res) {  
+router.get("/new", function(req,res) { 
     res.render("event/new"); 
 });
 
@@ -55,6 +55,7 @@ router.get("/new", middleware.isLoggedIn, function(req,res) {
 
 router.post("/", middleware.isLoggedIn, upload.single('image'), function(req,res) { 
     
+    console.log("REQUEST BODY: " , req.body);
     // Remove Empty Fields
     for(var key in req.body) {
         if(req.body[key] == "") {
@@ -66,8 +67,6 @@ router.post("/", middleware.isLoggedIn, upload.single('image'), function(req,res
     if(req.file) {
         filepath = req.file.path.substr(7); // Substr to remove "/public"
     }
-   
-    console.log("Filepath: " , filepath);
     
     var newEvent = {
         name: req.body.name,
@@ -83,11 +82,18 @@ router.post("/", middleware.isLoggedIn, upload.single('image'), function(req,res
         image: filepath, 
         mapCenter: req.body.showMap,
         description: req.body.description,
+        eventURL: req.body.eventURL,
+        ticketURL: req.body.ticketURL,
+        organizerName: req.body.organizerName,
+        organizerPhone: req.body.organizerPhone,
+        organizerEmail: req.body.organizerEmail,
         author: {
             id: req.user._id, 
             username: req.user.username
         }
     };
+    
+    console.log("NEW EVENT: ", newEvent);
     
     Event.create(newEvent, function(err, newEvent) {
         if(err) {
