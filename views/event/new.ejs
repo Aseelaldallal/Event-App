@@ -2,7 +2,7 @@
 
 
 <script type="text/javascript" src="/js/eventform.js"></script>
-        
+
 
 <div class="container">
     
@@ -75,7 +75,7 @@
                     <!-- INPUT FIELD -->
                     <input  id="name" name="name" type="text" class="form-control"placeholder="Harry Potter's 20th Birthday Bash">
                     <!-- TOOLTIP -->
-                    <p id="nameTip" class="tip hidden"> Remaining: <span id="charsLeft"></span></p>
+                    <p id="nameTip" class="tip hidden"> Remaining: <span id="nameCharsLeft"></span></p>
                     <!-- ERROR BOX -->
                     <div id="nameError" class="error hidden">
                     </div>
@@ -172,8 +172,7 @@
                                     <label for="venueName" class="sr-only">Venue Name</label>
                                     <input class="form-control" id="venueName" name="venueName" type="text" placeholder="Venue Name - optional">
                                 </div>
-                                <!------ 
-                                ADDRESS ------>
+                                <!------ ADDRESS ------>
                                 <section id="3a_address"> <!-- This extra section here is for error handling purposes-->
                                     <div class="form-group">
                                         <label for="address" class="sr-only">Address</label>
@@ -224,6 +223,10 @@
                                 <div id="cityError" class="error hidden"></div>
                                 <div id="provinceError" class="error hidden"></div>
                                 <div id="postalCodeError" class="error hidden"></div>
+                                <!-- TOOLTIP -->
+                                <p id="showMapTip" class="tip hidden"> Please make sure that the details on the map match the address you typed in. If they do not, uncheck the "Show Map"
+                                checkbox, as we were unable to find your address on the map. 
+                                </p>
                                 
                             </div> <!-- locationDetailsText row end -->
                     
@@ -250,77 +253,80 @@
             </section>
               
             <!--------------------------- DESCRIPTION -------------------------->
-              
-            <div class="form-group">
-                <label for="description" class="required">Description</label>
-                <!-- TOOLTIP -->
-                <p class="tip"> Tooltip goes here </p>
-                <!-- INPUT -->
-                <textarea name="description" class="form-control" id="description" rows="5" placeholder="This is the event of the year. You'll eat magic muffins and and get high on red bull" ></textarea>
-                <!-- ERROR BOX -->
-                <div id="imageError" class="error">
-                    <p> Error goes here </p>  
-                </div>
-            </div>
              
+            <section id="4_desc">
+                <div class="form-group">
+                    <label for="description" class="required">Event Description</label>
+                    <!-- INPUT -->
+                    <textarea name="description" class="form-control" id="description" rows="15" placeholder="Write something to make your event appealing... Something like 'This is the event of the year. You'll learn to fly and get high on red bull" ></textarea>
+                    <!-- ERROR BOX -->
+                    <div id="descError" class="error hidden"> </div>
+                    <!-- TOOLTIP -->
+                    <p id="descTip" class="tip hidden"> Remaining: <span id="descCharsLeft"></span></p>
+                </div>
+            </section>
+            
             <!----------------------------- WEBSITE ----------------------------> 
     
-            <div class="form-group">
-                <label for="website">Event Website</label>
-                <!-- TOOLTIP -->
-                <p class="tip"> Tooltip goes here </p>
-                <!-- INPUT -->
-                <input name="eventURL" type="url" class="form-control" id="website" placeholder="www.eventwebsite.ca">
-                <!-- ERROR BOX -->
-                <div id="websiteError" class="error">
-                    <p> Error goes here </p>  
+            <section id="5_website">
+                <div class="form-group">
+                    <label for="eventURL">Event Website</label>
+                    <!-- INPUT -->
+                    <input name="eventURL" type="url" class="form-control" id="eventURL" placeholder="www.eventwebsite.ca">
+                    <!-- ERROR BOX -->
+                    <div id="wURLError" class="error hidden"> </div>
                 </div>
-            </div>
+            </section>
             
             <!----------------------------- TICKETS ----------------------------> 
-            <div class="form-group">
-                <label for="ticket">Ticket Sale URL</label>
-                <!-- TOOLTIP -->
-                <p class="tip"> Tooltip goes here </p>
-                <!-- INPUT -->
-                <input name="ticketURL" type="url" class="form-control" id="ticket" placeholder="www.myticketsaresoldhere.ca">
-                <!-- ERROR BOX -->
-                <div id="websiteError" class="error">
-                    <p> Error goes here </p>  
+            
+            <section id="6_register">
+                <div class="form-group">
+                    <label for="ticket">Ticket Sale / Registeration URL</label>
+                    <!-- TOOLTIP -->
+                    <p class="tip"> Tooltip goes here </p>
+                    <!-- INPUT -->
+                    <input name="ticketURL" type="url" class="form-control" id="ticket" placeholder="www.myticketsaresoldhere.ca">
+                    <!-- ERROR BOX -->
+                    <div id="websiteError" class="error">
+                        <p> Error goes here </p>  
+                    </div>
                 </div>
-            </div>
+            </section>
             
             <!---------------------------- ORGANIZER --------------------------->        
             
-            <div class="row">
-                
-                <!------ ORGANIZER NAME ------>
-                <div class="form-group col-md-4 col-xs-12">
-                    <label for="organizerName">Organizer Name</label>
-                    <input name="organizerName" type="text" class="form-control" id="organizerName" placeholder="Darth Vader Co.">
-                </div>
-                
-                <!------ ORGANIZER PHONE NUMBER ------>
-                <div class="form-group col-md-4 col-xs-12">
-                    <label for="organizerPhone">Organizer Phone Number</label>
-                    <input name="organizerPhone" type="tel" class="form-control" id="organizerPhone" placeholder="647-222-3333">
-                    <!-- ERROR BOX -->
-                    <div id="phoneError" class="error">
-                        <p> Error goes here </p>  
+            <section id="7_organizer">
+                <div class="row">
+                    
+                    <!------ ORGANIZER NAME ------>
+                    <div class="form-group col-md-4 col-xs-12">
+                        <label for="organizerName">Organizer Name</label>
+                        <input name="organizerName" type="text" class="form-control" id="organizerName" placeholder="Darth Vader Co.">
                     </div>
-                </div>
-                
-                <!------ ORGANIZER EMAIL ADDRESS ------>
-                <div class="form-group col-md-4 col-xs-12">
-                    <label for="organizerEmail" class="required">Organizer Email</label>
-                    <input name="organizerEmail" type="email" class="form-control" id="organizerEmail" placeholder="barneystinson@gmail.com">
-                    <!-- ERROR BOX -->
-                    <div id="emailError" class="error">
-                        <p> Error goes here </p>  
+                    
+                    <!------ ORGANIZER PHONE NUMBER ------>
+                    <div class="form-group col-md-4 col-xs-12">
+                        <label for="organizerPhone">Organizer Phone Number</label>
+                        <input name="organizerPhone" type="tel" class="form-control" id="organizerPhone" placeholder="647-222-3333">
+                        <!-- ERROR BOX -->
+                        <div id="phoneError" class="error">
+                            <p> Error goes here </p>  
+                        </div>
                     </div>
+                    
+                    <!------ ORGANIZER EMAIL ADDRESS ------>
+                    <div class="form-group col-md-4 col-xs-12">
+                        <label for="organizerEmail" class="required">Organizer Email</label>
+                        <input name="organizerEmail" type="email" class="form-control" id="organizerEmail" placeholder="barneystinson@gmail.com">
+                        <!-- ERROR BOX -->
+                        <div id="emailError" class="error">
+                            <p> Error goes here </p>  
+                        </div>
+                    </div>
+                    
                 </div>
-                
-            </div>
+            </section>
             
             <hr class="lasthr"> 
           

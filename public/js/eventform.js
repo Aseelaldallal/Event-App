@@ -1,4 +1,4 @@
-
+// CONSIDER ADDING TINYMCE FOR DESC
 /* global $ */
 /* global google */
 
@@ -31,7 +31,7 @@ function validate(form) {
         return false;
     }
     // Do more validation here -- check for empty fields that were skipped during instant validation
-    return false;
+    return false; // CHANGE TO RETURN TRUE LATER
 }
 
 
@@ -47,6 +47,8 @@ $(document).ready(function() {
     eventDateSetup();
     eventTimeSetup(); 
     eventLocationSetup();
+    eventDescriptionSetup(); 
+    eventWebsiteSetup(); 
     eventImageSetup();
     setMaxInputLength(MAX_INPUT_LENGTH, MAX_DESC_LENGTH);
 
@@ -68,31 +70,26 @@ function eventTitleSetup() {
     // On Focus: Remove Errors, Display Tooltip
     $('#name').on('focus', function() {
         $('#nameTip').removeClass('hidden');
+        showRemainingChars($('#nameCharsLeft'), $('#name'), MAX_INPUT_LENGTH);
         removeError($('#nameError'), $('#name'));
-        showRemainingChars();
     });
     
     // On Blur, remove tooltip. If error, display error.
     $('#name').on('blur', function() {
         $('#nameTip').addClass('hidden');
-        if($('#name').val().length == 0) {
+        if(checkIfEmptyField($('#name'))) {
             displayError($('#nameError'), $('#name'), "This field is required");
-        } 
+        };
     });
     
     // Let user know how many characters remaining dynamically
-    $('#name').on('keyup', showRemainingChars); 
-
+    $('#name').on('keyup', function() {
+        showRemainingChars($('#nameCharsLeft'), $('#name'), MAX_INPUT_LENGTH); 
+    }); 
 }
 
-/* This function will update the event name tooltip with the number of
- * characters remaining. Make sure the error message is hidden when user starts typing
- */
-function showRemainingChars() {
-    var numChars = $('#name').val().length;
-    var remaining = MAX_INPUT_LENGTH - numChars;
-    $('#charsLeft').text(remaining);
-}
+
+
 
 
 
@@ -136,11 +133,11 @@ function eventDateSetup() {
     // On blur, check for errors
     $('#date').on('blur', function() {
         
-        var userInput = $('#date').val();
+        var userInput = $.trim($('#date').val());
         var eventDate = new Date(userInput);
         var error = ""; 
         
-        if( userInput.length === 0 ) {
+        if(checkIfEmptyField($('#date'))) {
             error = "This field is Required"
         } else if(eventDate == "Invalid Date") {
             error = "Invalid Date. Date must be in the format yyyy-mm-dd"
@@ -192,7 +189,7 @@ function eventTimeSetup() {
     //      Check that time is valid
     starttime.on('blur', function(event) {
         var dummyStart = new Date("December 11 2016 " + starttime.val());
-        if(starttime.val().length == 0 ) { // If start field is empty
+        if(checkIfEmptyField(starttime) ) { 
             displayError(startErrorDiv, starttime, "This field is required");
         } if( dummyStart == "Invalid Date") { // If time is invalid
             displayError(startErrorDiv, starttime, "Invalid Time");
@@ -208,6 +205,7 @@ function eventTimeSetup() {
     //      Check that field is not empty
     //      Check that time is valid
     endtime.on('blur', function() {
+        checkIfEmptyField(endtime);
         var dummyEnd =  new Date("December 11 2016 " + endtime.val());
         if( dummyEnd == "Invalid Date") { // If time is invalid
             displayError(endErrorDiv, endtime, "Invalid Time");
@@ -215,7 +213,6 @@ function eventTimeSetup() {
     });
     
 }
-
 
 
 /* ---------------- EVENT LOCATION --------------- */
@@ -262,16 +259,13 @@ function eventLocationSetup() {
             setTimeout(function() {
                 displayAddressDetailsForm();
                 displayMap(place);
-            },1000); 
+            }, 500); 
         } 
     });
-    $('#address').on('blur', function()    { findGeocodeAndMap(); });
-    $('#city').on('blur', function()       { findGeocodeAndMap(); });
-    $('#province').on('blur', function()   { findGeocodeAndMap(); });
-    $('#postalCode').on('blur', function() { findGeocodeAndMap(); });
     
     // If user checks show map, set the value of checkbox to map geometry
     $('#showMap').on('click', function() {
+        $('#showMapTip').toggleClass('hidden');
         if($( "#showMap:checked" ).length > 0) {// checked
             if(map) { // If map is defined
                 $('#showMap').val(map.getCenter());
@@ -279,12 +273,15 @@ function eventLocationSetup() {
         } else {
             $('#showMap').val('');
         }
-    })
+    });
     
-    checkAddressFieldErrors();
-    checkCityErrors(); 
-    checkProvinceErrors();
-    checkPostalErrors();
+    readAddressField(); 
+    readCityField(); 
+    readProvinceField(); 
+    readPostalCodeField(); 
+    readVenueField();
+    readUnitField(); 
+
 }
 
 // Remove any errors associated with event location
@@ -295,28 +292,44 @@ function removeLocationErrors() {
     removeError($('#postalCodeError'),$('#postalCode')); 
 }
 
-// Ensures that address field is not empty
-function checkAddressFieldErrors() {
+// Removes spaces from venue name field if any
+function readVenueField() {
+    $('#venueName').on('blur', function() {
+        checkIfEmptyField($('#venueName'));
+    });
+}
+
+// Removes spaces from venue unit field if any
+function readUnitField() {
+    $('#unit').on('blur', function() {
+        checkIfEmptyField($('#unit'));
+    });
+}
+
+// Makes sure that address field is not empty, and attemps to map the address
+function readAddressField() {
     $('#address').on('blur', function() {
-       if($('#address').val().length === 0) {
-           displayError($('#addressError'), $('#address'), "Address field is required");
-       } 
+        findGeocodeAndMap();
+        if(checkIfEmptyField($('#address'))) {
+            displayError($('#addressError'), $('#address'), "Address field is required");
+        }
     });
     $('#address').on('focus', function() {
         removeError($('#addressError'),$('#address')); 
     });
 }
 
-// Ensures that city field is not empty, and that the city exists in Canada (using google geocoding api)
-function checkCityErrors() {
+
+// Ensures that city field is not empty, and that the city exists in Canada (using google geocoding api).
+// If no error, attemps to map
+function readCityField() {
     
     $('#city').on('blur', function() {
-        var city = $('#city').val(); 
-        if(city.length === 0) {
+        findGeocodeAndMap();
+        if(checkIfEmptyField($('#city'))) {
            displayError($('#cityError'), $('#city'), "City is required");
         } else {
-            city = city.toLowerCase();
-            console.log("This is the city: ", city);
+            var city = $('#city').val().toLowerCase();
             var geocoder = new google.maps.Geocoder();
             geocoder.geocode(
                 { address: city, 
@@ -333,7 +346,7 @@ function checkCityErrors() {
                         });
                         if(!isCity) {
                             displayError($('#cityError'), $('#city'), city + " is not a city in Canada");
-                        }
+                        } 
                     } else {
                         console.err("Geocoding service failed. Can't check if city exists in Canada.");
                     }
@@ -349,34 +362,37 @@ function checkCityErrors() {
 }
 
 // Ensures that province is not empty, and is a valid province
-function checkProvinceErrors() {
+function readProvinceField() {
     $('#province').on('blur', function() {
+       findGeocodeAndMap();
        var canadianProvinces = ['ON', 'AB', 'BC', 'MB', 'NB', 'NL', 'NS', 'NT', 'NU', 'PE', 'QC', 'SK', 'YT', 
                                 'ONTARIO', "ALBERTA", "BRITISH COLUMBIA", "MANITOBA", "NEW BRUNSWICK", "NEWFOUNDLAND AND LABRADOR",
                                 'NOVA SCOTIA', 'NORTHWEST TERRITORIES', 'NUNAVUT', 'PRINCE EDWARD ISLAND', 'QUEBEC', 'SASKATCHEWAN', 'YUKON'];
        var prov = ($.trim($('#province').val())).toUpperCase();
-       if(prov.length === 0) {
+       if(checkIfEmptyField($('#province'))) {
            displayError($('#provinceError'), $('#province'), "Province is required");
        } else if(canadianProvinces.indexOf(prov) === -1) {
             displayError($('#provinceError'), $('#province'), prov + " is not a valid province");
-       }
+       } 
     });
-    
     $('#province').on('focus', function() {
         removeError($('#provinceError'),$('#province')); 
     });
 }
 
-function checkPostalErrors() {
+
+// Ensures that postal code field is not empty, and is a valid canadian postal code
+function readPostalCodeField() {
     $('#postalCode').on('blur', function() {
+       findGeocodeAndMap()
        var postalCode = $.trim($('#postalCode').val()); 
-       console.log("Postal Code: ", postalCode);
-       console.log(postalCode.length);
        var postalCodePatt = /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/;
-       if(postalCode.length === 0) {
+       if(checkIfEmptyField($('#postalCode'))) {
             displayError($('#postalCodeError'), $('#postalCode'), "Postal Code is required");
        } else if(!postalCode.match(postalCodePatt)) {
             displayError($('#postalCodeError'), $('#postalCode'), postalCode + "is not a valid canadian postal code");   
+       } else {
+           findGeocodeAndMap();
        }
     });
     $('#postalCode').on('focus', function() {
@@ -395,8 +411,8 @@ function findGeocodeAndMap() {
     }, 
     function(results, status) {
         if (status === 'OK') {
-            safeRemoveClass($('#googleMap'), 'hidden');
-            safeAddClass($('#noMapAvailContainer'),'hidden');
+            $('#googleMap').removeClass('hidden');
+            $('#noMapAvailContainer').addClass('hidden');
             map = new google.maps.Map(document.getElementById('googleMap'));
             map.setCenter(results[0].geometry.location);
             map.setZoom(14);
@@ -431,9 +447,8 @@ function addCantFindAddress() {
 // Precondition: place has a geometry. Display place on google map
 function displayMap(place) {
 
-    safeRemoveClass($('#googleMap'), 'hidden');
-    safeAddClass($('#noMapAvailContainer'),'hidden');
-    
+    $('#googleMap').removeClass('hidden');
+    $('#noMapAvailContainer').addClass('hidden');
     map = new google.maps.Map(document.getElementById('googleMap'));
 
     var infowindow = new google.maps.InfoWindow();
@@ -482,7 +497,7 @@ function displayMap(place) {
 // Adjust height of map
 function displayAddressDetailsForm() {
     hideLocationSearchField();
-    safeRemoveClass($('#locationDetails'), 'hidden'); // show details
+    $('#locationDetails').removeClass('hidden');
     var locDHeight = $('#locationDetailsText').height() // set map height
     $("#mapContainer").height(locDHeight);
 
@@ -491,7 +506,7 @@ function displayAddressDetailsForm() {
 // Display google autocomplete search field and hide address details fields
 function displayLocationSearchField() {
     hideAddressDetails();
-    safeRemoveClass($('#locationSearch'), 'hidden'); // show search field
+    $('#locationSearch').removeClass('hidden'); // show search field
 }
 
 // Empty Google Autocomplete input field
@@ -499,7 +514,7 @@ function displayLocationSearchField() {
 // Clear any errors related to google autocomplete
 function hideLocationSearchField() {
     $('#location').val('');
-    safeAddClass($('#locationSearch'),'hidden');
+    $('#locationSearch').addClass('hidden');
 }
 
 
@@ -508,7 +523,7 @@ function hideLocationSearchField() {
 // clear map === MUST IMPLEMENT
 function hideAddressDetails() {
     clearAddressValues();
-    safeAddClass($('#locationDetails'),'hidden');
+    $('#locationDetails').addClass('hidden');
 }
 
 
@@ -632,7 +647,6 @@ function handleFiles(files) {
     alert("NOT AN IMAGE");
     return;
   }
-  var origWidth, origHeight;
   var img = document.createElement("img");
   img.id = "uploadedImage";
   img.file = file;
@@ -669,11 +683,45 @@ function adjustImageSize(img) {
 
 /* ----------------- DESCRIPTION ------------------ */
 
-// Northing here for now
+function eventDescriptionSetup() {
+    
+    $('#description').on('blur', function() {
+        $('#descTip').addClass('hidden');
+        if(checkIfEmptyField($('#description'))) {
+            displayError($('#descError'), $('#description'), "This field is required");
+            document.getElementById('description').style.backgroundColor = 'rgba(248, 237, 237, 0.5)'; // hack -- bootstrap problems
+        }
+    });
+    
+    $('#description').on('focus', function() {
+        $('#descTip').removeClass('hidden');
+        showRemainingChars($('#descCharsLeft'), $('#description'), MAX_DESC_LENGTH); 
+        removeError($('#descError'), $('#description')); 
+        document.getElementById('description').style.backgroundColor = 'transparent';
+    });
+    
+    // Let user know how many characters remaining dynamically
+    $('#description').on('keyup', function() {
+        showRemainingChars($('#descCharsLeft'), $('#description'), MAX_DESC_LENGTH); 
+    }); 
+    
+}
 
 /* -------------------- WEBSITE ------------------- */
 
-// Nothing here for now
+function eventWebsiteSetup() {
+    $('#eventURL').on('blur', function() {
+        if(!checkIfEmptyField($('#eventURL'))) {
+            var eventURL = $('#eventURL').val(); 
+            if(!isURL(eventURL)) {
+                displayError($('#wURLError'), $('#eventURL'), eventURL + " is not a valid URL" );
+            }
+        } 
+    });
+    $('#eventURL').on('focus', function() {
+        removeError($('#wURLError'), $('#eventURL'));
+    });
+}
 
 /* ---------------- TICKET SALE URL --------------- */
 
@@ -728,7 +776,6 @@ function displayError(errorDiv, inputField, message) {
 function removeError(errorDiv, inputField) {
     var index = errors.indexOf(inputField.parents('section')[0].id);
     if(index > -1) {
-        console.log("Removing error")
         errorDiv.empty();
         errorDiv.addClass('hidden');
         inputField.removeClass('errorBackground');
@@ -736,9 +783,34 @@ function removeError(errorDiv, inputField) {
     }
 }
 
+// Check if an input field contains spaces only. If so, deletes spaces
+// so placeholder text appears and returns true. Otherwise retursn false. 
+function checkIfEmptyField(inputField) {
+    var userInput = $.trim(inputField.val());
+    if(userInput.length === 0) {
+        inputField.val(''); // Remove empty spaces from field
+        return true;
+    }
+    return false;
+}
+
+//This function will update the event name tooltip with the number of
+//characters remaining. Make sure the error message is hidden when user starts typing
+// spanId and inputField are JQuery objects
+function showRemainingChars(spanId, inputField, maxLength) {
+    var numChars = inputField.val().length;
+    var remaining = maxLength - numChars;
+    spanId.text(remaining);
+}
 
 
-
+// Check if a URL is valid
+// source: http://bit.ly/2jE77zz
+function isURL(str) {
+  console.log("Inside is URL");
+  var pattern = new RegExp(/((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/); 
+  return pattern.test(str);
+}
 
 /* Removes hidden class from errorDiv
 /* Adds a p tag as a child of errorDiv, with message

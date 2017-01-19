@@ -246,7 +246,7 @@ input::-webkit-calendar-picker-indicator{ /* Disable native datepicker popup */
 }
 
 .errorBackground {
-   background-color: rgba(248, 237, 237, 0.5);
+   background-color: rgba(248, 237, 237, 0.5) !important;
 }
 
 .tip {
@@ -262,6 +262,7 @@ input::-webkit-calendar-picker-indicator{ /* Disable native datepicker popup */
 .imageTip {
   color: darkgreen;
 }
+
 
 /*-------- Submit -------*/
 
