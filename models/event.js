@@ -25,9 +25,9 @@ var mongoose = require("mongoose");
       image: String, 
       description: String,
       eventURL: String,
-      ticketURL: String,
+      eventCost: String, 
+      registerationURL: String,
       organizerName: String,
-      organizerPhone: String,
       organizerEmail: String,
       author: {
          id: {

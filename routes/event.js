@@ -83,9 +83,9 @@ router.post("/", middleware.isLoggedIn, upload.single('image'), function(req,res
         mapCenter: req.body.showMap,
         description: req.body.description,
         eventURL: req.body.eventURL,
-        ticketURL: req.body.ticketURL,
+        eventCost: req.body.eventCost,
+        registerationURL: req.body.regURL,
         organizerName: req.body.organizerName,
-        organizerPhone: req.body.organizerPhone,
         organizerEmail: req.body.organizerEmail,
         author: {
             id: req.user._id, 

@@ -8,8 +8,11 @@ var map;
 
 /* ------------------- CONSTANTS ------------------ */
 
-const MAX_INPUT_LENGTH = 100;
-const MAX_DESC_LENGTH = 1500;
+const MAX_INPUT_LENGTH = 130;
+const MAX_DESC_LENGTH = 2200;
+const MIN_DESC_LENGTH = 200; 
+const MAX_EVENT_COST = 500; 
+const MAX_FILE_SIZE = 1000000; //bytes
 
 /* ----------------- Error Handling --------------- */
 
@@ -21,9 +24,21 @@ var errors = [];
 /* -------------- VALIDATE ON SUBMIT --------------- */
 
 function validate(form) {
+    var reqFieldsCollection = document.getElementsByClassName('req');
+    Array.prototype.forEach.call(reqFieldsCollection, function(field) {
+    if(field.value == '') {
+          var errorDivId = '#' + field.id + "Error";
+          var fieldId = '#' + field.id;
+          var message = "This field is required";
+          if(field.id === "address" || field.id === "province" || field.id === "city") {
+              message = field.id + " field is required";
+          }
+          displayError($(errorDivId), $(fieldId), message);
+       }
+    });
     errors.sort();
     if(errors.length > 0 ) {
-        var idName = "#" + errors[0];
+        var idName = "#" + errors[0][0];
         if( $(idName).parents('section').length === 1 ) { // Dealing with nested sections
             idName = "#" + $(idName).parents('section')[0].id;
         }
@@ -31,7 +46,7 @@ function validate(form) {
         return false;
     }
     // Do more validation here -- check for empty fields that were skipped during instant validation
-    return false; // CHANGE TO RETURN TRUE LATER
+    return false;
 }
 
 
@@ -50,6 +65,8 @@ $(document).ready(function() {
     eventDescriptionSetup(); 
     eventWebsiteSetup(); 
     eventImageSetup();
+    eventRegSetup(); 
+    eventOrganizerSetup(); 
     setMaxInputLength(MAX_INPUT_LENGTH, MAX_DESC_LENGTH);
 
 });
@@ -167,8 +184,8 @@ function eventTimeSetup() {
     
     var starttime = $('#starttime'),
         endtime = $('#endtime'),
-        startErrorDiv = $('#startError'),
-        endErrorDiv = $('#endError');
+        startErrorDiv = $('#starttimeError'),
+        endErrorDiv = $('#endtimeError');
         
     var options = {
         timeFormat: 'h:mm p',
@@ -230,20 +247,16 @@ function eventLocationSetup() {
        }
     });
     
-    $('#location').on('click', function() {
-        addCantFindAddress();
-    });
+    // Adjust Map Height
+    var locDHeight = $('#locationDetailsText').height() // set map height
+    $("#mapContainer").height(locDHeight);
     
-    // Allow user to enter address manually
-    $('#enterAddress').on('click', function() {
-       displayAddressDetailsForm();
-    });
+
     
     // Allow user to reset location
     $('#resetLocation').on('click', function() {
-        displayLocationSearchField();
-        $('#googleMap').addClass('hidden');
-        $('#noMapAvailContainer').removeClass('hidden');
+        $('#location').val('');
+        clearAddressValues();
         removeLocationErrors(); 
     });
     
@@ -256,13 +269,11 @@ function eventLocationSetup() {
         place = autocomplete.getPlace();
         if(place && place.geometry) {
             fillOutDetailedAddressForm(place);
-            setTimeout(function() {
-                displayAddressDetailsForm();
-                displayMap(place);
-            }, 500); 
-        } 
+            displayMap(place);
+        }
     });
     
+
     // If user checks show map, set the value of checkbox to map geometry
     $('#showMap').on('click', function() {
         $('#showMapTip').toggleClass('hidden');
@@ -384,15 +395,15 @@ function readProvinceField() {
 // Ensures that postal code field is not empty, and is a valid canadian postal code
 function readPostalCodeField() {
     $('#postalCode').on('blur', function() {
-       findGeocodeAndMap()
+       findGeocodeAndMap();
        var postalCode = $.trim($('#postalCode').val()); 
        var postalCodePatt = /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/;
-       if(checkIfEmptyField($('#postalCode'))) {
-            displayError($('#postalCodeError'), $('#postalCode'), "Postal Code is required");
-       } else if(!postalCode.match(postalCodePatt)) {
-            displayError($('#postalCodeError'), $('#postalCode'), postalCode + "is not a valid canadian postal code");   
-       } else {
-           findGeocodeAndMap();
+       if(!checkIfEmptyField($('#postalCode'))) {
+           if(!postalCode.match(postalCodePatt)) {
+                displayError($('#postalCodeError'), $('#postalCode'), postalCode + " is not a valid canadian postal code");   
+           } else {
+               findGeocodeAndMap();
+           }
        }
     });
     $('#postalCode').on('focus', function() {
@@ -430,17 +441,6 @@ function findGeocodeAndMap() {
             console.error('Geocode was not successful for the following reason: ' + status);
         }
     }); 
-}
-
-
-// Add a "Can't find Address" link to the dropdown list that appears when user starts typing address (google picklist)
-function addCantFindAddress() {
-    picklist = document.getElementsByClassName('pac-container')[0];
-    var linkCollection = picklist.getElementsByTagName('a'); // htmlCollection
-    if(linkCollection.length == 0) {
-        var aTag = "<div class='pac-item'><span class='pac-icon'></span><a class='pac-item-query' onmousedown='displayAddressDetailsForm();'>Can't find address? </a></div>";
-        $(picklist).append(aTag);
-    }
 }
 
 
@@ -493,39 +493,6 @@ function displayMap(place) {
     
 }
 
-// Display Address Details input fields
-// Adjust height of map
-function displayAddressDetailsForm() {
-    hideLocationSearchField();
-    $('#locationDetails').removeClass('hidden');
-    var locDHeight = $('#locationDetailsText').height() // set map height
-    $("#mapContainer").height(locDHeight);
-
-}
-
-// Display google autocomplete search field and hide address details fields
-function displayLocationSearchField() {
-    hideAddressDetails();
-    $('#locationSearch').removeClass('hidden'); // show search field
-}
-
-// Empty Google Autocomplete input field
-// Hide Google Autocomplete input field
-// Clear any errors related to google autocomplete
-function hideLocationSearchField() {
-    $('#location').val('');
-    $('#locationSearch').addClass('hidden');
-}
-
-
-// Clear values from address details
-// Remove any errors associated with address details
-// clear map === MUST IMPLEMENT
-function hideAddressDetails() {
-    clearAddressValues();
-    $('#locationDetails').addClass('hidden');
-}
-
 
 // Clear user input from address details form
 function clearAddressValues() {
@@ -536,7 +503,6 @@ function clearAddressValues() {
     $('#postalCode').val('');
     $('#unit').val('');
 }
-
 
 
 
@@ -600,6 +566,17 @@ function fillOutDetailedAddressForm(place) {
         $('#unit').val(details["subpremise"]);
     }
     
+    if(!checkIfEmptyField($('#address'))) {
+        removeError($('#addressError'), $('#address')); 
+    }
+    
+    if(!checkIfEmptyField($('#city'))) {
+        removeError($('#cityError'), $('#city')); 
+    }
+    
+    if(!checkIfEmptyField($('#province'))) {
+        removeError($('#provinceError'), $('#province')); 
+    }
 }
 
 
@@ -608,14 +585,26 @@ function fillOutDetailedAddressForm(place) {
 
 function eventImageSetup() {
     var dropbox = document.getElementById("dropbox"),
-        fileElem = document.getElementById("fileElem"),
-        fileSelect = document.getElementById("fileSelect");
-    $(dropbox).height($(imageBorder).height());
+        fileElem = document.getElementById("image"),
+        fileSelect = document.getElementById("fileSelect"),
+        fileRemove = document.getElementById("fileRemove");
+    $(dropbox).height($('#imageBorder').height());
     fileSelect.addEventListener("click", function(e) {
         if (fileElem) {
           fileElem.click();
+          e.preventDefault(); // to prevent submit
         }
     }, false);
+    fileRemove.addEventListener("click", function(e) {
+        e.preventDefault(); // prevent submit
+        if(!$('#preview').hasClass('hidden')) { // If there is an image uploaded
+            $('#preview').empty(); 
+            $('#dropbox').removeClass('hidden');
+            $('#preview').addClass('hidden');
+            $('#fileSelect').text('Upload Image');
+        }
+        removeError($('#imageError'), $('#image'));
+    });
     dropbox.addEventListener("dragenter", dragenter, false);
     dropbox.addEventListener("dragover", dragover, false);
     dropbox.addEventListener("drop", drop, false);
@@ -640,13 +629,26 @@ function drop(e) {
   handleFiles(files);
 }
 
-function handleFiles(files) {
+function handleFiles(files) { 
+    console.log("In handle files");
   var file = files[0];
+  console.log("FILE SIZE: " + file.size);
   var imageType = /^image\//;
   if (!imageType.test(file.type)) {
-    alert("NOT AN IMAGE");
+    $('#fileRemove').trigger('click');
+    var msg = "The file you tried to upload is not an image. It will not be uploaded. Upload another image, or click 'remove image' to clear this error.";
+    displayError($('#imageError'), $('#image'), msg); 
     return;
+  } else if (file.size > MAX_FILE_SIZE) {
+      $('#fileRemove').trigger('click');
+      var uploadedFileSize = (file.size/1000000).toFixed(2);
+      var maxFileSize = MAX_FILE_SIZE/1000000;
+      var msg = "Maximum file size is " + maxFileSize + ". Your file size is " + uploadedFileSize + " MB. Upload another image, or click 'remove image' to clear this error."; 
+      displayError($('#imageError'), $('#image'), msg); 
+      return; 
   }
+  removeError($('#imageError'), $('#image'));
+  
   var img = document.createElement("img");
   img.id = "uploadedImage";
   img.file = file;
@@ -666,7 +668,7 @@ function handleFiles(files) {
       aImg.src = e.target.result;
     };
   })(img);
-  reader.readAsDataURL(file)
+  reader.readAsDataURL(file);
 }
 
 $(window).on('resize', function() {
@@ -688,7 +690,11 @@ function eventDescriptionSetup() {
     $('#description').on('blur', function() {
         $('#descTip').addClass('hidden');
         if(checkIfEmptyField($('#description'))) {
-            displayError($('#descError'), $('#description'), "This field is required");
+            displayError($('#descriptionError'), $('#description'), "This field is required");
+            document.getElementById('description').style.backgroundColor = 'rgba(248, 237, 237, 0.5)'; // hack -- bootstrap problems
+        } else if ($('#description').val().length < MIN_DESC_LENGTH) {
+            var msg = "Your description needs to be between " + MIN_DESC_LENGTH + " and " + MAX_DESC_LENGTH + " characters long. You currently have " + $('#description').val().length + " characters."; 
+            displayError($('#descriptionError'), $('#description'), msg);
             document.getElementById('description').style.backgroundColor = 'rgba(248, 237, 237, 0.5)'; // hack -- bootstrap problems
         }
     });
@@ -696,7 +702,7 @@ function eventDescriptionSetup() {
     $('#description').on('focus', function() {
         $('#descTip').removeClass('hidden');
         showRemainingChars($('#descCharsLeft'), $('#description'), MAX_DESC_LENGTH); 
-        removeError($('#descError'), $('#description')); 
+        removeError($('#descriptionError'), $('#description')); 
         document.getElementById('description').style.backgroundColor = 'transparent';
     });
     
@@ -714,22 +720,91 @@ function eventWebsiteSetup() {
         if(!checkIfEmptyField($('#eventURL'))) {
             var eventURL = $('#eventURL').val(); 
             if(!isURL(eventURL)) {
-                displayError($('#wURLError'), $('#eventURL'), eventURL + " is not a valid URL" );
+                displayError($('#eventURLError'), $('#eventURL'), eventURL + " is not a valid URL" );
             }
         } 
     });
     $('#eventURL').on('focus', function() {
-        removeError($('#wURLError'), $('#eventURL'));
+        removeError($('#eventURLError'), $('#eventURL'));
     });
 }
 
 /* ---------------- TICKET SALE URL --------------- */
 
-// Nothing here for now
+function eventRegSetup() {
+    costSetup();
+    regURLSetup();
+}
+
+// Ensure user types in cost that makes sense
+function costSetup() {
+    $('#eventCost').on('blur', function() {
+        if(checkIfEmptyField($('#eventCost'))) {
+            displayError($('#eventCostError'), $('#eventCost'), "This field is required");
+        } else {
+            var cost = $('#eventCost').val();
+            if(cost.substr(0,1) === "$") {
+                cost = $.trim(cost.substr(1));
+            }
+            var parsedCost = parseInt(cost, 10);
+            if(isNaN(parsedCost)) {
+                displayError($('#eventCostError'), $('#eventCost'), "Invalid Cost");
+            } else {
+                var pattern = new RegExp(/^[0-9][0-9]{0,3}\.{0,1}[0-9]{0,2}$/);
+                if(!pattern.test(cost)) {
+                    displayError($('#eventCostError'), $('#eventCost'), "Invalid Cost. Cost is in CAD. Use this form: x.xx");
+                } else if(cost > MAX_EVENT_COST){
+                    displayError($('#eventCostError'), $('#eventCost'), "Too expensive. We don't support events costing more than $" + MAX_EVENT_COST);
+                }
+            } 
+        }
+    });
+    $('#eventCost').on('focus', function() {
+        removeError($('#eventCostError'), $('#eventCost'));
+    });
+    
+}
+
+// Ensure user types in valid url
+function regURLSetup() {
+    $('#regURL').on('blur', function() {
+        if(!checkIfEmptyField($('#regURL'))) {
+            var regURL = $('#regURL').val(); 
+            if(!isURL(regURL)) {
+                displayError($('#regURLError'), $('#regURL'), regURL + " is not a valid URL" );
+            }
+        } 
+    });
+    $('#regURL').on('focus', function() {
+        removeError($('#regURLError'), $('#regURL'));
+    });
+}
 
 /* ---------- ORGANIZER DETAILS ------------------- */
 
-// Nothing here for now
+function eventOrganizerSetup() {
+    $('#organizerName').on('blur', function() {
+        if(checkIfEmptyField($('#organizerName'))) {
+            displayError($('#organizerNameError'), $('#organizerName'), "This field is required");
+        }
+    });
+    $('#organizerName').on('focus', function() {
+        removeError($('#organizerNameError'), $('#organizerName'));
+    });
+    $('#organizerEmail').on('blur', function() {
+        if(checkIfEmptyField($('#organizerEmail'))) {
+            displayError($('#organizerEmailError'), $('#organizerEmail'), "This field is required");
+        } else {
+            var pattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            if(!pattern.test($('#organizerEmail').val())) {
+                displayError($('#organizerEmailError'), $('#organizerEmail'), "Invalid Email Address");
+            }
+        }
+    });
+    $('#organizerEmail').on('focus', function() {
+        removeError($('#organizerEmailError'), $('#organizerEmail'));
+    });
+}
 
 /* ----------------- INPUT LENGTHS ---------------- */
 
@@ -762,11 +837,29 @@ function limitLength(inputField, inputLength) {
 // Method makes errorDiv visible, sets background color of inputField to 'errorBackground' and
 // attaches message to errorDiv. It also stores the id of inputField parent section in the errors global array
 function displayError(errorDiv, inputField, message) {
-    errorDiv.empty(); // clear previous errors
-    errorDiv.removeClass('hidden'); // Make Error visible
-    inputField.addClass('errorBackground'); // Change background color of associated inputfield 
-    errorDiv.append("<p>" + message + "</p>"); // Display Error Message
-    errors.push(inputField.parents('section')[0].id);
+    errorDiv.empty(); 
+    errorDiv.removeClass('hidden'); 
+    inputField.addClass('errorBackground'); 
+    errorDiv.append("<p>" + message + "</p>");
+    pushToErrorsArray([inputField.parents('section')[0].id, inputField[0].id]);
+    
+}
+
+
+// errorEntry is an array of two elements. The first element is an id of a section, the second element is an id
+// of a particular input field. This method checks if the input field is in the errors array. If not, it adds it,
+// If so, does nothing
+function pushToErrorsArray(errorEntry) {
+    var errorField = errorEntry[1]; 
+    var isInErrorArray = false;
+    errors.forEach(function(entry) {
+       if(entry[1] == errorField) {
+           isInErrorArray = true;
+       } 
+    });
+    if(!isInErrorArray) {
+        errors.push(errorEntry);
+    }    
 }
 
 
@@ -774,7 +867,7 @@ function displayError(errorDiv, inputField, message) {
 // Hides errorDiv, deletes error message stored in it, changes the background color of inputField to normal.
 // Removes id of inputField parent section from global errors array
 function removeError(errorDiv, inputField) {
-    var index = errors.indexOf(inputField.parents('section')[0].id);
+    var index = getIndex(inputField); 
     if(index > -1) {
         errorDiv.empty();
         errorDiv.addClass('hidden');
@@ -782,6 +875,26 @@ function removeError(errorDiv, inputField) {
         errors.splice(index,1);
     }
 }
+
+
+function getIndex(inputField) {
+    var i = 0;
+    var index = -1;
+    errors.forEach(function(entry) {
+       if(entry[1] == inputField[0].id ) {
+           index = i;
+       } 
+       i++;
+    });
+    return index; 
+}
+
+
+
+
+
+
+
 
 // Check if an input field contains spaces only. If so, deletes spaces
 // so placeholder text appears and returns true. Otherwise retursn false. 
@@ -805,50 +918,10 @@ function showRemainingChars(spanId, inputField, maxLength) {
 
 
 // Check if a URL is valid
-// source: http://bit.ly/2jE77zz
 function isURL(str) {
-  console.log("Inside is URL");
   var pattern = new RegExp(/((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/); 
   return pattern.test(str);
 }
 
-/* Removes hidden class from errorDiv
-/* Adds a p tag as a child of errorDiv, with message
- */
-/*function displayError(errorDiv, message) {
-        console.log("in display error 2");
-    errorDiv.empty(); // clear previous errors
-    safeRemoveClass(errorDiv, 'hidden');
-    errorDiv.append("<p>" + message + "</p>");
-}*/
-
-/* Adds hidden class to errorDiv
-/* Removes all children from errorDiv
- */
-/*function removeError(errorDiv) {
-    errorDiv.empty();
-    safeAddClass(errorDiv,'hidden');
-}*/
-
-/* element: An html element node
- * theClass: the name of a class
- * Add class theClass to element
- */
-function safeAddClass(element, theClass) {
-    if(!element.hasClass(theClass) ) {
-        element.addClass(theClass);
-    }
-}
-
-
-/* element: An html element node
- * theClass: the name of a class
- * Removes class theClass from element
- */
-function safeRemoveClass(element, theClass) {
-    if(element.hasClass(theClass) ) {
-        element.removeClass(theClass);
-    }
-}
 
 
