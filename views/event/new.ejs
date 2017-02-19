@@ -9,13 +9,12 @@
     
     <form action="/events" 
           method="POST" 
-          enctype="multipart/form-data"
+          enctype="multipart/form-data" 
           onSubmit="return(validate(this));"
           novalidate >
         
         <h1 class="addEventTitle">Add an Event</h1>
         <hr class="firsthr"> 
-
 
         <!---------------------------------------- SIDEBAR -------------------------------------->  
         <div class="sidebar col-md-3"> 
@@ -72,7 +71,12 @@
                 <div class="form-group">
                     <label for="name" class="required">Event Title</label>
                     <!-- INPUT FIELD -->
-                    <input  id="name" name="name" type="text" class="form-control req"placeholder="Harry Potter's 20th Birthday Bash">
+                    <% if(typeof formdata !== "undefined") { %>
+                        <input  id="name" name="name" type="text" class="form-control req" value="<%= formdata.name %>">
+                    <% } else { %>
+                        <input  id="name" name="name" type="text" class="form-control req" placeholder="Harry Potter's 20th Birthday Bash">
+                    <% } %>
+                    
                     <!-- TOOLTIP -->
                     <p id="nameTip" class="tip hidden"> Remaining: <span id="nameCharsLeft"></span></p>
                     <!-- ERROR BOX -->

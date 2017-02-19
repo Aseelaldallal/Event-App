@@ -29,9 +29,17 @@
     <!-- SETUP FLASH MESSAGES -->
     
     <div class="container">
-        <% if(error && error.length > 0) { %>
+        <% if(error && error.length > 0 ) { %>
             <div class="alert alert-danger">
-                  <strong> <%= error %> </strong> 
+                <% if(error.length === 1) { %>
+                   <strong> <%= error %> </strong>
+                <% } else { %>
+                    <ul>
+                        <% error.forEach(function(err) { %>
+                            <li> <strong> <%= err %> </strong></li>
+                        <% }) %>
+                    </ul>
+                <% } %> 
             </div>
         <% } 
         if(success && success.length > 0) { %>

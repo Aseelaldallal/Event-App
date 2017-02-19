@@ -43,8 +43,7 @@ router.get("/", function(req,res) {
 // DISPLAY FORM TO CREATE A NEW EVENT
 // Only logged in user can see this form
 
-//router.get("/new", middleware.isLoggedIn, function(req,res) {  
-router.get("/new", function(req,res) { 
+router.get("/new", middleware.isLoggedIn, function(req,res) {  
     res.render("event/new"); 
 });
 
@@ -52,16 +51,9 @@ router.get("/new", function(req,res) {
 
 // UPDATE DATABASE WITH NEWLY CREATED EVENT
 // Only logged in user can create event
+// User input is sanitized
 
-router.post("/", middleware.isLoggedIn, upload.single('image'), function(req,res) { 
-    
-    console.log("REQUEST BODY: " , req.body);
-    // Remove Empty Fields
-    for(var key in req.body) {
-        if(req.body[key] == "") {
-            req.body[key] = undefined;
-        } 
-    }
+router.post("/", middleware.isLoggedIn, upload.single('image'), middleware.sanitizeUserInput, middleware.validateNewEvent, function(req,res) { 
     
     var filepath = undefined;
     if(req.file) {
@@ -93,8 +85,6 @@ router.post("/", middleware.isLoggedIn, upload.single('image'), function(req,res
         }
     };
     
-    console.log("NEW EVENT: ", newEvent);
-    
     Event.create(newEvent, function(err, newEvent) {
         if(err) {
             req.flash("error", err);
@@ -115,7 +105,6 @@ router.post("/", middleware.isLoggedIn, upload.single('image'), function(req,res
 // DISPLAY DETAILS OF SPECIFIC EVENT
 
 router.get("/:id", function(req,res) {
-
    Event.findById(req.params.id, function(err, foundEvent) {
         if(err) {
            console.log(err);

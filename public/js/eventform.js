@@ -2,8 +2,10 @@
 /* global $ */
 /* global google */
 
-var place; // move this to event section later
-var picklist; 
+
+/* --------------------- GLOBAL -------------------- */
+
+
 var map;
 
 /* ------------------- CONSTANTS ------------------ */
@@ -45,8 +47,7 @@ function validate(form) {
         $(window).scrollTop($(idName).offset().top);
         return false;
     }
-    // Do more validation here -- check for empty fields that were skipped during instant validation
-    return false;
+    return true;
 }
 
 
@@ -58,6 +59,7 @@ function validate(form) {
 // 2. Add Validation Listeners to Input Fields
 $(document).ready(function() {
    
+
     eventTitleSetup();
     eventDateSetup();
     eventTimeSetup(); 
@@ -96,7 +98,7 @@ function eventTitleSetup() {
         $('#nameTip').addClass('hidden');
         if(checkIfEmptyField($('#name'))) {
             displayError($('#nameError'), $('#name'), "This field is required");
-        };
+        }
     });
     
     // Let user know how many characters remaining dynamically
@@ -155,13 +157,13 @@ function eventDateSetup() {
         var error = ""; 
         
         if(checkIfEmptyField($('#date'))) {
-            error = "This field is Required"
+            error = "This field is Required";
         } else if(eventDate == "Invalid Date") {
-            error = "Invalid Date. Date must be in the format yyyy-mm-dd"
+            error = "Invalid Date. Date must be in the format yyyy-mm-dd";
         } else if( eventDate < today ) {
-            error = "You cannot post past events"
+            error = "You cannot post past events";
         } else if (eventDate > (new Date(oneYearFromToday))) {
-            error = "You can only post events happening within the next year"
+            error = "You can only post events happening within the next year";
         } 
         
         if(error != "") {
@@ -191,7 +193,7 @@ function eventTimeSetup() {
         timeFormat: 'h:mm p',
         dynamic: false,
         dropdown: false
-    }
+    };
     
     starttime.timepicker(options);
     endtime.timepicker(options);
@@ -248,7 +250,7 @@ function eventLocationSetup() {
     });
     
     // Adjust Map Height
-    var locDHeight = $('#locationDetailsText').height() // set map height
+    var locDHeight = $('#locationDetailsText').height(); // set map height
     $("#mapContainer").height(locDHeight);
     
 
@@ -266,7 +268,7 @@ function eventLocationSetup() {
     
     // Update Address Details and Map when user types address
     autocomplete.addListener('place_changed', function() {
-        place = autocomplete.getPlace();
+        var place = autocomplete.getPlace();
         if(place && place.geometry) {
             fillOutDetailedAddressForm(place);
             displayMap(place);
@@ -643,8 +645,8 @@ function handleFiles(files) {
       $('#fileRemove').trigger('click');
       var uploadedFileSize = (file.size/1000000).toFixed(2);
       var maxFileSize = MAX_FILE_SIZE/1000000;
-      var msg = "Maximum file size is " + maxFileSize + ". Your file size is " + uploadedFileSize + " MB. Upload another image, or click 'remove image' to clear this error."; 
-      displayError($('#imageError'), $('#image'), msg); 
+      var amsg = "Maximum file size is " + maxFileSize + ". Your file size is " + uploadedFileSize + " MB. Upload another image, or click 'remove image' to clear this error."; 
+      displayError($('#imageError'), $('#image'), amsg); 
       return; 
   }
   removeError($('#imageError'), $('#image'));
@@ -877,6 +879,8 @@ function removeError(errorDiv, inputField) {
 }
 
 
+// Returns index of inputField in errors array. Returns -1
+// if inputField is not in errors array
 function getIndex(inputField) {
     var i = 0;
     var index = -1;
@@ -888,12 +892,6 @@ function getIndex(inputField) {
     });
     return index; 
 }
-
-
-
-
-
-
 
 
 // Check if an input field contains spaces only. If so, deletes spaces
