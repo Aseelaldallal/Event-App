@@ -10,6 +10,7 @@ var express         = require("express"),
     Event           = require("../models/event"),
     middleware      = require("../middleware"), // If we require a directory, it automatically requires index.js
     multer          = require("multer"),
+    fs              = require('fs'),
     router          = express.Router();
 
 
@@ -18,7 +19,7 @@ var storage =   multer.diskStorage({
     callback(null, './public/uploads/eventImages');
   },
   filename: function (req, file, callback) {
-    callback(null, req.user._id + Date.now() + file.originalname);
+    callback(null, req.user._id + Date.now());
   }
 });
 
@@ -53,11 +54,11 @@ router.get("/new", middleware.isLoggedIn, function(req,res) {
 // Only logged in user can create event
 // User input is sanitized
 
-router.post("/", middleware.isLoggedIn, upload.single('image'), middleware.sanitizeUserInput, middleware.validateNewEvent, function(req,res) { 
-    
+router.post("/", middleware.isLoggedIn, upload.single('image'),middleware.validateNewEvent,  middleware.sanitizeUserInput, function(req,res) { 
+  
     var filepath = undefined;
     if(req.file) {
-        filepath = req.file.path.substr(7); // Substr to remove "/public"
+        filepath = req.file.path.substr(6); // Substr to remove "/public"
     }
     
     var newEvent = {
@@ -135,10 +136,51 @@ router.get("/:id/edit", middleware.checkEventOwnership, function(req,res) {
 
 /* --------------------------- UPDATE ROUTE -------------------------- */
 
-// UPDATE SPECIFIC EVENT IN DATABASE
+// UPDATE SPECIFIC EVENT IN DATABASE 
 // Only user who owns the event can edit the event in the db
-router.put("/:id", middleware.checkEventOwnership, function(req, res) {
-    Event.findByIdAndUpdate(req.params.id, req.body.event, function(err, foundEvent) {
+router.put("/:id", upload.single('image'), middleware.checkEventOwnership, middleware.validateNewEvent, middleware.sanitizeUserInput, function(req, res) {
+    console.log("------------------------------------------");
+    console.log("The old image should be stored in req.body.imageSource");
+    console.log("req.body.imageSource: ", req.body.imageSource);
+    console.log("You should not see this in db, unless user left it");
+    console.log("------------------------------------------");
+    
+    var filepath = undefined;
+    
+    if(req.file) { // If user uploaded a new image
+        filepath = req.file.path.substr(6); // Substr to remove "/public"
+    } else if(req.body.hiddenImage) { // If user kept the same image
+        var index = req.body.hiddenImage.lastIndexOf("/uploads");
+        filepath = req.body.hiddenImage.substr(index);
+    }
+    
+    // If the user uploaded a new image, or simply deleted the old image and didn't add a new one
+    if(req.file || (!req.file && !req.body.hiddenImage) ) {
+        console.log("REQ.FILE: ", req.file);
+        console.log("!REQ.FILE: ", !req.file);
+        console.log("!req.body.hiddenImage: ", !req.body.hiddenImage); 
+        console.log("Req.body.hiddenimage: ", req.body.hiddenImage); 
+        console.log("User deleted image or replaced it");
+        if(req.body.imageSource) {
+            var imagePath = "public" + req.body.imageSource;
+            fs.unlink(imagePath, function(err) {
+                if(err) {
+                   console.log("Couldn't Delete image File: ", err);
+                } else {
+                    console.log("Successfully deleted image");
+                }
+            });
+        }
+    }
+    
+    console.log("heres filepath of image: ", filepath);
+    
+    req.body.mapCenter = req.body.showMap; 
+    req.body.image = filepath;
+
+    console.log("REQ.BODY.IMAGE: ", req.body.image);
+    
+    Event.findByIdAndUpdate(req.params.id, req.body, function(err, foundEvent) {
        if(err) {
            console.log(err);
            req.flash("error", err);
@@ -160,8 +202,19 @@ router.delete("/:id", middleware.checkEventOwnership, function(req,res) {
            req.flash("error", err);
            res.redirect("back");
        } else {
-           req.flash("success", "Your event has been deleted");
-           res.redirect("/events");
+           if(removedEvent.image) { // If there is an associated image
+               var imagePath = "public" + removedEvent.image;
+               fs.unlink(imagePath, function(err) {
+                   if(err) {
+                       console.log("Couldn't Delete image File: ", err);
+                   }
+                    req.flash("success", "Your event has been deleted");
+                    res.redirect("/events");
+               });
+           } else {
+                req.flash("success", "Your event has been deleted");
+                res.redirect("/events");
+           }
        }
     });
 });

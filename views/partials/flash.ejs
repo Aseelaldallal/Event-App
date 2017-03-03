@@ -1,0 +1,20 @@
+    <div class="container">
+        <% if(error && error.length > 0 ) { %>
+            <div class="alert alert-danger">
+                <% if(error.length === 1) { %>
+                   <strong> <%= error %> </strong>
+                <% } else { %>
+                    <ul>
+                        <% error.forEach(function(err) { %>
+                            <li> <strong> <%= err %> </strong></li>
+                        <% }) %>
+                    </ul>
+                <% } %> 
+            </div>
+        <% } 
+        if(success && success.length > 0) { %>
+            <div class="alert alert-success">
+                  <strong> <%= success %> </strong>
+            </div>
+        <% } %>
+    </div>

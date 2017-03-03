@@ -1,8 +1,11 @@
 <% include ../partials/header %>
 
+
+<script type="text/javascript" src="/js/showpage.js"></script>
+
 <div class="container bottomed">
 
-        <h1 class="eventTitle"><%= event.name %></h1>
+        <h1 class="eventTitle"><span class="possibleLongInput"><%- event.name %></span></h1>
         
         <hr class="firsthr">
         
@@ -15,32 +18,21 @@
                 <!----------- DATE ----------->
                 
                 <dl class="list-group-item">
-                   <dt>Date</dt>
+                   <dt>Date & Time</dt>
                    <dd id="show-eventDate"></dd>
-                   <script> 
-                        var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-                        var day = <%=event.date.getDay(); %>
-                        var date = days[day] + ",  " + "<%=event.date.toDateString().substring(4) %>"
-                        $('#show-eventDate').text(date);
-                   </script>
+                   <input id="hiddenDate" type="hidden" value="<%=event.date%>"/> <!-- for js script access -->
+                   <% if(event.endtime) { %>
+                       <dd><%=event.starttime %> - <%=event.endtime %></dd>
+                    <% } else { %>
+                       <dd><%=event.starttime %></dd>
+                    <% } %>
                 </dl>
                 
-                <!-------- START TIME -------->
-                <dl class="list-group-item">
-                   <dt>Start Time</dt>
-                   <dd><%=event.starttime %></dd>
-                </dl>
-                
-                <!--------- END TIME --------->
-                <dl class="list-group-item">
-                   <dt>End Time</dt>
-                   <dd><%=event.endtime %></dd>
-                </dl>
-                
+
                 <!--------- LOCATION --------->
                 <dl class="list-group-item">
                    <dt>Location</dt>
-                   <dd><%=event.venueName%></dd>
+                   <dd><span class="possibleLongInput"><%-event.venueName%></span></dd>
                    <% var address;
                       if (event.unit && event.address) {
                           address = event.unit + " - " + event.address;
@@ -50,49 +42,54 @@
                           address = event.unit; 
                       }
                     %>
-                    <dd><%=address%></dd>
+                    <dd><span class="possibleLongInput"><%-address%></span></dd>
                    <dd><%=event.city%></dd>
                    <dd><%=event.province%></dd>
                    <dd><%=event.postalCode%></dd>
                 </dl>
                 
                 <!------------ MAP ----------->
-                <dl class="list-group-item">
-                    
-                    <div id="showMapp"></div>
-                    <script>
-                        var mapLatLngString = "<%=event.mapCenter%>";
-                        var latLngRawArray = mapLatLngString.split(",");
-                        var lat = latLngRawArray[0].substr(1);
-                        var lng = latLngRawArray[1].substring(0, latLngRawArray[1].length - 1 );
-                        var latlngObj = new google.maps.LatLng(lat, lng);
-                        map = new google.maps.Map(document.getElementById('showMapp'));
-                        map.setCenter(latlngObj);
-                        map.setZoom(15);
-                    </script>
-                </dl>
+                <% if(event.mapCenter) { %>
+                    <dl class="list-group-item">
+                        <div id="showMapp"></div>
+                        <input id="mapCenter" type="hidden" value="<%=event.mapCenter%>" />
+                    </dl>
+                <% } %> 
+                
+                <!--------- EVENT COST --------->
+                
+                <% if(event.eventCost) { %>
+                    <dl class="list-group-item">
+                        <dt>Event Cost</dt>
+                        <dd><span class="possibleLongInput"><%= event.eventCost %></span></dd>
+                    </dl>   
+                <% } %>
+                
+                <!---------- REGISTERATION --------->
+                
+                <% if(event.registerationURL) { %>
+                    <dl class="list-group-item">
+                       <dt>Buy Tickets / Register At</dt>
+
+                       <dd><a class="possibleLongInput" href="<%=event.registerationURL%>"><%=event.registerationURL %></a></dd>
+                    </dl>
+                <% } %>
                 
                 <!---------- Website --------->
                 
-                <dl class="list-group-item">
-                   <dt>Website</dt>
-                   <dd><%=event.eventURL %></dd>
-                </dl>
-                
-                <!------ Ticket Sale URL ----->
-                
-                <dl class="list-group-item">
-                   <dt>Ticket Sale URL</dt>
-                   <dd><%=event.ticketURL %></dd>
-                </dl>
+                <% if(event.eventURL) { %>
+                    <dl class="list-group-item">
+                       <dt>Event Website</dt>
+                       <dd><a class="possibleLongInput" href="<%=event.eventURL%>"><span class="showPageText"><%=event.eventURL %></span></a></dd>
+                    </dl>
+                <% } %>
                 
                 <!--------- Organizer -------->
 
                  <dl class="list-group-item">
                    <dt>Organizer Details</dt>
-                   <dd> Name: <%=event.organizerName %></dd>
-                   <dd> Phone: <%=event.organizerPhone %></dd>
-                   <dd> Email: <%=event.organizerEmail %></dd>
+                   <dd><span class="possibleLongInput"> Name: <%=event.organizerName %></span></dd>
+                   <dd><span class="possibleLongInput">Email: <a href="mailto:<%=event.organizerEmail %>"><%=event.organizerEmail %></a></span></dd>
                 </dl>
                 
 
@@ -107,30 +104,33 @@
                 
             <div class="list-group">  
                 
+                <!----------- AUTHOR ---------->
+                <% if(currentUser && currentUser._id.equals(event.author.id)) { %>    
+                    <dl class="list-group-item">  
+                         <!-- Only user who owns event can see edit and delete buttons -->
+                              <a href="/events/<%=event._id%>/edit" class="btn btn-warning btn-md">Edit</a>
+                              <form class="inline" action="/events/<%=event._id%>?_method=DELETE" method="POST">
+                                    <button class="inline btn btn-danger btn-md">Delete</button>
+                              </form>
+                    </dl>
+                <% } %>
+                
                 <!-------- DESCRIPTION ------->
                 
                 <dl class="list-group-item">
                      <dt>Event Description</dt>
-                     <dd><%=event.description %></dd>
+                     <dd id="eventDescDisplay"><span class="possibleLongInput"><%-event.description %></span></dd>
                 </dl>
+                
+                
                 
                 <!------------ IMAGE ---------->
-                <dl class="list-group-item">
-                     <dd><img src="../<%=event.image%>"</dd>
-                </dl>       
+                <% if(event.image) { %>
+                    <dl class="list-group-item">
+                         <dd class="center"><img id="sEventImage" src="../..<%=event.image%>"</dd>
+                    </dl>       
+                <% } %>
                 
-                <!----------- AUTHOR ---------->
-                        
-                <dl class="list-group-item">  
-                     <h5><Strong>Submitted by: </Strong> <%= event.author.username %> </h5>
-                     <!-- Only user who owns event can see edit and delete buttons -->
-                     <% if(currentUser && currentUser._id.equals(event.author.id)) { %> 
-                          <a href="/events/<%=event._id%>/edit" class="btn btn-warning btn-md">Edit</a>
-                          <form class="inline" action="/events/<%=event._id%>?_method=DELETE" method="POST">
-                                <button class="inline btn btn-danger btn-md">Delete</button>
-                          </form>
-                     <% } %>
-                </dl>
                 
             </div> <!--list-group end-->    
                 
@@ -139,6 +139,7 @@
 
 
 </div> <!-- CONTAINTER END -->
+
 
 
 <% include ../partials/footer %>

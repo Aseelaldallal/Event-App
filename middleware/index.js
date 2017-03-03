@@ -7,12 +7,14 @@
 
 var Event          = require("../models/event"),
     sanitizeHtml   = require('sanitize-html'),
-    indicative     = require('indicative');
+    indicative     = require('indicative'),
+    fs             = require('fs');
 
 
 
 var middlewareObj = {}; 
 
+const MAX_DESC_LENGTH = 2200;
 
 
 /* ---------------------------- FUNCTIONS ----------------------------- */
@@ -20,6 +22,7 @@ var middlewareObj = {};
 
 // Checks whether user is logged in. Redirects to events if not logged in
 middlewareObj.isLoggedIn = function(req,res,next) {
+
     if(req.isAuthenticated()) {
         return next();
     } 
@@ -31,6 +34,7 @@ middlewareObj.isLoggedIn = function(req,res,next) {
 
 // Checks whether the event stored in the request belongs to the currently logged in user
 middlewareObj.checkEventOwnership = function(req,res,next) {
+   
     if(req.isAuthenticated()) {
         Event.findById(req.params.id, function(err, foundEvent) { // Find the event
            if(err) {
@@ -57,12 +61,11 @@ middlewareObj.checkEventOwnership = function(req,res,next) {
 
 // Sanitize html: https://www.npmjs.com/package/sanitize-html
 middlewareObj.sanitizeUserInput = function(req,res,next) {
+    
     for(var key in req.body) {
-        req.body[key] = req.body[key].trim(); 
-        req.body[key] = sanitizeHtml(req.body[key], { allowedTags: [], allowedAttributes:[]});
-        if(req.body[key] == "") {
-            req.body[key] = undefined;
-        } 
+        if(req.body[key]) {
+            req.body[key] = sanitizeHtml(req.body[key], { allowedTags: [], allowedAttributes:[]});
+        }
     }
     return next(); 
 };
@@ -72,7 +75,18 @@ middlewareObj.sanitizeUserInput = function(req,res,next) {
 // there is a bug in indicative before_offset_of. I fixed it. If you download new version
 // test, if bug, fix again
 middlewareObj.validateNewEvent = function(req,res,next) {
-
+        
+        for(var key in req.body) {
+            req.body[key] = req.body[key].trim(); 
+            if(req.body[key] == "") {
+                req.body[key] = undefined;
+            } 
+        }
+        
+        //Count the number of new line characters (see http://bit.ly/2mKBW4K)
+        var numberOfLineBreaks = (req.body.description.match(/\n/g)||[]).length;
+        var maxLength = MAX_DESC_LENGTH + numberOfLineBreaks;
+        var descriptionRule = 'required|min:200|max:' + maxLength;
         
         indicative.extend('time', time, 'Invalid time');
         indicative.extend('postalcode', postalcode, 'Invalid Postal Code');
@@ -108,21 +122,21 @@ middlewareObj.validateNewEvent = function(req,res,next) {
         
         const rules = {
             name: 'required|max:130',
-            date: 'required|date|date_format:YYYY-MM-DD|before_offset_of:1,year|after_offset_of:0,days',
+            date: 'required|date|date_format:YYYY-MM-DD|before_offset_of:1,year|after_offset_of:-1,days',
             starttime: 'required|time',
             endtime: 'time',
             address: 'required',
             city: 'required',
             province: 'required|canadianprovince',
             postalCode: 'postalcode',
-            description: 'required|min:200|max:2200',
-            eventCost: 'required|currency500',
+            description: descriptionRule,
+            eventCost: 'required',
             eventURL: 'url',
             registerationURL: 'url',
             organizerName: 'required',
             organizerEmail: 'required|email'
         };
-        
+       
         const data = {
             name: req.body.name,
             date: req.body.date,
@@ -140,13 +154,34 @@ middlewareObj.validateNewEvent = function(req,res,next) {
             organizerEmail: req.body.organizerEmail
         };
         
+        var validationErrors = []; 
+        
         indicative
         .validateAll(data, rules, messages)
         .then(function() { // validation success
-            return next(); 
+            if(req.file) {
+                var msg = checkIfImgFileValid(req.file);
+                if(msg != "") {
+                    validationErrors.push(msg);
+                    deleteUploadedFile(req.file);
+                    req.flash("error", validationErrors);
+                    res.redirect("back");
+                } else {
+                    return next();
+                }
+            } else {
+                return next();
+            }
         })
         .catch(function(errors) { // validation fail
             var validationErrors = getValidationErrors(errors);
+            if(req.file) {
+                var msg = checkIfImgFileValid(req.file);
+                if(msg != "") {
+                    validationErrors.push(msg);
+                }
+            }
+            deleteUploadedFile(req.file);
             req.flash("error", validationErrors);
             res.redirect("back"); 
         });
@@ -158,6 +193,19 @@ middlewareObj.validateNewEvent = function(req,res,next) {
 
 /* ------------------------- HELPER FUNCTIONS ------------------------- */
 
+// Deletes file from server
+function deleteUploadedFile(file) {
+    console.log("In delete uploaded file");
+    if(file) {
+        fs.unlink(file.path, function(err) {
+           if(err) {
+               console.log("Couldn't Delete image File: ", err);
+           }
+        });
+    }
+}
+
+
 // Errors in an array of objects. Each object has a field, validation, and message. This function
 // extracts message from each object, and compiles them into one string. It then returns the string.
 function getValidationErrors(errors) {
@@ -167,6 +215,35 @@ function getValidationErrors(errors) {
     })
     return messages;
 }
+
+function fileSizeOK(file) {
+    var maxFileSize = 1000000;
+    if(file.size < maxFileSize) {
+        return true;
+    }
+    return false;
+}
+
+function fileTypeOK(file) {
+    var imageType = /^image\//;
+    if (imageType.test(file.mimetype)) {
+        return true;
+    }
+    return false;
+}
+
+function checkIfImgFileValid(file) {
+    var msg = "";
+    if(!fileTypeOK(file)) {
+        msg = "Invalid File Type. Please upload an image file";
+    } else if(!fileSizeOK(file)) {
+        var uploadedFileSize = (file.size/1000000).toFixed(2);
+        msg = "File too large. Max File Size is 1 MB. Your file size is " + uploadedFileSize + " MB.";
+    }
+    return msg;
+}
+
+
 
 /* ------------------------ EXTENDING INDICATIVE ----------------------- */
 

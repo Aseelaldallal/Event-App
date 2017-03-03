@@ -1,7 +1,7 @@
-// CONSIDER ADDING TINYMCE FOR DESC
+
 /* global $ */
 /* global google */
-
+/* global moment */
 
 /* --------------------- GLOBAL -------------------- */
 
@@ -25,6 +25,7 @@ var errors = [];
 
 /* -------------- VALIDATE ON SUBMIT --------------- */
 
+
 function validate(form) {
     var reqFieldsCollection = document.getElementsByClassName('req');
     Array.prototype.forEach.call(reqFieldsCollection, function(field) {
@@ -47,6 +48,8 @@ function validate(form) {
         $(window).scrollTop($(idName).offset().top);
         return false;
     }
+    editPageImageProcessing(form); 
+    console.log("Done with edit Page Image processing");
     return true;
 }
 
@@ -58,7 +61,6 @@ function validate(form) {
 // 1. Setup Input Fields
 // 2. Add Validation Listeners to Input Fields
 $(document).ready(function() {
-   
 
     eventTitleSetup();
     eventDateSetup();
@@ -73,8 +75,38 @@ $(document).ready(function() {
 
 });
 
+/* ---------- EDIT PAGE SPECIFIC FUNCTION ---------- */
 
- 
+// This function deals with edit page, changing images
+// Its going to create a hidden input field that is useful for the edit route,
+// but useless for the new route -- which is what we want here.
+function editPageImageProcessing(form) {
+    // If the user didn't change the image
+                 // preview would be NOT hidden
+                 // there would not be a req.file (document.getElementById('image').val == '')
+                 // we want a hiddenimage input field
+    // If the user uploaded a new image
+                 // preview would be NOT hidden
+                 // there would be a req.file
+    // If the user deleted the image and didn't add a new one
+                 // preview would be hidden
+                 // there would be no req.file
+                 // we don't want a hidden image input field
+    var aFile = document.getElementById('image').value;
+    var preview = document.getElementById('preview');
+    if(aFile == '' && !$(preview).hasClass('hidden')) {
+        var input = document.createElement('input');
+        $(input).attr("name", "hiddenImage");
+        $(input).attr("id", "hiddenImage");
+        $(input).attr("type", "hidden");
+        var myImage = document.getElementById('previewImage');
+        if(myImage) {
+            $(input).attr("value", myImage.src);
+        }
+        $('form').append(input); 
+    }
+}
+
 /* ----------------- EVENT TITLE ------------------ */
 
 // Tooltip:
@@ -123,10 +155,11 @@ function eventTitleSetup() {
 
 function eventDateSetup() {
     
-    
     // Dealing with color: By default, HTML 5 inserts yyyy-mm-dd into input field, meaning there is no placeholder
     // and text will be black. Change it to placeholder color.
-    $('#date').addClass('placeholderColor');
+    if($('#date').val() == '') {
+        $('#date').addClass('placeholderColor');
+    }
     
     $('#date').on('change', function() {
        if($('#date').val() == '') {
@@ -136,12 +169,6 @@ function eventDateSetup() {
        }
     });
      
-    // Add min and max attributes to html
-    var today = new Date(Date.now()),
-        todayDate = today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate(),
-        oneYearFromToday = (today.getFullYear() + 1) + "-" + (today.getMonth() + 1) + "-" + today.getDate();
-    $('#date').attr("min", todayDate);
-    $('#date').attr("max", oneYearFromToday);
         
     // When date has focus, display tooltip, hide errors
     $('#date').on('focus', function() {
@@ -153,16 +180,19 @@ function eventDateSetup() {
     $('#date').on('blur', function() {
         
         var userInput = $.trim($('#date').val());
-        var eventDate = new Date(userInput);
+        var userInputMoment = moment(userInput);
+        var todayMoment = moment();
+        var oneYearFromTodayMoment = todayMoment.clone().add(1,'year'); 
+
         var error = ""; 
-        
+          
         if(checkIfEmptyField($('#date'))) {
             error = "This field is Required";
-        } else if(eventDate == "Invalid Date") {
+        } else if(!userInputMoment.isValid()) {
             error = "Invalid Date. Date must be in the format yyyy-mm-dd";
-        } else if( eventDate < today ) {
+        } else if( userInputMoment.diff(todayMoment, 'days') < 0 ) {
             error = "You cannot post past events";
-        } else if (eventDate > (new Date(oneYearFromToday))) {
+        } else if ( oneYearFromTodayMoment.diff(userInputMoment, 'days') < 0 ) {
             error = "You can only post events happening within the next year";
         } 
         
@@ -604,6 +634,7 @@ function eventImageSetup() {
             $('#dropbox').removeClass('hidden');
             $('#preview').addClass('hidden');
             $('#fileSelect').text('Upload Image');
+            resetFileInputField();
         }
         removeError($('#imageError'), $('#image'));
     });
@@ -632,14 +663,15 @@ function drop(e) {
 }
 
 function handleFiles(files) { 
-    console.log("In handle files");
+
   var file = files[0];
-  console.log("FILE SIZE: " + file.size);
+
   var imageType = /^image\//;
   if (!imageType.test(file.type)) {
     $('#fileRemove').trigger('click');
     var msg = "The file you tried to upload is not an image. It will not be uploaded. Upload another image, or click 'remove image' to clear this error.";
     displayError($('#imageError'), $('#image'), msg); 
+    resetFileInputField();
     return;
   } else if (file.size > MAX_FILE_SIZE) {
       $('#fileRemove').trigger('click');
@@ -647,30 +679,29 @@ function handleFiles(files) {
       var maxFileSize = MAX_FILE_SIZE/1000000;
       var amsg = "Maximum file size is " + maxFileSize + ". Your file size is " + uploadedFileSize + " MB. Upload another image, or click 'remove image' to clear this error."; 
       displayError($('#imageError'), $('#image'), amsg); 
+      resetFileInputField();
       return; 
+  } else {
+      removeError($('#imageError'), $('#image'));
+      var img = document.createElement("img");
+      img.id = "uploadedImage";
+      img.file = file;
+      img.onload = function() {
+        adjustImageSize(img);
+      };
+      $('#dropbox').addClass('hidden');
+      $('#preview').removeClass('hidden');
+      $('#preview').empty();
+      $('#preview').append(img);
+      $('#fileSelect').text('Replace Image');
+      var reader = new FileReader();
+      reader.onload = (function(aImg) {
+        return function(e) {
+          aImg.src = e.target.result;
+        };
+      })(img);
+      reader.readAsDataURL(file);
   }
-  removeError($('#imageError'), $('#image'));
-  
-  var img = document.createElement("img");
-  img.id = "uploadedImage";
-  img.file = file;
-  img.onload = function() {
-    adjustImageSize(img);
-  };
-
-  $('#dropbox').addClass('hidden');
-  $('#preview').removeClass('hidden');
-  $('#preview').empty();
-  $('#preview').append(img);
-  $('#fileSelect').text('Replace Image');
-
-  var reader = new FileReader();
-  reader.onload = (function(aImg) {
-    return function(e) {
-      aImg.src = e.target.result;
-    };
-  })(img);
-  reader.readAsDataURL(file);
 }
 
 $(window).on('resize', function() {
@@ -743,23 +774,7 @@ function costSetup() {
     $('#eventCost').on('blur', function() {
         if(checkIfEmptyField($('#eventCost'))) {
             displayError($('#eventCostError'), $('#eventCost'), "This field is required");
-        } else {
-            var cost = $('#eventCost').val();
-            if(cost.substr(0,1) === "$") {
-                cost = $.trim(cost.substr(1));
-            }
-            var parsedCost = parseInt(cost, 10);
-            if(isNaN(parsedCost)) {
-                displayError($('#eventCostError'), $('#eventCost'), "Invalid Cost");
-            } else {
-                var pattern = new RegExp(/^[0-9][0-9]{0,3}\.{0,1}[0-9]{0,2}$/);
-                if(!pattern.test(cost)) {
-                    displayError($('#eventCostError'), $('#eventCost'), "Invalid Cost. Cost is in CAD. Use this form: x.xx");
-                } else if(cost > MAX_EVENT_COST){
-                    displayError($('#eventCostError'), $('#eventCost'), "Too expensive. We don't support events costing more than $" + MAX_EVENT_COST);
-                }
-            } 
-        }
+        } 
     });
     $('#eventCost').on('focus', function() {
         removeError($('#eventCostError'), $('#eventCost'));
@@ -769,16 +784,16 @@ function costSetup() {
 
 // Ensure user types in valid url
 function regURLSetup() {
-    $('#regURL').on('blur', function() {
-        if(!checkIfEmptyField($('#regURL'))) {
-            var regURL = $('#regURL').val(); 
+    $('#registerationURL').on('blur', function() {
+        if(!checkIfEmptyField($('#registerationURL'))) {
+            var regURL = $('#registerationURL').val(); 
             if(!isURL(regURL)) {
-                displayError($('#regURLError'), $('#regURL'), regURL + " is not a valid URL" );
+                displayError($('#registerationURLError'), $('#registerationURL'), regURL + " is not a valid URL" );
             }
         } 
     });
-    $('#regURL').on('focus', function() {
-        removeError($('#regURLError'), $('#regURL'));
+    $('#registerationURL').on('focus', function() {
+        removeError($('#registerationURLError'), $('#registerationURL'));
     });
 }
 
@@ -833,6 +848,11 @@ function limitLength(inputField, inputLength) {
 
 /* --------------- HELPER FUNCTIONS --------------- */
 
+// reset image
+function resetFileInputField() {
+    $('#image').wrap('<form>').closest('form').get(0).reset();
+    $('#image').unwrap();
+}
 
 // errorDiv, inputField are JQuery Objects
 // message is a string
@@ -916,8 +936,9 @@ function showRemainingChars(spanId, inputField, maxLength) {
 
 
 // Check if a URL is valid
+// Regex Source
 function isURL(str) {
-  var pattern = new RegExp(/((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/); 
+  var pattern = new RegExp(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/); 
   return pattern.test(str);
 }
 

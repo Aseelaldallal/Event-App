@@ -2,47 +2,351 @@
 
 
 
+<script type="text/javascript" src="/js/editpage.js"></script>
+<script type="text/javascript" src="/js/eventform.js"></script>
+
 <div class="container">
     
     
-    <form action="/events/<%=event._id%>?_method=PUT" method="POST">
+    <form action="/events/<%=event._id%>?_method=PUT" 
+          method="POST"
+          enctype="multipart/form-data" 
+          onSubmit="return validate(this);"
+          novalidate >
+      
+        <h1 class="editEventTitle">Edit Event</h1>
+        <hr class="firsthr"> 
+
+        <!---------------------------------------- SIDEBAR -------------------------------------->  
+        <div class="sidebar col-md-3"> 
+            
+                
+                <section id="0_img">
+                    <div class="form-group ">
+                        
+                        <label for="fileElem">Event Image</label>
+                        
+                        <p class="imageTip"> Add an image that best represents your event</p>
+                        
+                        <input name="image" type="file" id="image" accept="image/*" style="display:none" onchange="handleFiles(this.files)">
+         
+                        <div id="imageBorder" >
+            	            <div id="imageContainer">
+            	                
+                        	    <div id="dropbox" class="hidden">
+                        	        <i class="fa fa-picture-o" aria-hidden="true"></i>
+                        	        <p> Drop image here or click to upload</p>
+                        	    </div>
+                        	    
+                        	    <input name="imageSource" id="imageSource" type="hidden" value="<%=event.image%>" />
+                        	    
+                        	    <div id="preview">
+                        	    </div>
+
+            	                <button id="fileSelect" class="btn btn-primary btn-block">Upload Image</button>
+            	                <button id="fileRemove" class="btn btn-primary btn-block">Remove Image</button>
+            	                
+            	            </div>
+                        </div> <!-- END OF imageBorder -->
+                        <div id="imageError" class="error"></div>
+                        <div id="imageRec" class="imageTip">
+                            <label>Image Recommendations:</label>
+                            <ul>
+                                <li> Max image size: 2 MB </li>
+                            </ul>
+                        </div>
+                        
+                    </div> <!-- END OF form-group -->
+                </section>
+             
         
-          <h1>Edit event</h1>
+        </div> <!-- END OF sidebar, col-md-3 -->
         
-          <div class="form-group">
-            <label for="eventName">Name</label>
-            <input name="event[name]" type="text" class="form-control" id="eventName" value="<%=event.name%>">
-          </div>
+        <!---------------------------------------- CONTENT -------------------------------------->  
+
+        
+        <div class="contentArea col-md-9">
+            
+            <!-------------------------- EVENT TITLE -------------------------->
+    
+         
+            <section id="1_name">
+                <div class="form-group">
+                    <label for="name" class="required">Event Title</label>
+                    <!-- INPUT FIELD -->
+                    <input  id="name" name="name" type="text" class="form-control req" value="<%=event.name%>">
+                    <!-- TOOLTIP -->
+                    <p id="nameTip" class="tip hidden"> Remaining: <span id="nameCharsLeft"></span></p>
+                    <!-- ERROR BOX -->
+                    <div id="nameError" class="error hidden">
+                    </div>
+                </div>
+            </section>
+    
+            <!---------------------- EVENT DATE AND TIME ---------------------->
+    
+            
+            <section id="2_timedate">
+                
+                <div class="row">
+                    
+                    <!--------- DATE --------->
+
+                    <section id="2a_date">
+                        <div class="form group col-md-4 col-sm-12 col-xs-12">
+                            <label for="theDateGroup" class="required">Date</label>   
+                            <!-- INPUT FIELD -->
+                            <div id="theDateGroup" class="input-group">
+                                <span class="input-group-addon" id="dateIcon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+                                <input name="eHiddenDate" id="eHiddenDate" type="hidden" value="<%=event.date%>"/>
+                            </div>
+                            <!-- ERROR BOX -->
+                            <div id="dateError" class="error hidden">
+                            </div>
+                        </div>  
+                    </section>
+                    
+                    <!------ START TIME ------>
+                    <section id="2b_start">
+                        <div class="form-group col-md-4 col-sm-6 col-xs-12">
+                            <label for="startTimeGroup" class="required">Start Time</label>  
+                            <!-- INPUT FIELD -->
+                            <div id="startTimeGroup" class="input-group">
+                                  <span class="input-group-addon" id="startIcon"><i class="fa fa-clock-o" aria-hidden="true"></i></span>
+                                  <input name="starttime" type="text" class="form-control req" id="starttime" value="<%=event.starttime%>" placeholder="7:00 AM" aria-describedby="startIcon" >
+                            </div>
+                            <!-- TOOLTIP -->
+                            <p id="startTip" class="tip hidden"></p>
+                            <!-- ERROR BOX -->
+                            <div id="starttimeError" class="error hidden">
+                            </div>
+                        </div> 
+                    </section>
+        
+                    <!------ END TIME ------>
+                    <section id="2c_end">
+                        <div class="form-group col-md-4 col-sm-6 col-xs-12">
+                            <label for="endTimeGroup">End Time</label>  
+                            <!-- INPUT FIELD -->
+                            <div id="endTimeGroup" class="input-group">
+                                  <span class="input-group-addon" id="endIcon"><i class="fa fa-clock-o" aria-hidden="true"></i></span>
+                                  <input name="endtime" type="text" class="form-control" id="endtime" value="<%=event.endtime%>" placeholder="7:00 AM" aria-describedby="endIcon" >
+                            </div>
+                            <!-- TOOLTIP -->
+                            <p id="endTip" class="tip hidden"> </p>
+                            <!-- ERROR BOX -->
+                            <div id="endtimeError" class="error hidden">
+                            </div>
+                        </div> 
+                    </section>
+                
+                </div> <!-- END OF row -->
+                
+            </section>
+    
+            <!------------------------- EVENT LOCATION ------------------------>  
+    
+         
+            <section id="3_location">
+                
+                <div class="form-group">
+                    
+                    <label for="locationContainer" class="required">Event Location</label>
+                
+                    <div id="locationContainer">
+                    
+                        <!---------- GOOGLE AUTOCOMPLETE ---------->
+                        <div id="locationSearch" class="form-group">
+                            <label for="location" class="sr-only">Search for your location</label>
+                            <input name="location" type="text" class="form-control" id="location" placeholder="Search for your address here">
+                        </div>
+                    
+                        <!----------- LOCATION DETAILS ------------>
+                        <div id="locationDetails" class="row">
+                            
+                            <!------ TEXT ------>
+                            <div id="locationDetailsText" class="col-md-6 col-sm-12">
+
+                                <!------ VENUE ------>
+                                <div class="form-group">
+                                    <label for="venueName" class="sr-only">Venue Name</label>
+                                    <input class="form-control" id="venueName" name="venueName" type="text" value="<%=event.venueName%>" placeholder="Venue Name - optional">
+                                </div>
+                                <!------ ADDRESS ------>
+                                <section id="3a_address"> <!-- This extra section here is for error handling purposes-->
+                                    <div class="form-group">
+                                        <label for="address" class="sr-only">Address</label>
+                                        <input class="form-control req" id="address" name="address" type="text" value="<%=event.address%>" placeholder="Address - required">
+                                    </div>
+                                </section>
+                                
+                                <div class="row">
+                                    <!------ UNIT ------>
+                                    <div class="form-group col-md-6 col-xs-6">
+                                        <label for="unit" class="sr-only">Unit Number</label>
+                                        <input class="form-control" id="unit" name="unit" type="text" value="<%=event.unit%>" placeholder="Unit No. - optional">
+                                    </div>
+                                    <!------ CITY ------>
+                                    <section id="3b_city">
+                                        <div class="form-group col-md-6 col-xs-6">
+                                            <label for="city" class="sr-only">City</label>
+                                            <input class="form-control req" id="city" name="city" type="text" value="<%=event.city%>" placeholder="City - required">
+                                        </div>
+                                    </section>
+                                </div> 
+                                
+                                <div class="row"> 
+                                    <!------ PROVINCE ------>
+                                    <section id="3c_province">
+                                        <div class="form-group col-md-6 col-xs-6">
+                                            <label for="province" class="sr-only">Province</label>
+                                            <input class="form-control req" id="province" name="province" type="text" value="<%=event.province%>" placeholder="Province - required" >
+                                        </div>
+                                    </section>
+                                    <!------ POSTAL CODE ------>
+                                    <section id="3d_postal">
+                                        <div class="form-group col-md-6 col-xs-6">
+                                            <label for="postalCode" class="sr-only">Postal Code</label>
+                                            <input class="form-control" id="postalCode" name="postalCode" type="text" value="<%=event.postalCode%>" placeholder="Postal Code" >
+                                        </div>
+                                    </section>
+                                </div>
+                                
+                                <a id="resetLocation"> Reset location</a>
+                                
+                                <div class="checkbox">
+                                    <input type="checkbox" id="showMap" name="showMap" value="<%=event.mapCenter%>"> <label class="checkboxLabel" for="showMap">Show Map on Page</label>
+                                </div>
+        
+                                <!-- ERROR BOX -->
+                                <div id="addressError" class="error hidden"></div>
+                                <div id="cityError" class="error hidden"></div>
+                                <div id="provinceError" class="error hidden"></div>
+                                <div id="postalCodeError" class="error hidden"></div>
+                                <!--<div id="locationDetailsError" class="error hidden"></div>-->
+                                <!-- TOOLTIP -->
+                                <p id="showMapTip" class="tip hidden"> Please make sure that the details on the map match the address you typed in. If they do not, uncheck the "Show Map"
+                                checkbox, as we were unable to find your address on the map. 
+                                </p>
+                                
+                            </div> <!-- locationDetailsText row end -->
+                    
+                            <!------ MAP ------>
+                            <div id="mapContainer" class="container  col-md-6 col-sm-12">
+                                <div id="mapBorder" class="container">
+                                    <div id="googleMap" class="hidden">
+                                    </div>
+                                    <div id="noMapAvailContainer">
+                                        <div id="noMapAvailable">
+                                            <i class="fa fa-map-marker" aria-hidden="true"></i>
+                                            <p> NO MAP</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+        
+                        </div> <!-- End of locationDetails -->
+                    </div> <!-- End of locationContainer -->
+                
+                </div> <!-- End of form group -->
+            
+            </section>
+              
+            <!--------------------------- DESCRIPTION -------------------------->
+             
+            <section id="4_desc">
+                <div class="form-group">
+                    <label for="description" class="required">Event Description</label>
+                    <!-- INPUT -->
+                    <textarea name="description" class="form-control req" id="description" rows="15" placeholder="Write something to make your event appealing... Something like 'This is the event of the year. You'll learn to fly and get high on red bull" ><%=event.description%></textarea>
+                    <!-- ERROR BOX -->
+                    <div id="descriptionError" class="error hidden"> </div>
+                    <!-- TOOLTIP -->
+                    <p id="descTip" class="tip hidden"> Remaining: <span id="descCharsLeft"></span></p>
+                </div>
+            </section>
+            
+            <!----------------------------- WEBSITE ----------------------------> 
+    
+            <section id="5_website">
+                <div class="form-group">
+                    <label for="eventURL">Event Website</label>
+                    <!-- INPUT -->
+                    <input name="eventURL" type="url" class="form-control" id="eventURL" value="<%=event.eventURL%>" placeholder="www.eventwebsite.ca">
+                    <!-- ERROR BOX -->
+                    <div id="eventURLError" class="error hidden"> </div>
+                </div>
+            </section>
+            
+            <!----------------------------- TICKETS ----------------------------> 
+            
+            <section id="6_reg">
+                <div class="row">
+                    
+                    <section id="6a_cost">
+                        <div class="form group col-sm-3 col-xs-12">
+                            <label for="eventCost" class="required">Event Cost</label>   
+                            <!-- INPUT FIELD -->
+                            <input name="eventCost" id="eventCost" type="text" class="form-control req" value="<%=event.eventCost %>" placeholder="Free">
+                            <!-- ERROR BOX -->
+                            <div id="eventCostError" class="error"></div>
+                        </div>  
+                    </section>
+                    
+                    <section id="6b_registerationURL">
+                        <div class="form group col-sm-9 col-xs-12">
+                            <label for="registerationURL">Ticket Sale / Registeration URL</label>   
+                            <!-- INPUT FIELD -->
+                            <input name="registerationURL" id="registerationURL" type="url" class="form-control" value="<%=event.registerationURL%>" placeholder="www.registerhere.com">
+                            <!-- ERROR BOX -->
+                            <div id="registerationURLError" class="error"></div>
+                        </div>  
+                    </section>
+                    
+                </div>
+            </section>
+            
+            <!---------------------------- ORGANIZER --------------------------->        
+            
+            <section id="7_organizer">
+                <div class="row">
+                    
+                    <!------ ORGANIZER NAME ------>
+                    <div class="form-group col-md-6 col-sm-12">
+                        <label for="organizerName" class="required">Organizer Name</label>
+                        <input name="organizerName" type="text" class="form-control req" id="organizerName" value="<%=event.organizerName %>" placeholder="Darth Vader Co.">
+                        <!-- ERROR BOX -->
+                        <div id="organizerNameError" class="error hidden"></div>
+                    </div>
+
+                    
+                    <!------ ORGANIZER EMAIL ADDRESS ------>
+                    <div class="form-group col-md-6 col-sm-12">
+                        <label for="organizerEmail" class="required">Organizer Email</label>
+                        <input name="organizerEmail" type="email" class="form-control req" id="organizerEmail" value="<%=event.organizerEmail%>" placeholder="barneystinson@gmail.com">
+                        <!-- ERROR BOX -->
+                        <div id="organizerEmailError" class="error hidden"> </div>
+                    </div>
+                    
+                </div>
+            </section>
+            
+
           
-          <div class="form-group">
-            <label for="date">Date</label>
-            <input id="date" name="event[date]" type="date" >
-            <script> document.getElementById('date').value = "<%= event.date.toISOString().substring(0,10)%>"</script>
-          </div>
-          
-          <div class="form-group">
-            <label for="location">Location</label>
-            <input name="event[location]" type="text" class="form-control" id="location"  value="<%=event.location%>">
-          </div>
-          
-          <div class="form-group">
-            <label for="image">Image URL</label>
-            <input name="event[image]" type="text" class="form-control" id="image"  value="<%=event.image%>">
-          </div>
-          
-        <div class="form-group">
-            <label for="description">Description</label>
-            <textarea name="event[description]" class="form-control" id="description" rows="5"><%=event.description%></textarea>
-         </div>
-          
-         <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="submit" class="btn btn-primary btn-lg btn-block formSubmit">Submit</button>
+        
+        </div> <!-- End of col 9 -->
+        
+        
+        
+                 
          
     </form>
     
     
 
 </div> <!-- Container End -->
-
 
 
 
