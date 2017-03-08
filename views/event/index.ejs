@@ -3,7 +3,7 @@
 
 
 
-<div class ="jumbotron jumbotron-fluid">
+<div class ="jumbotron jumbotron-fluid darkshadow">
     <div class="container">
         <h1> PolitiFUL </h1>
         <hr>
@@ -27,40 +27,45 @@
 
     <div class="contentArea col-lg-9">
 
-        <div class="col-md-12">
-            <%     if( events )  { %>
-            <% events.forEach(function(event) { %>
-            
-                <div class="thumbnail">
-                    
-                    <div class= "row">
-                        
-                        <div class="col-md-3">
-                            <img class="img-responsive" src="<%=event.image%>">
-                        </div>
-                        
-                        <div class="col-md-9">
-                            <h5><strong><%= event.name %></strong></h5>
-                            <p><strong>Date: </strong><%=event.date %></p>
-                            <p><strong>Location: </strong><%=event.location %></p>   
-                            <a href="/events/<%=event._id%>/" class="btn btn-primary btn-xs">More Info</a>
-                            <!-- Only user who owns event can see edit and delete buttons -->
-                            <% if(currentUser && currentUser._id.equals(event.author.id)) { %>
-                                <a href="/events/<%=event._id%>/edit" class="btn btn-warning btn-xs">Edit</a>
-                                <form class="inline" action="/events/<%=event._id%>?_method=DELETE" method="POST">
-                                    <button class="inline btn btn-danger btn-xs">Delete</button>
-                                </form>
-                            <% } %>
-                        </div> <!-- col end -->
-                        
-                    </div> <!--row end-->
-                    
-                </div> <!-- thumbnail end -->
+            <% if(events)  { %>
+                <% var i = 0 %>
+                <% events.forEach(function(event) { %>
+                    <div class="thumbnail eventBox lightshadow">
+                            <div class= "row">
+                                <div class="col-md-3">
+                                    <% var imgid = "img" + i %>
+                                    <div id=<%=imgid%> class="listingImg lightshadow">
+                                        <script>
+                                            var src = "<%=event.image%>";
+                                            var value = "url(" + src + ")";
+                                            $(<%=imgid%>).css("background", value);
+                                            $(<%=imgid%>).css("background-size", "cover");
+                                        </script>
+                                    </div>
+                                </div>
+                                <div class="col-md-9">
+                                    <h3><strong><%- event.name %></strong></h3>
+                                    <p><strong>Date: </strong><%=moment(event.date).format("dddd, MMMM DD YYYY"); %></p>
+                                    <p><strong>Location: </strong><%= event.address %>, <%=event.city %></p>   
+                                    <p><strong>Description: </strong><%-event.description.substr(0,350) %> ...</p>   
+                                    <a href="/events/<%=event._id%>/" class="btn btn-primary btn-xs">More Info</a>
+                                    <!-- Only user who owns event can see edit and delete buttons -->
+                                    <% if(currentUser && currentUser._id.equals(event.author.id)) { %>
+                                        <a href="/events/<%=event._id%>/edit" class="btn btn-warning btn-xs">Edit</a>
+                                        <form class="inline" action="/events/<%=event._id%>?_method=DELETE" method="POST">
+                                            <button class="inline btn btn-danger btn-xs">Delete</button>
+                                        </form>
+                                    <% } %>
+                                </div> <!-- col end -->
+                            </div> <!--row end-->
+                    </div> <!-- thumbnail end -->
+                    <% i++ %>
+                <% }); %> <!-- for loop end -->
                 
-            <% }); %>
+            <% } else { console.log("FUCKER")%> 
+                 
+                 <div><p> No known events happening on this day... </p></div>
             <% } %>
-     </div> <!-- CONTENT END-->
-
 </div> <!-- Container End -->
 
 

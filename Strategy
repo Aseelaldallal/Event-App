@@ -9,30 +9,22 @@ Work on passing other event details to DB --- DONE
 Work on Front End Error Checking for new Event --- DONE
 Work on Front End of New Event Page --- DONE
 Work on back end error handling for new event page -- DONE
-Work on frontend of show page
-Work on edit page
-Work on Front End of main page
+Work on frontend of show page -- DONE
+Work on edit page -- DONE
+Work on Front End of main page -- DONE
 Let users have a profile... ?
 
 
 Little things not to forget
-dont forget to delete image from uploads folder when you delete event
+dont forget to delete image from uploads folder when you delete event -- done
 dont forget to add sanitizer -- done
-dont forget to allow users to add html and spaces etc.
+dont forget to allow users to add html and spaces etc. -- done
 add sessions
 
 http://xahlee.info/js/js_form_validation.html
 http://xahlee.info/js/js_form_validation2.html#
 
 
-
-
-BLOG
-
-
-
-
-USABILITY:
----- REMOVE COST REGULAR EXPRESSION, MAKE IT NON REQUIRED
----- MAKE ORGANIZER NAME AND EMAIL NOT REQUIRED
-
+Don't forget
+-- If no image associated with event, make up an image
+-- Back end data validation -- sanitize date to find, make sure its within one year

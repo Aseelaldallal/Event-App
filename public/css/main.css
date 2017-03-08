@@ -95,6 +95,12 @@ form label {
     margin-bottom: 1rem;
 }
 
+label.required:after {
+  content:" *";
+  margin-left: 0.5rem;
+  color:red;
+}
+
 /*-------- Input --------*/
 
 form input {
@@ -380,6 +386,11 @@ fieldset[disabled] .btn-primary.focus {
   padding-right:3rem;
 }
 
+.sidebar.col-lg-3 {
+  padding-left: 2%;
+  padding-right:3.5%;
+}
+
 .contentArea .list-group,
 .sidebar .list-group {
    margin-bottom: 0rem;
@@ -400,6 +411,11 @@ fieldset[disabled] .btn-primary.focus {
 .contentArea.col-md-9 {
   padding-left:3rem;
   padding-right: 0;
+}
+
+.contentArea.col-lg-9 {
+  padding-left:3%;
+  padding-right: 2%;
 }
 
 .sidebar dt,
@@ -458,10 +474,14 @@ fieldset[disabled] .btn-primary.focus {
 .navbar-custom {
   background-color:midnightblue;
   border-color: #131360;
+  font-size: 1.6rem;
+  font-weight: 500;
 }
 
 .navbar-custom .navbar-brand {
   color: #fff;
+  font-size: 2rem;
+  font-weight: 500;
 }
 
 .navbar-custom .navbar-brand:hover,
@@ -558,27 +578,6 @@ fieldset[disabled] navbar-custom .btn-link:focus {
 }
 
 
-/*----------------------- IMAGES -----------------------*/
-
-.thumbnail {
-    padding: 15px;
-}
-
-.thumbnail img {
-    width: 100%;
-}
-
-.thumbnail .caption-full {
-    padding-top: 10px;
-    padding-bottom: 0px;
-}
-
-label.required:after {
-  content:" *";
-  margin-left: 0.5rem;
-  color:red;
-}
-
 /*------------------------ OTHER -----------------------*/
 
 
@@ -651,3 +650,45 @@ label.required:after {
     margin-top: 1rem;
 }
 
+
+/*-------------------- INDEX PAGE ---------------------*/
+
+.listingImg {
+  height: 200px;
+  width: 300px;
+}
+
+.darkestshadow {
+  box-shadow: 0 0 50px rgba(0, 0, 0, 1);
+}
+
+.darkshadow {
+  box-shadow: 0 0 50px rgba(0, 0, 0, .5);
+}
+
+.shadow {
+  box-shadow: 0 0 50px rgba(0, 0, 0, .2);
+}
+
+.lightshadow {
+  box-shadow: 0 0 50px rgba(0, 0, 0, .1);
+}
+
+.thumbnail {
+  padding: 3rem;
+  border: 0;
+}
+
+.thumbnail h3 {
+  margin-top: 0;
+  margin-bottom: 2rem;
+}
+
+.thumbnail p {
+  font-size: 1.7rem;
+}
+
+.jumbotron {
+  position: relative;
+  z-index: -1;
+}

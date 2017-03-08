@@ -6,8 +6,8 @@ table {
   margin: 0 auto;
 	background: white;
 	border-collapse: collapse;
-	box-shadow: 0 0 50px rgba(0, 0, 0, .2);
-	width: 90%;
+	box-shadow: 0 0 50px rgba(0, 0, 0, .1);
+	width: 100%;
 	font-size: 1.17rem;
 }
 

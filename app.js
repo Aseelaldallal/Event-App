@@ -12,7 +12,8 @@ var express             = require("express"),
     localStrategy       = require("passport-local"),
     expressSession      = require("express-session"),
     Event               = require("./models/event"),
-    User                = require("./models/user");
+    User                = require("./models/user"),
+    moment              = require("moment");
     
 // Require routes
 
@@ -59,6 +60,9 @@ app.use(function(req, res, next){
 app.use("/", indexRoutes);
 app.use("/events", eventRoutes);
 
+
+// Moment
+app.locals.moment = moment; 
 
 /***************************************************/
 /********************* LISTEN **********************/

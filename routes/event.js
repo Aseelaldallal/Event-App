@@ -32,13 +32,13 @@ var upload = multer({storage: storage});
 
 router.get("/", function(req,res) {
     
-    console.log("------------ IN GET -------------");
-    
     var reqDate;
     
+    console.log("REQ FLASH:", req);
+    
     if( !req.query.dateToFind ) {
-        console.log("dateToFind is not set ... so redirecting");
-        res.render("event/index", {date: undefined, events: undefined}); // don't pass anything
+        // redirecting to get usertime - avoid errors in calculation
+        res.render("event/index", {date: undefined, events: undefined}); 
     } else {
         reqDate = req.query.dateToFind;
         console.log("Req date: ", reqDate);

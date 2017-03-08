@@ -29,7 +29,7 @@ router.post("/login", passport.authenticate("local",
     {   failureRedirect: "/login",
         failureFlash: true,
     }), function(req, res){
-        req.flash("success", "Welcome " + req.user.username + "!" );
+        //req.flash("success", "Welcome " + req.user.username + "!" );
         res.redirect("/events");
     }
 );
