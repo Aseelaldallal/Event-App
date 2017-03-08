@@ -11,7 +11,8 @@ var express         = require("express"),
     middleware      = require("../middleware"), // If we require a directory, it automatically requires index.js
     multer          = require("multer"),
     fs              = require('fs'),
-    router          = express.Router();
+    router          = express.Router(),    
+    moment          = require("moment");
 
 
 var storage =   multer.diskStorage({
@@ -30,13 +31,25 @@ var upload = multer({storage: storage});
 // DISPLAY A LIST OF ALL EVENTS
 
 router.get("/", function(req,res) {
-    Event.find({}, function(err, foundEvents) {
-        if(err) {
-            console.log(err);
-        } else {
-            res.render("event/index", {events: foundEvents}); 
-        }
-    });
+    
+    console.log("------------ IN GET -------------");
+    
+    var reqDate;
+    
+    if( !req.query.dateToFind ) {
+        console.log("dateToFind is not set ... so redirecting");
+        res.render("event/index", {date: undefined, events: undefined}); // don't pass anything
+    } else {
+        reqDate = req.query.dateToFind;
+        console.log("Req date: ", reqDate);
+        Event.find({date: reqDate}, function(err, foundEvents) {
+            if(err) {
+                console.log(err);
+            } else {
+                res.render("event/index", {date: reqDate, events: foundEvents}); 
+            }
+        });
+    }
 });
 
 /* ---------------------------- NEW ROUTE ---------------------------- */
@@ -55,11 +68,12 @@ router.get("/new", middleware.isLoggedIn, function(req,res) {
 // User input is sanitized
 
 router.post("/", middleware.isLoggedIn, upload.single('image'),middleware.validateNewEvent,  middleware.sanitizeUserInput, function(req,res) { 
-  
+
     var filepath = undefined;
+    
     if(req.file) {
         filepath = req.file.path.substr(6); // Substr to remove "/public"
-    }
+    } 
     
     var newEvent = {
         name: req.body.name,
@@ -139,46 +153,45 @@ router.get("/:id/edit", middleware.checkEventOwnership, function(req,res) {
 // UPDATE SPECIFIC EVENT IN DATABASE 
 // Only user who owns the event can edit the event in the db
 router.put("/:id", upload.single('image'), middleware.checkEventOwnership, middleware.validateNewEvent, middleware.sanitizeUserInput, function(req, res) {
-    console.log("------------------------------------------");
-    console.log("The old image should be stored in req.body.imageSource");
-    console.log("req.body.imageSource: ", req.body.imageSource);
-    console.log("You should not see this in db, unless user left it");
-    console.log("------------------------------------------");
+
+    console.log("----------------- IN UPDATE ROUTE --------------------");
     
-    var filepath = undefined;
-    
-    if(req.file) { // If user uploaded a new image
-        filepath = req.file.path.substr(6); // Substr to remove "/public"
-    } else if(req.body.hiddenImage) { // If user kept the same image
-        var index = req.body.hiddenImage.lastIndexOf("/uploads");
-        filepath = req.body.hiddenImage.substr(index);
-    }
-    
-    // If the user uploaded a new image, or simply deleted the old image and didn't add a new one
-    if(req.file || (!req.file && !req.body.hiddenImage) ) {
-        console.log("REQ.FILE: ", req.file);
-        console.log("!REQ.FILE: ", !req.file);
-        console.log("!req.body.hiddenImage: ", !req.body.hiddenImage); 
-        console.log("Req.body.hiddenimage: ", req.body.hiddenImage); 
-        console.log("User deleted image or replaced it");
-        if(req.body.imageSource) {
-            var imagePath = "public" + req.body.imageSource;
+    if(req.file) { // Case 2 or 5
+        console.log("Case 2 or Case 5");
+        req.body.image = req.file.path.substr(6); // Path of uploaded file
+        console.log("Checking previousImage: ", req.body.previousImage);
+        if(req.body.previousImage !== undefined) {
+            console.log("Case 5: Image. Edit. New Image --> Must delete previous image from db");
+            var imagePath = "public" + req.body.previousImage;
             fs.unlink(imagePath, function(err) {
                 if(err) {
-                   console.log("Couldn't Delete image File: ", err);
+                    console.log("Couldn't Delete image File: ", err);
                 } else {
-                    console.log("Successfully deleted image");
+                    console.log("Successfully deleted previous image");
                 }
             });
+        } else {
+            console.log("Case 2: No Image. Edit. New Image");
         }
+    } else if(req.body.imageRemoved === "true") {
+        console.log("Case 3: Image. Edit. Image Removed --> must delete previous image from db");
+        var imagePath = "public" + req.body.previousImage;
+        fs.unlink(imagePath, function(err) {
+            if(err) {
+                console.log("Couldn't Delete image File: ", err);
+            } else {
+                console.log("Successfully deleted previous image");
+            }
+        });
+        req.body.image = undefined;
+        console.log("Setting Request.body.image to undefined: ", req.body.image);
+        
     }
-    
-    console.log("heres filepath of image: ", filepath);
-    
+     
     req.body.mapCenter = req.body.showMap; 
-    req.body.image = filepath;
-
-    console.log("REQ.BODY.IMAGE: ", req.body.image);
+    
+    console.log("------REQ.BODY ------");
+    console.log(req.body);
     
     Event.findByIdAndUpdate(req.params.id, req.body, function(err, foundEvent) {
        if(err) {

@@ -3,6 +3,11 @@
 /* global google */
 /* global moment */
 
+
+
+
+
+
 /* --------------------- GLOBAL -------------------- */
 
 
@@ -48,8 +53,7 @@ function validate(form) {
         $(window).scrollTop($(idName).offset().top);
         return false;
     }
-    editPageImageProcessing(form); 
-    console.log("Done with edit Page Image processing");
+
     return true;
 }
 
@@ -77,35 +81,7 @@ $(document).ready(function() {
 
 /* ---------- EDIT PAGE SPECIFIC FUNCTION ---------- */
 
-// This function deals with edit page, changing images
-// Its going to create a hidden input field that is useful for the edit route,
-// but useless for the new route -- which is what we want here.
-function editPageImageProcessing(form) {
-    // If the user didn't change the image
-                 // preview would be NOT hidden
-                 // there would not be a req.file (document.getElementById('image').val == '')
-                 // we want a hiddenimage input field
-    // If the user uploaded a new image
-                 // preview would be NOT hidden
-                 // there would be a req.file
-    // If the user deleted the image and didn't add a new one
-                 // preview would be hidden
-                 // there would be no req.file
-                 // we don't want a hidden image input field
-    var aFile = document.getElementById('image').value;
-    var preview = document.getElementById('preview');
-    if(aFile == '' && !$(preview).hasClass('hidden')) {
-        var input = document.createElement('input');
-        $(input).attr("name", "hiddenImage");
-        $(input).attr("id", "hiddenImage");
-        $(input).attr("type", "hidden");
-        var myImage = document.getElementById('previewImage');
-        if(myImage) {
-            $(input).attr("value", myImage.src);
-        }
-        $('form').append(input); 
-    }
-}
+
 
 /* ----------------- EVENT TITLE ------------------ */
 
@@ -614,19 +590,24 @@ function fillOutDetailedAddressForm(place) {
 
 /* ----------------- IMAGE UPLOAD ----------------- */
 
+// Disabled drag and drop functionality
 
 function eventImageSetup() {
+    
     var dropbox = document.getElementById("dropbox"),
         fileElem = document.getElementById("image"),
         fileSelect = document.getElementById("fileSelect"),
         fileRemove = document.getElementById("fileRemove");
+        
     $(dropbox).height($('#imageBorder').height());
+    
     fileSelect.addEventListener("click", function(e) {
         if (fileElem) {
           fileElem.click();
           e.preventDefault(); // to prevent submit
         }
     }, false);
+    
     fileRemove.addEventListener("click", function(e) {
         e.preventDefault(); // prevent submit
         if(!$('#preview').hasClass('hidden')) { // If there is an image uploaded
@@ -638,34 +619,13 @@ function eventImageSetup() {
         }
         removeError($('#imageError'), $('#image'));
     });
-    dropbox.addEventListener("dragenter", dragenter, false);
-    dropbox.addEventListener("dragover", dragover, false);
-    dropbox.addEventListener("drop", drop, false);
 }
 
-
-function dragenter(e) {
-  e.stopPropagation();
-  e.preventDefault();
-}
-
-function dragover(e) {
-  e.stopPropagation();
-  e.preventDefault();
-}
-
-function drop(e) {
-  e.stopPropagation();
-  e.preventDefault();
-  var dt = e.dataTransfer;
-  var files = dt.files;
-  handleFiles(files);
-}
 
 function handleFiles(files) { 
-
-  var file = files[0];
-
+ 
+ var file = files[0];
+  
   var imageType = /^image\//;
   if (!imageType.test(file.type)) {
     $('#fileRemove').trigger('click');
@@ -684,8 +644,6 @@ function handleFiles(files) {
   } else {
       removeError($('#imageError'), $('#image'));
       var img = document.createElement("img");
-      img.id = "uploadedImage";
-      img.file = file;
       img.onload = function() {
         adjustImageSize(img);
       };
@@ -695,12 +653,10 @@ function handleFiles(files) {
       $('#preview').append(img);
       $('#fileSelect').text('Replace Image');
       var reader = new FileReader();
-      reader.onload = (function(aImg) {
-        return function(e) {
-          aImg.src = e.target.result;
-        };
-      })(img);
       reader.readAsDataURL(file);
+      reader.onload = function(event) {
+          img.src = event.target.result;
+      }
   }
 }
 

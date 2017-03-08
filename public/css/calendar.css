@@ -1,0 +1,80 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+
+
+
+table {
+  margin: 0 auto;
+	background: white;
+	border-collapse: collapse;
+	box-shadow: 0 0 50px rgba(0, 0, 0, .2);
+	width: 90%;
+	font-size: 1.17rem;
+}
+
+td {
+	height: 45px;
+	width: 14.28%;
+	text-align: center;
+}
+
+.month_label_container {
+	background: midnightblue;
+	height: 60px;
+}
+
+#month_label {
+  color: white;
+  font-weight: normal;
+  text-align: center;
+  font-size: 1.4rem;
+  border: 2px solid transparent;
+}
+
+.mnav {
+  box-shadow: inset -1px 0px 15px 5px rgba(0,0,0,0.2);
+  background: midnightblue;
+}
+
+.mnav i {
+  color: white;
+  font-size: 1.3rem;
+  height: 100%;
+  line-height: 60px;
+}
+
+.mnav:hover {
+    -webkit-transform: scale(1.07);
+            transform: scale(1.07);
+}
+
+#prev:hover {
+  border-right: 2px solid white;
+}
+
+#next:hover {
+  border-left: 2px solid white;
+}
+
+.weeks {
+	background: rgba(231, 231, 231, 0.6);
+	text-align: center;
+	color: midnightblue;
+}
+
+.days {
+  color: midnightblue;
+}
+
+.days:hover {
+	background: rgba(231, 231, 231, 0.6);
+	font-weight: bold;
+  font-size: 1.3rem;
+  -webkit-transform: scale(1.1);
+          transform: scale(1.1);
+}
+
+#selected {
+  background: rgba(231, 231, 231, 0.6);
+  font-weight: bold;
+  font-size: 1.3rem;
+}

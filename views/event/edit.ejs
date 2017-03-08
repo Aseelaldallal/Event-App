@@ -28,19 +28,19 @@
                         
                         <p class="imageTip"> Add an image that best represents your event</p>
                         
+                        <input name="previousImage" id="previousImage" type="hidden" value="<%=event.image%>" />
+                        <input name="imageRemoved" id="imageRemoved" type="hidden" value="false" />
                         <input name="image" type="file" id="image" accept="image/*" style="display:none" onchange="handleFiles(this.files)">
          
                         <div id="imageBorder" >
             	            <div id="imageContainer">
             	                
-                        	    <div id="dropbox" class="hidden">
+                        	    <div id="dropbox">
                         	        <i class="fa fa-picture-o" aria-hidden="true"></i>
-                        	        <p> Drop image here or click to upload</p>
+                        	        <p>Your Image Will Appear Here </p>
                         	    </div>
                         	    
-                        	    <input name="imageSource" id="imageSource" type="hidden" value="<%=event.image%>" />
-                        	    
-                        	    <div id="preview">
+                        	    <div id="preview" class="hidden">
                         	    </div>
 
             	                <button id="fileSelect" class="btn btn-primary btn-block">Upload Image</button>

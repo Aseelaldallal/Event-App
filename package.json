@@ -12,6 +12,7 @@
     "indicative": "^2.2.1",
     "jquery": "^3.1.1",
     "method-override": "^2.3.7",
+    "moment": "^2.17.1",
     "mongoose": "^4.6.8",
     "multer": "^1.2.1",
     "passport": "^0.3.2",

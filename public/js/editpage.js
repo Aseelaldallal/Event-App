@@ -9,17 +9,22 @@
 $(document).ready(function() {
     
     // If the event has an associated image, displays the image in the sidebar
-    var imageSource = $('#imageSource').val();
-    if(imageSource !== '') {
-        var myImg = document.createElement("IMG");
-        myImg.src = imageSource; 
-        myImg.name = "previewImage";
-        myImg.id = "previewImage";
-        console.log("My Image: ", myImg); 
-        adjustImageSize(myImg);
-        $('#preview').append(myImg);
+    var previousImage = $('#previousImage');
+    if(previousImage.val() !== '') {
+         $('#dropbox').addClass('hidden');
+         $('#preview').removeClass('hidden');
+         var img = document.createElement("img");
+         img.src = previousImage.val();
+         $('#preview').append(img);
+         $('#fileSelect').text('Replace Image');
+         adjustImageSize(img);
     }
     
+    // When user clicks removeImage, set ImageRemoved to True
+    $('#fileRemove').on('click', function() {
+        $('#imageRemoved').val("true");
+    })
+
     // Display Date in date input field
     var eventDateString = $('#eHiddenDate').val();
     var input = $('<input>');

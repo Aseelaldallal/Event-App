@@ -2,34 +2,33 @@
 <% include ../partials/fpheader %>
 
 
-    
-    <div class ="jumbotron jumbotron-fluid">
-        <div class="container">
-            <h1> PolitiFUL </h1>
-            <hr>
-            <h2> Your Source of Polical Discourse in Canada</h2>
-        </div>
-    </div> <!-- Jumbotron End -->
-    
-    <%include ../partials/flash %>
-    
+
+<div class ="jumbotron jumbotron-fluid">
     <div class="container">
-        
-       
-        
-    </div> <!-- Main Container End -->
+        <h1> PolitiFUL </h1>
+        <hr>
+        <h2> Your Source of Polical Discourse in Canada</h2>
+    </div>
+</div> <!-- Jumbotron End -->
     
+<%include ../partials/flash %>
     
+<div class="container-fluid">
     
-<div class="container">
+    <!------------------------------ SIDEBAR ------------------------------>
+    <div class="sidebar col-lg-3">
+        <%include ../partials/calendar %>
+        <input name="dateToFind" id="dateToFind" type="hidden" value="<%= date %>"/>
 
+    </div>
+    
+    <!------------------------------ CONTENT ------------------------------>
+    
 
-        
-    <!-- CONTENT -->    
-    <div class="col-md-9">
-        
-      
-            
+    <div class="contentArea col-lg-9">
+
+        <div class="col-md-12">
+            <%     if( events )  { %>
             <% events.forEach(function(event) { %>
             
                 <div class="thumbnail">
@@ -59,22 +58,10 @@
                 </div> <!-- thumbnail end -->
                 
             <% }); %>
-            
-
-     
+            <% } %>
      </div> <!-- CONTENT END-->
 
-    
 </div> <!-- Container End -->
-
-
-
-
-
-
-
-
-
 
 
 <% include ../partials/footer %>
