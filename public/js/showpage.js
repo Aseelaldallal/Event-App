@@ -7,13 +7,11 @@
 
 $(document).ready(function() {
     
-    // Adjust border separating sidebar from main content
-    var sidebarH = $('.sidebar').height();
-    var contentH = $('.contentArea').height();
-    if(sidebarH > contentH) {
-        $('.sidebar').css("border-right", "3px solid midnightblue");
-        $('.contentArea').css("border-left", "none");
-    }
+    adjustBorder();
+    
+    $(window).on('resize', function() {
+        adjustBorder();
+    });    
     
     // Display date
     var eventDateString = $('#hiddenDate').val();
@@ -48,3 +46,23 @@ $(document).ready(function() {
         });
     }
 });
+
+/* --------------- HELPER FUNCTIONS --------------- */
+
+
+// When the screen is large (bootstrap: 1200px +), ensure there is a border
+// between sidebar and contentArea. By default, the border is drawn on the left
+// of the contentArea. This method checks if the sidebar is longer than the contentArea.
+// If so, removes the border from contentArea, and draws it to the right of sidebar.
+function adjustBorder() {
+    if($('.mediaQueryTesterMS').css('float') == "right") {
+        var sidebarH = $('.sidebar').height();
+        var contentH = $('.contentArea').height();
+        if(sidebarH > contentH) {
+            $('.sidebar').css("border-right", "3px solid midnightblue");
+            $('.contentArea').css("border-left", "none");
+        }
+    } else {
+        $('.sidebar').css("border-right", "none"); // No border when screen is medium or less
+    }
+}

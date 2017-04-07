@@ -5,17 +5,22 @@
 <script type="text/javascript" src="/js/editpage.js"></script>
 <script type="text/javascript" src="/js/eventform.js"></script>
 
-<div class="container">
-    
-    
+<div class="container lightshadow pagePadding whiteBackground">
+
+   
+
+
     <form action="/events/<%=event._id%>?_method=PUT" 
           method="POST"
           enctype="multipart/form-data" 
           onSubmit="return validate(this);"
           novalidate >
       
-        <h1 class="editEventTitle">Edit Event</h1>
-        <hr class="firsthr"> 
+        <div class="title">
+            <h2 class="editEventTitle">Edit Event</h2>
+        </div>
+        
+        <hr class="blue pushNextDownLg"> 
 
         <!---------------------------------------- SIDEBAR -------------------------------------->  
         <div class="sidebar col-md-3"> 
@@ -92,7 +97,7 @@
                     
                     <!--------- DATE --------->
 
-                    <section id="2a_date">
+                    <section class="sec_date" id="2a_date">
                         <div class="form group col-md-4 col-sm-12 col-xs-12">
                             <label for="theDateGroup" class="required">Date</label>   
                             <!-- INPUT FIELD -->
@@ -107,7 +112,7 @@
                     </section>
                     
                     <!------ START TIME ------>
-                    <section id="2b_start">
+                    <section class="sec_start" id="2b_start">
                         <div class="form-group col-md-4 col-sm-6 col-xs-12">
                             <label for="startTimeGroup" class="required">Start Time</label>  
                             <!-- INPUT FIELD -->
@@ -124,7 +129,7 @@
                     </section>
         
                     <!------ END TIME ------>
-                    <section id="2c_end">
+                    <section class="sec_end" id="2c_end">
                         <div class="form-group col-md-4 col-sm-6 col-xs-12">
                             <label for="endTimeGroup">End Time</label>  
                             <!-- INPUT FIELD -->
@@ -334,7 +339,7 @@
             
 
           
-        <button type="submit" class="btn btn-primary btn-lg btn-block formSubmit">Submit</button>
+        <button type="submit" class="btn btn-primary btn-lg btn-block submit">Submit</button>
         
         </div> <!-- End of col 9 -->
         

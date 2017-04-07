@@ -1,6 +1,6 @@
 
 
-<nav class="navbar-full navbar-custom darkshadow">
+<nav class="navbar-full navbar-custom">
     
   <div class="container-fluid">
       
@@ -21,9 +21,9 @@
       <ul class="nav navbar-nav navbar-right">
         <% if(!currentUser) { %>
           <li><a href="/login">Login</a></li>
-          <li><a href="/register">Sign Up</a></li>
+          <li><a href="../../user/new">Sign Up</a></li>
         <% } else { %>
-          <li><a href="#">Welcome <%= currentUser.username %>!</a></li>
+          <li><a href="../../user/<%= currentUser._id%>">Profile</a></li>
           <li><a href="../../events/new">Post Event</a></li>
           <li><a href="/logout">Logout</a></li>
         

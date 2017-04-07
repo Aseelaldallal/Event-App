@@ -1,6 +1,6 @@
 /* global $ */
 /* global moment */
-
+/* global location */
 
 $( document ).ready(function() {
     initializeCalendar();

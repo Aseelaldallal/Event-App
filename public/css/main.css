@@ -1,68 +1,282 @@
 
+/*-------------------------------------------------------*/
+/*-------------------- GLOBAL STYLES --------------------*/
+/*-------------------------------------------------------*/
+
+html {
+  font-size: 10px;
+  font-weight: 300;
+}
 
 body {
-    font-weight: 300;
-    margin-bottom: 15rem;
-    font-size: 1.4rem;
-    font-family: 'Roboto', sans-serif;
+  font-family: 'Roboto', sans-serif;
+  font-size: 1.6rem;
+  background-color: rgba(231, 231, 231,0.5);  
+  margin-bottom: 3rem;
 }
 
+/*---------- Headings ----------*/
 
-h1, h2, h3, h4 {
-    font-family: 'Roboto Slab', serif;
-    font-weight: 700;
+h1, h2, h3, h4, h5 {  margin:0; padding: 0;}
+h1, h2, h3 {font-family: 'Roboto Slab', serif;}
+h1 { font-size: 4.5rem; font-weight: 700; }
+h2 { font-size: 3.5rem; font-weight: 700; }
+h3 { font-size: 3.0rem; font-weight: 500; }
+h4 { font-size: 2.3rem; font-weight: 500; }
+h5 { font-size: 2.1rem; font-weight: 500; }
+
+@media (max-width: 480px) {
+  h1 { font-size: 4.0rem; font-weight: 700; }
+  h2 { font-size: 2.5rem; font-weight: 700; }
+  h3 { font-size: 2.1rem; font-weight: 500; }
+  h4 { font-size: 1.9rem; font-weight: 500; }
+  h5 { font-size: 1.8rem; font-weight: 500; }
 }
 
+/*------------- hr -------------*/
 
-hr.firsthr {
-  border-top: 3px solid midnightblue;
-  margin-top: 0;
-  margin-bottom: 6rem;
+hr        { margin: 0; }
+hr.blue   { border-top: 3px solid midnightblue;            }
+hr.blueThin   { border-top: 1px solid midnightblue;        }
+hr.white  { border-top: 3px solid white;                   }
+.hrshadow { box-shadow: -1px 1px 8px 0px rgba(0, 0, 0, 1); }
+
+/*---------- shadows -----------*/
+
+.tshadow  { text-shadow: rgba(0, 0, 0, 1) -1px 1px 8px; }
+
+/*--------- label, dt ----------*/
+
+label, dt { font-weight: 500; color: midnightblue; margin-bottom: 1rem; }
+
+/*-------- Font Styling --------*/
+
+strong { font-weight: 500; color: midnightblue; }
+
+/*----------- Buttons ----------*/
+
+.btn    { border-radius: 0px; padding: 0.2rem 2rem;  }
+.submit { padding: 0.5rem 2rem; margin-top: 2rem; }
+
+@media (max-width: 767px) {
+  .buttonBox .btn             { display: block; width: 100%; margin-bottom: 1rem; }
+  .buttonBox .btn:last-child  { margin-bottom: 0rem;                              }
 }
 
-hr.lasthr {
-  border-top: 3px solid midnightblue;
-  margin-top:3rem;
-}
-
-hr.divider {
-   margin-top: 0;
-   margin-bottom: 2.5rem;
-}
-
-
-/*--------------------- FRONT PAGE ---------------------*/
+/*-------------------------------------------------------*/
+/*---------------------- FRONT PAGE ---------------------*/
+/*-------------------------------------------------------*/
 
 .jumbotron {
-  margin-top: -6rem;
-  margin-bottom: 6rem;
+  color: white;
   background-image: url("../assets/images/jumbobackground.jpg");
   background-size: cover;
   background-repeat: no-repeat;
-  height: 450px;
   background-position: 0% 20%;
-}
-
-
-.jumbotron h1, .jumbotron h2 {
-    color: white;
-    text-shadow: 1px 0px 6px rgba(43, 43, 43, 1);
-}
-
-.jumbotron h1 {
-  font-size: 8rem;
-}
-
-.jumbotron h2 {
-  font-size: 3.2rem;
+  min-height:400px;
 }
 
 .jumbotron hr {
-    border: 2px solid white;
-    box-shadow: 1px 0px 6px 0px rgba(43, 43, 43, 0.75);
+  margin-top: 1rem;
+  margin-bottom: 2.5rem;
 }
 
-/*-------------------- FORM STYLING --------------------*/
+@media (max-width: 650px) {
+  .jumbotron {
+    min-height:300px;
+  }
+}
+
+@media (max-width: 1199px) {
+  .jumbotron {
+    margin-bottom: 2rem;
+  }
+}
+
+.eventBox {
+  padding: 0;
+  background: white;
+  margin-bottom: 3rem;
+  width: 100%;
+}
+
+@media (max-width: 1199px) {
+  .eventBox:first-child {
+    margin-top: 2rem;
+  }
+  .eventBox {
+    margin-bottom: 2rem;
+  }
+}
+
+.eventBox:last-child {
+  margin-bottom: 0;
+}
+
+.eventBoxHeading {
+  min-height: 25px;
+  padding: 10px 1rem;
+  color: white;
+  font-weight: 400;
+  font-size: 1.6rem;
+  text-align: center;
+  text-transform: uppercase;
+  background: midnightblue;
+}
+
+.eventBoxContent {
+  padding: 2rem;
+}
+
+.eventBoxImg {
+  height: 200px;
+  width: 100%;
+  border: 1px solid midnightblue;
+}
+
+@media (max-width: 767px) {
+  .eventBoxImg {
+     margin-bottom: 1.5rem;
+  }
+}
+
+.emptyImage {
+  text-align: center;
+  font-size: 1.3rem;
+  background-color: rgba(231, 231, 231,0.3);  
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 1rem;
+  height: 200px;
+  border: 1px solid midnightblue;
+}
+
+.emptyImage i {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+
+ 
+/*-------------------------------------------------------*/
+/*-------------------- PAGE STRUCTURE -------------------*/
+/*-------------------------------------------------------*/
+
+/*---------- Sidebar and Content Area ----------*/
+
+/*----- Left + Right Padding -----*/
+
+.sidebar.col-md-3 {
+  padding-left: 0;
+  padding-right:3rem;
+}
+
+.contentArea.col-md-9 {
+  padding-left:3rem;
+  padding-right: 0;
+}
+
+.contentArea.col-md-9 { 
+  border-left: 3px solid midnightblue;
+}
+
+@media (max-width: 991px) {
+  .sidebar.col-md-3 {
+    padding:0rem;
+  }
+  .contentArea.col-md-9 {
+    padding: 0rem;
+    border:0px;
+  }
+}
+
+@media (min-width: 1200px) { /*Front Page*/
+  .contentArea.col-lg-8 {
+    border-left: 3px solid midnightblue;
+    padding-left:3rem;
+  }
+  .sidebar.col-lg-4 {
+    padding-right:3rem;
+  }
+}
+
+/*------------ Section -----------*/
+/* Used in new, edit pages */
+
+.sidebar section:first-child {
+    border: 0px;
+    padding-top: 0px;
+    padding-bottom: 5px;
+}
+
+@media (min-width: 992px) {
+  .contentArea section:first-child  {
+    border-top: 0px;
+    padding-top: 0px;
+  }
+}
+
+@media (max-width: 991px) {
+  .sidebar section:first-child  {
+    border-bottom: 0px;
+  }
+}
+
+
+
+
+
+/*-------------------------------------------------------*/
+/*---------------------- PAGE TITLES --------------------*/
+/*-------------------------------------------------------*/
+
+.title {
+    color: midnightblue;
+    background-color: rgba(231, 231, 231,0.5);  
+    padding: 1rem 2rem;
+}
+
+.showUserTitle:before {
+    font-family: FontAwesome;
+    content: "\f007";
+    margin-right: 2rem;
+}
+
+.registerTitle:before {
+    font-family: FontAwesome;
+    content: "\f234";
+    margin-right: 2rem;
+}
+
+.addEventTitle:before {
+     font-family: FontAwesome;
+     content: "\f271";
+     margin-right: 2rem;
+}
+
+.editEventTitle:before {
+     font-family: FontAwesome;
+     content: "\f044";
+     margin-right: 2rem;
+}
+
+.eventTitle:before {
+     font-family: FontAwesome;
+     content: "\f073";
+     margin-right: 2rem;
+}
+
+.loginTitle:before {
+     font-family: FontAwesome;
+     content: "\f09c";
+     margin-right: 2rem;  
+}
+
+/*-------------------------------------------------------*/
+/*-------------------- FORM STYLING ---------------------*/
+/*-------------------------------------------------------*/
+
 
 form section:first-child {
     border-top: 1px solid rgb(231, 231, 231);
@@ -83,16 +297,30 @@ form section p {
 }
 
 form section section {
-  padding: 0;
   display: inline;
   border-bottom: 0px;
-  
 }
+
+@media (max-width: 991px) {
+  #theDateGroup, #organizerName {
+    margin-bottom: 25px;
+  }
+  #mapContainer {
+    margin-top: 15px;
+  }
+}
+
+@media (max-width: 767px) {
+  #startTimeGroup, #eventCost {
+    margin-bottom: 25px;
+  }
+}
+
+
 /*-------- label --------*/
 
-form label {
-    font-weight: 700;
-    margin-bottom: 1rem;
+form #imageRec label {
+  color: darkgreen;
 }
 
 label.required:after {
@@ -117,8 +345,8 @@ input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focu
   outline: 0 none;
 }
 
-/*--- Location Section ---*/
 
+/*--- Location Section ---*/
 
 .pac-item a {
   color: #337ab7;
@@ -128,12 +356,11 @@ input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focu
   display: inline;
 }
 
-
 #resetLocation {
   margin-right: 4rem;
 }
 
-.checkbox label  {
+.checkbox label, .checkbox p  {
     padding-left: 0px;
     margin-left: 2.7rem;
 }
@@ -158,9 +385,6 @@ input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focu
     content: "\f041";
     margin-right: 1rem;
 }
-
-
-
 
 #locationContainer .form-group {
   margin-bottom: 15px;
@@ -212,6 +436,7 @@ input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focu
   flex-direction: column;
   justify-content: center;
   height: 250px;
+  padding: 1rem;
 }
 
 #dropbox i {
@@ -249,10 +474,6 @@ input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focu
 input::-webkit-calendar-picker-indicator{ /* Disable native datepicker popup */
     display: none;
 }
-
-
-
-
 
 /*---- Error and Tip ----*/
 
@@ -294,107 +515,12 @@ input::-webkit-calendar-picker-indicator{ /* Disable native datepicker popup */
 }
 
 
-/*-------- Submit -------*/
+/*-------------------------------------------------------*/
+/*----------------------- SHOW PAGE ----------------------*/
+/*-------------------------------------------------------*/
 
-.formSubmit {
-    margin-top: 2rem;
-}
-
-/*---------------- BUTTON PRIMARY OVERRIDE ---------------*/
-
-.btn-primary {
-  color: #fff;
-  background-color: midnightblue;
-  border-color: #130269;
-}
-.btn-primary:focus,
-.btn-primary.focus {
-  color: #fff;
-  background-color: #22229A;
-  border-color: #130269;
-}
-.btn-primary:hover {
-  color: #fff;
-  background-color: #22229A;
-  border-color: #141424;
-}
-.btn-primary:active,
-.btn-primary.active,
-.open > .dropdown-toggle.btn-primary {
-  color: #fff;
-  background-color: #22229A;
-  border-color: #141424;
-}
-.btn-primary:active:hover,
-.btn-primary.active:hover,
-.open > .dropdown-toggle.btn-primary:hover,
-.btn-primary:active:focus,
-.btn-primary.active:focus,
-.open > .dropdown-toggle.btn-primary:focus,
-.btn-primary:active.focus,
-.btn-primary.active.focus,
-.open > .dropdown-toggle.btn-primary.focus {
-  color: #fff;
-  background-color: #141424;
-  border-color: #130269;
-}
-.btn-primary:active,
-.btn-primary.active,
-.open > .dropdown-toggle.btn-primary {
-  background-image: none;
-}
-.btn-primary.disabled:hover,
-.btn-primary[disabled]:hover,
-fieldset[disabled] .btn-primary:hover,
-.btn-primary.disabled:focus,
-.btn-primary[disabled]:focus,
-fieldset[disabled] .btn-primary:focus,
-.btn-primary.disabled.focus,
-.btn-primary[disabled].focus,
-fieldset[disabled] .btn-primary.focus {
-  background-color: #101046;
-  border-color: #130269;
-}
-.btn-primary .badge {
-  color: midnightblue;
-  background-color: #fff;
-}
-
-/*--------------------- PAGE STYLING ---------------------*/
-
-
-.addEventTitle:before {
-     font-family: FontAwesome;
-     content: "\f271";
-     margin-right: 2rem;
-}
-
-.editEventTitle:before {
-     font-family: FontAwesome;
-     content: "\f044";
-     margin-right: 2rem;
-}
-
-.eventTitle:before {
-     font-family: FontAwesome;
-     content: "\f073";
-     margin-right: 2rem;
-}
-
-.sidebar.col-md-3 {
-  padding-left: 0;
-  padding-right:3rem;
-}
-
-.sidebar.col-lg-3 {
-  padding-left: 2%;
-  padding-right:3.5%;
-}
-
-.contentArea .list-group,
-.sidebar .list-group {
-   margin-bottom: 0rem;
-   margin-top: 0rem;
+.list-group-item {
+  padding: 2rem 0 2rem 0.3rem;
 }
 
 .contentArea .list-group-item,
@@ -404,53 +530,24 @@ fieldset[disabled] .btn-primary.focus {
    border-right: 0px;
 }
 
-.contentArea {
-  border-left: 3px solid midnightblue;
+.sidebar .list-group-item:first-child  {
+  border-top: 0px;
+  padding-top: 0px;
 }
 
-.contentArea.col-md-9 {
-  padding-left:3rem;
-  padding-right: 0;
-}
+@media (min-width: 992px) {
+  .contentArea .list-group-item:first-child  {
+    border-top: 0px;
+    padding-top: 0px;
+  }
 
-.contentArea.col-lg-9 {
-  padding-left:3%;
-  padding-right: 2%;
-}
-
-.sidebar dt,
-.contentArea dt {
-   margin-bottom: 1rem;
-}
-
-.list-group-item {
-  padding: 2rem 0 2rem 0.3rem;
 }
 
 @media (max-width: 991px) {
-
-  .sidebar.col-md-3 {
-    padding-right:0rem;
-  }
-  .contentArea {
-    border-left: 0px;
-  }
-  .conentArea.col-md-9 {
-    padding-left:0rem;
-    padding-right: 0px;
-  }
-  .contentArea .list-group-item:first-child {
+  .contentArea .list-group-item:first-child  {
     border-top: 0px;
   }
-
 }
-
-/*----------------------- SHOW PAGE ----------------------*/
-
-/*dd {
-  word-break: break-all;
-}
-*/
 
 #eventDescDisplay {
   white-space: pre-line;
@@ -466,135 +563,26 @@ fieldset[disabled] .btn-primary.focus {
   height: 200px;
 }
 
-/*------------------------ NAVBAR -----------------------*/
+/*---------------------- USER PROFILE --------------------*/
 
-.navbar-full {
- margin-bottom: 6rem;
-}
-.navbar-custom {
-  background-color:midnightblue;
-  border-color: #131360;
-  font-size: 1.6rem;
-  font-weight: 500;
+#userGreeting { 
+    padding: 1rem 0;
+    margin-bottom: 3rem;
+    border-top: 1px solid rgb(231, 231, 231);
+    border-bottom: 1px solid rgb(231, 231, 231);
 }
 
-.navbar-custom .navbar-brand {
-  color: #fff;
-  font-size: 2rem;
-  font-weight: 500;
+#numEvents {
+  margin-left: 1rem;
 }
 
-.navbar-custom .navbar-brand:hover,
-.navbar-custom .navbar-brand:focus {
-  color: #fff;
-  font-weight: bold;
-  background-color: transparent;
+#userGreeting label {
+  margin-bottom: 0;
 }
 
-.navbar-custom .navbar-text {
-  color: #fff;
-}
-.navbar-custom .navbar-nav > li > a {
-  color: #fff;
-}
-.navbar-custom .navbar-nav > li > a:hover,
-navbar-custom .navbar-nav > li > a:focus {
-  color: #fff;
-  font-weight: bold;
-  background-color: transparent;
-}
-navbar-custom .navbar-nav > .active > a,
-navbar-custom .navbar-nav > .active > a:hover,
-navbar-custom .navbar-nav > .active > a:focus {
-  color: pink;
-  background-color: green;
-}
-navbar-custom .navbar-nav > .disabled > a,
-navbar-custom .navbar-nav > .disabled > a:hover,
-navbar-custom .navbar-nav > .disabled > a:focus {
-  color: pink;
-  background-color: transparent;
-}
-navbar-custom .navbar-toggle {
-  border-color: orange;
-}
-navbar-custom .navbar-toggle:hover,
-navbar-custom .navbar-toggle:focus {
-  background-color: olive;
-}
-navbar-custom .navbar-toggle .icon-bar {
-  background-color: peru;
-}
-navbar-custom .navbar-collapse,
-navbar-custom .navbar-form {
-  border-color: red;
-}
-navbar-custom .navbar-nav > .open > a,
-navbar-custom .navbar-nav > .open > a:hover,
-navbar-custom .navbar-nav > .open > a:focus {
-  color: navy;
-  background-color: orange;
-}
-@media (max-width: 767px) {
-  navbar-custom .navbar-nav .open .dropdown-menu > li > a {
-    color: pink;
-  }
-  navbar-custom .navbar-nav .open .dropdown-menu > li > a:hover,
-  navbar-custom .navbar-nav .open .dropdown-menu > li > a:focus {
-    color: #333;
-    background-color: transparent;
-  }
-  navbar-custom .navbar-nav .open .dropdown-menu > .active > a,
-  navbar-custom .navbar-nav .open .dropdown-menu > .active > a:hover,
-  navbar-custom .navbar-nav .open .dropdown-menu > .active > a:focus {
-    color: #555;
-    background-color: red;
-  }
-  navbar-custom .navbar-nav .open .dropdown-menu > .disabled > a,
-  navbar-custom .navbar-nav .open .dropdown-menu > .disabled > a:hover,
-  navbar-custom .navbar-nav .open .dropdown-menu > .disabled > a:focus {
-    color: #ccc;
-    background-color: transparent;
-  }
-}
-navbar-custom .navbar-link {
-  color: #777;
-}
-navbar-custom .navbar-link:hover {
-  color: #333;
-}
-navbar-custom .btn-link {
-  color: #777;
-}
-navbar-custom .btn-link:hover,
-navbar-custom .btn-link:focus {
-  color: #333;
-}
-navbar-custom .btn-link[disabled]:hover,
-fieldset[disabled] navbar-custom .btn-link:hover,
-navbar-custom .btn-link[disabled]:focus,
-fieldset[disabled] navbar-custom .btn-link:focus {
-  color: orange;
-}
-
-
-/*------------------------ OTHER -----------------------*/
-
-
-.inline {
-    display: inline;
-}
-
-.bottomed {
-    margin-top: 1.5rem;
-}
-
-.hidden {
-    display: none;
-}
-
-.center {
-  text-align: center;
+.profileCheckbox p {
+  display: inline;
+  margin-left: 1rem;
 }
 
 /*----------------- API: GOOGLE PLACES ------------------*/
@@ -650,45 +638,136 @@ fieldset[disabled] navbar-custom .btn-link:focus {
     margin-top: 1rem;
 }
 
+/*-------------------------------------------------------*/
+/*------------------- FLASH MESSAGING -------------------*/
+/*-------------------------------------------------------*/
 
-/*-------------------- INDEX PAGE ---------------------*/
-
-.listingImg {
-  height: 200px;
-  width: 300px;
+.flash {
+  margin: 4rem auto 2rem auto;
+  padding: 0;
 }
 
-.darkestshadow {
-  box-shadow: 0 0 50px rgba(0, 0, 0, 1);
+.flashSuccess, .flashError {
+    padding: 1.5rem 4rem 1.5rem 4rem;
 }
 
-.darkshadow {
-  box-shadow: 0 0 50px rgba(0, 0, 0, .5);
+.flashSuccess {
+  background:   #e6fff2;
+}
+
+.flashError {
+  background: #ffe6f0;
+}
+
+@media (max-width: 650px) {
+  .flashSuccess, .flashError {
+    padding: 1.2rem 2rem 1.2rem 2rem;
+  }
+}
+
+/*-------------------------------------------------------*/
+/*--------------------- MISCELANIOUS --------------------*/
+/*-------------------------------------------------------*/
+
+.pushNextDownLg {
+   margin-bottom: 5rem;
+}
+
+.pushNextDownMd {
+   margin-bottom: 3rem;
+}
+
+.pushUp {
+  margin-top: 3rem;
+}
+
+@media (max-width: 991px) {
+  .pushNextDownLg {
+     margin-bottom: 4.0rem;
+  }
+  .pushNextDownMd {
+     margin-bottom: 2.0rem;
+  }
+}
+
+.frontPagePadding {
+   padding: 0 2rem;
+}
+
+.pagePadding {
+  padding:4rem;
+}
+
+@media (max-width: 1199px) {
+  .frontPagePadding {
+    padding: 0;
+  } 
+}
+
+@media (max-width: 650px) {
+  .pagePadding {
+    padding: 2rem;
+  }
+}
+
+.whiteBackground {
+   background-color: white;
 }
 
 .shadow {
-  box-shadow: 0 0 50px rgba(0, 0, 0, .2);
-}
-
-.lightshadow {
   box-shadow: 0 0 50px rgba(0, 0, 0, .1);
 }
 
-.thumbnail {
-  padding: 3rem;
-  border: 0;
+.hidden {
+    display: none;
 }
 
-.thumbnail h3 {
-  margin-top: 0;
-  margin-bottom: 2rem;
+.bottomed {
+  margin-top: 4rem;
 }
 
-.thumbnail p {
-  font-size: 1.7rem;
+.inline {
+  display: inline;
 }
 
-.jumbotron {
-  position: relative;
-  z-index: -1;
+
+/*-------------------------------------------------------*/
+/*-------------------- QUERY TESTERS --------------------*/
+/*-------------------------------------------------------*/
+
+
+/* Differentiate between medium and large */
+.mediaQueryTesterML {
+  float: left;
 }
+@media (min-width: 1200px) {
+   .mediaQueryTesterML {
+      float: right;
+    }
+}
+
+/* Differentiate between medium and small */
+
+.mediaQueryTesterMS { /*use for jquery*/
+  float: left;
+}
+ @media (min-width: 992px) {
+   .mediaQueryTesterMS {
+      float: right;
+    }
+ }
+ 
+ 
+
+/* Differentiate between small and xsmall */
+
+.mediaQueryTesterSXS { /*use for jquery*/
+  float: left;
+}
+ @media (min-width: 768px) {
+   .mediaQueryTesterSXS {
+      float: right;
+    }
+ }
+ 
+ 

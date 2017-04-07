@@ -161,14 +161,14 @@ function eventDateSetup() {
         var oneYearFromTodayMoment = todayMoment.clone().add(1,'year'); 
 
         var error = ""; 
-          
+
         if(checkIfEmptyField($('#date'))) {
             error = "This field is Required";
         } else if(!userInputMoment.isValid()) {
             error = "Invalid Date. Date must be in the format yyyy-mm-dd";
-        } else if( userInputMoment.diff(todayMoment, 'days') < 0 ) {
-            error = "You cannot post past events";
-        } else if ( oneYearFromTodayMoment.diff(userInputMoment, 'days') < 0 ) {
+        } else if( userInputMoment.isBefore(todayMoment) ) {
+            error = "You cannot post past events or events happening today";
+        } else if ( userInputMoment.isAfter(oneYearFromTodayMoment) ) {
             error = "You can only post events happening within the next year";
         } 
         

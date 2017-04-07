@@ -13,12 +13,17 @@ var express             = require("express"),
     expressSession      = require("express-session"),
     Event               = require("./models/event"),
     User                = require("./models/user"),
-    moment              = require("moment");
+    moment              = require("moment"),
+    favicon             = require('serve-favicon');
     
+// favicon ignore
+app.use(favicon(__dirname + '/public/favicon.ico'));
+
 // Require routes
 
 var indexRoutes         = require("./routes/index"),
-    eventRoutes         = require("./routes/event");
+    eventRoutes         = require("./routes/event"),
+    userRoutes          = require("./routes/user");
 
 // DB Connect
 mongoose.connect("mongodb://localhost/event_app");
@@ -59,10 +64,52 @@ app.use(function(req, res, next){
 
 app.use("/", indexRoutes);
 app.use("/events", eventRoutes);
+app.use("/user", userRoutes);
 
 
 // Moment
 app.locals.moment = moment; 
+
+  app.use( function(err, req, res, next) {
+    console.log("In app.use .. just error");
+    var statusCode = err.status || 500;
+    var statusText = '';
+    var errorDetail = (process.env.NODE_ENV === 'production') ? 'Sorry about this error' : err.stack;
+
+    switch (statusCode) {
+    case 400:
+      statusText = 'Bad Request: ' + err.message;
+      break;
+    case 401:
+      statusText = 'Unauthorized';
+      break;
+    case 403:
+      statusText = 'Forbidden';
+      break;
+    case 500:
+      statusText = 'Internal Server Error';
+      break;
+    }
+
+    res.status(statusCode);
+
+    if (process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'test') {
+      console.log(errorDetail);
+    }
+
+    if (req.accepts('html')) {
+      res.render('error/', { title: statusCode + ': ' + statusText, error: errorDetail, url: req.url });
+      return;
+    }
+
+    if (req.accepts('json')) {
+      res.send({ title: statusCode + ': ' + statusText, error: errorDetail, url: req.url });
+    }
+  });
+
+
+
+
 
 /***************************************************/
 /********************* LISTEN **********************/

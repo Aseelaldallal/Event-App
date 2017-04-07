@@ -1,20 +1,22 @@
-<% include ./partials/header %>
-
+<% include ../partials/header %>
 
 
 <script type="text/javascript" src="/js/loginregister.js"></script>
 
-
 <div class="container lightshadow pagePadding whiteBackground">
     
+    
+    
+    
     <div class="title">
-        <h2 class="loginTitle">Login</h2>
+        <h2 class="registerTitle">Sign Up</h2>
     </div>
         
     <hr class="blue pushNextDownMd"> 
     
-    <form action="/login" method="POST" onSubmit="return(shouldSubmit(this));" novalidate >
+    <form action="/user" method="POST" onSubmit="return(shouldSubmit(this));" novalidate >
         
+         
          <div class="form-group">
             <label for="username">Username</label>
             <input name="username" type="text" class="form-control" id="username">
@@ -38,5 +40,4 @@
 </div>
 
 
-
-<% include ./partials/footer %>
+<% include ../partials/footer %>

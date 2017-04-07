@@ -3,17 +3,33 @@
 
 <script type="text/javascript" src="/js/showpage.js"></script>
 
-<div class="container bottomed">
+<div class="container lightshadow pagePadding whiteBackground">
 
-        <h1 class="eventTitle"><span class="possibleLongInput"><%- event.name %></span></h1>
+        <div class="title ">
+            <h2 class="eventTitle"><span class="possibleLongInput"><%- event.name %></span></h2>
+        </div> 
         
-        <hr class="firsthr">
+        <hr class="blue pushNextDownLg">
         
         <!------------------------------- SIDEBAR ------------------------------->
         
         <div class="sidebar col-md-3">
 
             <div class="list-group">
+                
+                <!----------- AUTHOR ---------->
+                
+                <% if(currentUser && currentUser._id.equals(event.author.id)) { %>    
+                    <dl class="list-group-item">  
+                         <!-- Only user who owns event can see edit and delete buttons -->
+                      <div class="buttonBox">
+                          <a href="/events/<%=event._id%>/edit" class="btn btn-warning btn-md">Edit</a>
+                          <form class="inline" action="/events/<%=event._id%>?_method=DELETE" method="POST">
+                                <button class="inline btn btn-danger btn-md">Delete</button>
+                          </form>
+                      </div>
+                    </dl>
+                <% } %>
                 
                 <!----------- DATE ----------->
                 
@@ -103,17 +119,7 @@
         <div class="contentArea col-md-9">
                 
             <div class="list-group">  
-                
-                <!----------- AUTHOR ---------->
-                <% if(currentUser && currentUser._id.equals(event.author.id)) { %>    
-                    <dl class="list-group-item">  
-                         <!-- Only user who owns event can see edit and delete buttons -->
-                              <a href="/events/<%=event._id%>/edit" class="btn btn-warning btn-md">Edit</a>
-                              <form class="inline" action="/events/<%=event._id%>?_method=DELETE" method="POST">
-                                    <button class="inline btn btn-danger btn-md">Delete</button>
-                              </form>
-                    </dl>
-                <% } %>
+            
                 
                 <!-------- DESCRIPTION ------->
                 
@@ -136,7 +142,7 @@
                 
         </div> <!-- CONTENT END -->
 
-
+<div class="mediaQueryTesterMS"></div>
 
 </div> <!-- CONTAINTER END -->
 

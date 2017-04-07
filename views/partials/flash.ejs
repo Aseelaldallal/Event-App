@@ -1,6 +1,9 @@
-    <div class="container">
+
+
+<% if(  (error && error.length > 0) || (success && success.length > 0) ) { %>
+    <div class="container flash"> 
         <% if(error && error.length > 0 ) { %>
-            <div class="alert alert-danger">
+            <div class="flashError">
                 <% if(error.length === 1) { %>
                    <strong> <%= error %> </strong>
                 <% } else { %>
@@ -13,8 +16,9 @@
             </div>
         <% } 
         if(success && success.length > 0) { %>
-            <div class="alert alert-success">
+            <div class="flashSuccess">
                   <strong> <%= success %> </strong>
             </div>
         <% } %>
     </div>
+<% } %>

@@ -1,22 +1,20 @@
 
 <% include ../partials/fpheader %>
 
+<script type="text/javascript" src="/js/frontpage.js"></script>
 
-
-<div class ="jumbotron jumbotron-fluid darkshadow">
+<div class ="jumbotron jumbotron-fluid">
     <div class="container">
-        <h1> PolitiFUL </h1>
-        <hr>
-        <h2> Your Source of Polical Discourse in Canada</h2>
+        <h1 class="tshadow"> PolitiFUL </h1>
+        <hr class="white hrshadow">
+        <h2 class="tshadow"> Your Source of Polical Discourse in Canada</h2>
     </div>
 </div> <!-- Jumbotron End -->
     
-<%include ../partials/flash %>
-    
-<div class="container-fluid">
+<div class="container-fluid frontPagePadding">
     
     <!------------------------------ SIDEBAR ------------------------------>
-    <div class="sidebar col-lg-3">
+    <div class="sidebar col-lg-4">
         <%include ../partials/calendar %>
         <input name="dateToFind" id="dateToFind" type="hidden" value="<%= date %>"/>
 
@@ -25,48 +23,93 @@
     <!------------------------------ CONTENT ------------------------------>
     
 
-    <div class="contentArea col-lg-9">
-
-            <% if(events)  { %>
+    <div class="contentArea col-lg-8">
+            <% if(events && events.length > 0)  { %>
                 <% var i = 0 %>
                 <% events.forEach(function(event) { %>
-                    <div class="thumbnail eventBox lightshadow">
-                            <div class= "row">
-                                <div class="col-md-3">
-                                    <% var imgid = "img" + i %>
-                                    <div id=<%=imgid%> class="listingImg lightshadow">
-                                        <script>
-                                            var src = "<%=event.image%>";
-                                            var value = "url(" + src + ")";
-                                            $(<%=imgid%>).css("background", value);
-                                            $(<%=imgid%>).css("background-size", "cover");
-                                        </script>
-                                    </div>
-                                </div>
-                                <div class="col-md-9">
-                                    <h3><strong><%- event.name %></strong></h3>
-                                    <p><strong>Date: </strong><%=moment(event.date).format("dddd, MMMM DD YYYY"); %></p>
-                                    <p><strong>Location: </strong><%= event.address %>, <%=event.city %></p>   
-                                    <p><strong>Description: </strong><%-event.description.substr(0,350) %> ...</p>   
-                                    <a href="/events/<%=event._id%>/" class="btn btn-primary btn-xs">More Info</a>
-                                    <!-- Only user who owns event can see edit and delete buttons -->
-                                    <% if(currentUser && currentUser._id.equals(event.author.id)) { %>
-                                        <a href="/events/<%=event._id%>/edit" class="btn btn-warning btn-xs">Edit</a>
-                                        <form class="inline" action="/events/<%=event._id%>?_method=DELETE" method="POST">
-                                            <button class="inline btn btn-danger btn-xs">Delete</button>
-                                        </form>
-                                    <% } %>
-                                </div> <!-- col end -->
-                            </div> <!--row end-->
-                    </div> <!-- thumbnail end -->
-                    <% i++ %>
-                <% }); %> <!-- for loop end -->
                 
-            <% } else { console.log("FUCKER")%> 
-                 
-                 <div><p> No known events happening on this day... </p></div>
-            <% } %>
+                    <div class="container eventBox shadow">
+                        
+                            <div class="eventBoxHeading">
+                                <%- event.name %>
+                            </div>
+                            
+                            <div class="eventBoxContent">
+                                
+                                <div class= "row">
+                                    
+                                    <div class="col-sm-3 eventBoxContentImage">
+                                        
+                                        <% var imgid = "img" + i; %>
+                                        <div id="<%=imgid%>" class="eventBoxImg">
+                                            
+                                            <script>
+                                                var src = "<%=event.image%>";
+                                                if(src != "") {
+                                                    var value = "url(" + src + ")";
+                                                    $(<%=imgid%>).css("background", value);
+                                                    $(<%=imgid%>).css("background-size", "cover");
+                                                    $(<%=imgid%>).addClass('eventBoxImg');
+                                                } else {
+                                                    $(<%=imgid%>).html('<i class="fa fa-picture-o" aria-hidden="true"></i><p>The person who posted this event was too lazy to come up with an image</p>')
+                                                    $(<%=imgid%>).addClass('emptyImage');
+                                                }
+                                            </script>
+                                           
+                                        </div> <!--eventBoxImg End -->
+                                        
+                                    </div> <!-- eventBoxContentImage End -->
+                                    
+                                    <div class="col-sm-9 eventBoxContentText">
+                                        <p><strong>Date: </strong><%=moment(event.date).format("dddd, MMMM DD YYYY"); %></p>
+                                        <p><strong>Location: </strong><%= event.address %>, <%=event.city %></p>   
+                                        <p><strong>Description: </strong><%-event.description.substr(0,350) %> ...</p>  
+                                        <div class="buttonBox">
+                                            <a href="/events/<%=event._id%>/" class="btn btn-primary btn-xs">More Info</a>
+                                            <!-- Only user who owns event can see edit and delete buttons -->
+                                            <% if(currentUser && currentUser._id.equals(event.author.id)) { %>
+                                                <a href="/events/<%=event._id%>/edit" class="btn btn-warning btn-xs">Edit</a>
+                                                <form class="inline" action="/events/<%=event._id%>?_method=DELETE" method="POST">
+                                                    <button class="btn btn-danger btn-xs">Delete</button>
+                                                </form>
+                                            <% } %>
+                                        </div>
+                                    </div> <!-- col end -->
+                                    
+                                </div> <!--row end-->
+                                
+                            </div> <!-- eventBoxContent end -->
+                            
+                    </div> <!-- container eventbox end -->
+                    
+                    <% i++ %>
+                    
+                <% }); %> <!-- for loop end -->
+
+            <% } else { %> <!-- else: no events-->
+                <div class="eventBox whiteBackground shadow">
+                    <div class="eventBoxHeading">
+                        Nothing happening!
+                    </div>
+                    <div class="eventBoxContent"> 
+                        <p>There are no events happening on this day. Why don't you post one?</p>
+                        <div class="buttonBox">
+                        <% if(currentUser) { %>
+                            <a href="/events/new/" class="btn btn-primary btn-xs">Post Event</a>
+                        <% } else { %>
+                            <a href="/user/new/" class="btn btn-primary btn-xs">Sign Up to Post Event</a>
+                        <% } %>
+                        </div>
+                    </div>
+                </div>
+            <% } %> <!-- end if -->
+            
+            
+            
 </div> <!-- Container End -->
 
+<div class="mediaQueryTesterSXS"></div>
+<div class="mediaQueryTesterML"></div>
 
 <% include ../partials/footer %>
+

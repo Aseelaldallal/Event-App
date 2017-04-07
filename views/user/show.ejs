@@ -1,0 +1,116 @@
+<% include ../partials/header %>
+
+<script type="text/javascript" src="/js/userprofile.js"></script>
+
+<div class="container shadow pagePadding whiteBackground">
+
+    
+    <div class="title">
+        <h2 class="showUserTitle">Profile: <%= user.username %> </h2>
+    </div>
+        
+    <hr class="blue pushNextDownLg"> 
+    
+    <section id = "userGreeting">
+        <div>
+            <label>Number of <span id="upText"></span>events:</label>
+            <span id="numEvents"><%= events.length %></span>
+        </div>
+        <div class="profileCheckbox">
+            <% if(checked == "true") { %>
+                <input id="futureEvents" type="checkbox" checked><p>Show future events only</p>
+            <% } else { %>
+                <input id="futureEvents" type="checkbox"><p>Show future events only</p>
+            <% } %>
+        </div>
+    </section>
+    
+    <% if(events && events.length > 0)  { %>
+        <% var i = 0 %>
+        <% events.forEach(function(event) { %>
+        
+            <div class="container eventBox shadow">
+                
+                    <div class="eventBoxHeading">
+                        <%- event.name %>
+                    </div>
+                    
+                    <div class="eventBoxContent">
+                        
+                        <div class= "row">
+                            
+                            <div class="col-sm-3 eventBoxContentImage">
+                                
+                                <% var imgid = "img" + i; %>
+                                <div id="<%=imgid%>" class="eventBoxImg">
+                                    
+                                    <script>
+                                        var src = "<%=event.image%>";
+                                        if(src != "") {
+                                            var value = "url(" + src + ")";
+                                            $(<%=imgid%>).css("background", value);
+                                            $(<%=imgid%>).css("background-size", "cover");
+                                            $(<%=imgid%>).addClass('eventBoxImg');
+                                        } else {
+                                            $(<%=imgid%>).html('<i class="fa fa-picture-o" aria-hidden="true"></i><p>The person who posted this event was too lazy to come up with an image</p>')
+                                            $(<%=imgid%>).addClass('emptyImage');
+                                        }
+                                    </script>
+                                   
+                                    
+                                </div> <!--eventBoxImg End -->
+                                
+                            </div> <!-- eventBoxContentImage End -->
+                            
+                            <div class="col-sm-9 eventBoxContentText">
+                                <p><strong>Date: </strong><%=moment(event.date).format("dddd, MMMM DD YYYY"); %></p>
+                                <p><strong>Location: </strong><%= event.address %>, <%=event.city %></p>   
+                                <p><strong>Description: </strong><%-event.description.substr(0,350) %> ...</p>  
+                                <div class="buttonBox">
+                                    <a href="/events/<%=event._id%>/" class="btn btn-primary btn-xs">More Info</a>
+                                    <!-- Only user who owns event can see edit and delete buttons -->
+                                    <% if(currentUser && currentUser._id.equals(event.author.id)) { %>
+                                        <a href="/events/<%=event._id%>/edit" class="btn btn-warning btn-xs">Edit</a>
+                                        <form class="inline" action="/events/<%=event._id%>?_method=DELETE" method="POST">
+                                            <button class="btn btn-danger btn-xs">Delete</button>
+                                        </form>
+                                    <% } %>
+                                </div>
+                            </div> <!-- col end -->
+                            
+                        </div> <!--row end-->
+                        
+                    </div> <!-- eventBoxContent end -->
+                    
+            </div> <!-- container eventbox end -->
+            
+            <% i++ %>
+            
+        <% }); %> <!-- for loop end -->
+
+    <% } else { %> <!-- else: no events-->
+        <div class="eventBox whiteBackground shadow">
+            <div class="eventBoxHeading">
+                Nothing happening!
+            </div>
+            <div class="eventBoxContent"> 
+                <% if(checked == "true") {  %>
+                    <p>This user has no events happening in the future.</p>
+                <% } else {  %>
+                    <p>This user has no associated events.</p>
+                <% }  %>
+                <div class="buttonBox">
+                <% if(currentUser) { %>
+                    <a href="/events/new/" class="btn btn-primary btn-xs">Post Event</a>
+                <% } %>
+                </div>
+            </div>
+        </div>
+    <% } %> <!-- end if -->
+    
+</div> <!-- Container End -->
+
+<div class="mediaQueryTesterML"></div>
+
+<% include ../partials/footer %>
+

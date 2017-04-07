@@ -1,4 +1,4 @@
-
+/* global moment */
 
 /* ------------------------------------------------------------------- */
 /* --------------------------- MIDDLEWARE ---------------------------- */
@@ -8,9 +8,8 @@
 var Event          = require("../models/event"),
     sanitizeHtml   = require('sanitize-html'),
     indicative     = require('indicative'),
-    fs             = require('fs');
-
-
+    fs             = require('fs'),
+    moment         = require('moment');
 
 var middlewareObj = {}; 
 
@@ -22,7 +21,6 @@ const MAX_DESC_LENGTH = 2200;
 
 // Checks whether user is logged in. Redirects to events if not logged in
 middlewareObj.isLoggedIn = function(req,res,next) {
-
     if(req.isAuthenticated()) {
         return next();
     } 
@@ -38,9 +36,7 @@ middlewareObj.checkEventOwnership = function(req,res,next) {
     if(req.isAuthenticated()) {
         Event.findById(req.params.id, function(err, foundEvent) { // Find the event
            if(err) {
-               console.log(err);
-               req.flash("error", err);
-               res.redirect("back");
+               next(err);
             } else {
                 if(foundEvent.author.id.equals(req.user._id)) { // Check if the event's author's id is the same as logged in user's ids
                     return next(); 
@@ -61,7 +57,6 @@ middlewareObj.checkEventOwnership = function(req,res,next) {
 
 // Sanitize html: https://www.npmjs.com/package/sanitize-html
 middlewareObj.sanitizeUserInput = function(req,res,next) {
-    
     for(var key in req.body) {
         if(req.body[key]) {
             req.body[key] = sanitizeHtml(req.body[key], { allowedTags: [], allowedAttributes:[]});
@@ -75,7 +70,6 @@ middlewareObj.sanitizeUserInput = function(req,res,next) {
 // there is a bug in indicative before_offset_of. I fixed it. If you download new version
 // test, if bug, fix again
 middlewareObj.validateNewEvent = function(req,res,next) {
-        
         for(var key in req.body) {
             req.body[key] = req.body[key].trim(); 
             if(req.body[key] == "") {
@@ -163,7 +157,7 @@ middlewareObj.validateNewEvent = function(req,res,next) {
                 var msg = checkIfImgFileValid(req.file);
                 if(msg != "") {
                     validationErrors.push(msg);
-                    deleteUploadedFile(req.file);
+                    deleteUploadedFile(req.file,next);
                     req.flash("error", validationErrors);
                     res.redirect("back");
                 } else {
@@ -181,7 +175,7 @@ middlewareObj.validateNewEvent = function(req,res,next) {
                     validationErrors.push(msg);
                 }
             }
-            deleteUploadedFile(req.file);
+            deleteUploadedFile(req.file, next);
             req.flash("error", validationErrors);
             res.redirect("back"); 
         });
@@ -190,16 +184,34 @@ middlewareObj.validateNewEvent = function(req,res,next) {
 };
 
 
+// Back end validation for index page. Makes sure that user doesn't input bad date
+// If user inputs bad date, defaults to server date
+middlewareObj.validateDate = function (req,res,next) {
+    if( !req.query.dateToFind ) {
+        res.render("event/index", {date: undefined, events: undefined}); 
+        return;
+    } else {
+        var isValidDate = moment(req.query.dateToFind, "YYYY-MM-DD").format("YYYY-MM-DD") == req.query.dateToFind;
+        if(!isValidDate) {
+            var err = {
+                status: 400,
+                message: "Invalid Date: " + req.query.dateToFind
+            }
+            return next(err);
+        } 
+    }
+    return next();
+}
 
 /* ------------------------- HELPER FUNCTIONS ------------------------- */
 
 // Deletes file from server
-function deleteUploadedFile(file) {
+function deleteUploadedFile(file, next) {
     console.log("In delete uploaded file");
     if(file) {
         fs.unlink(file.path, function(err) {
            if(err) {
-               console.log("Couldn't Delete image File: ", err);
+               next(err);
            }
         });
     }
