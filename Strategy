@@ -5,14 +5,15 @@ Front End:
 -- Data Validation: Login -- DONE
 -- 404 Page
 -- Flash Messaging -- DONE
--- Disable Editing Past Events
+-- Disable Editing Past Events -- DONE
 -- Fix Calendar Buttons
 -- Javascript on off check
+-- add profile button
+-- change the way event date is handled on front page
 
-
-
-
-
+Front Page
+Profile
+Show Page
 
 Work on Image Upload --- DONE
 Work on passing other event details to DB --- DONE

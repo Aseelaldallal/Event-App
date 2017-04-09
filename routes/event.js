@@ -173,7 +173,7 @@ function routeBasedOnDate(req, res, foundEvent, today) {
             .status(200)
             .render("event/edit", {event: foundEvent});
     } else {
-        req.flash("error", "Can't edit past events");
+        req.flash("error", "Sorry, you can't edit events happening today or in the past");
         res.redirect("back");
     }
 }

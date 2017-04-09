@@ -23,7 +23,11 @@
                     <dl class="list-group-item">  
                          <!-- Only user who owns event can see edit and delete buttons -->
                       <div class="buttonBox">
-                          <a href="/events/<%=event._id%>/edit" class="btn btn-warning btn-md">Edit</a>
+                        <% var eventDate = moment.utc(event.date);
+                           var today = moment();
+                           if(eventDate.isAfter(today)) { %>
+                                <a href="/events/<%=event._id%>/edit" class="btn btn-warning btn-xs">Edit</a>
+                        <% } %>
                           <form class="inline" action="/events/<%=event._id%>?_method=DELETE" method="POST">
                                 <button class="inline btn btn-danger btn-md">Delete</button>
                           </form>

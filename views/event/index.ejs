@@ -61,6 +61,7 @@
                                     </div> <!-- eventBoxContentImage End -->
                                     
                                     <div class="col-sm-9 eventBoxContentText">
+                                        <% var dateID = "date" + event._id; %>
                                         <p><strong>Date: </strong><%=moment(event.date).format("dddd, MMMM DD YYYY"); %></p>
                                         <p><strong>Location: </strong><%= event.address %>, <%=event.city %></p>   
                                         <p><strong>Description: </strong><%-event.description.substr(0,350) %> ...</p>  
@@ -68,7 +69,11 @@
                                             <a href="/events/<%=event._id%>/" class="btn btn-primary btn-xs">More Info</a>
                                             <!-- Only user who owns event can see edit and delete buttons -->
                                             <% if(currentUser && currentUser._id.equals(event.author.id)) { %>
-                                                <a href="/events/<%=event._id%>/edit" class="btn btn-warning btn-xs">Edit</a>
+                                                <% var eventDate = moment.utc(event.date);
+                                                   var today = moment();
+                                                   if(eventDate.isAfter(today)) { %>
+                                                        <a href="/events/<%=event._id%>/edit" class="btn btn-warning btn-xs">Edit</a>
+                                                <% } %>
                                                 <form class="inline" action="/events/<%=event._id%>?_method=DELETE" method="POST">
                                                     <button class="btn btn-danger btn-xs">Delete</button>
                                                 </form>
@@ -110,6 +115,7 @@
 
 <div class="mediaQueryTesterSXS"></div>
 <div class="mediaQueryTesterML"></div>
+
 
 <% include ../partials/footer %>
 
