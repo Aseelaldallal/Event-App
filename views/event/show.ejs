@@ -29,7 +29,7 @@
                                 <a href="/events/<%=event._id%>/edit" class="btn btn-warning btn-xs">Edit</a>
                         <% } %>
                           <form class="inline" action="/events/<%=event._id%>?_method=DELETE" method="POST">
-                                <button class="inline btn btn-danger btn-md">Delete</button>
+                                <button class="inline btn btn-danger btn-xs">Delete</button>
                           </form>
                       </div>
                     </dl>
@@ -141,6 +141,12 @@
                     </dl>       
                 <% } %>
                 
+                <!------------ AUTHOR ---------->
+                <dl class="list-group-item">
+                     <dt>This event was posted by: </dt>
+                     <% var link = "/user/" + event.author.id; %>
+                     <dd id="eventDescDisplay"><span class="possibleLongInput"><a href="<%=link%>"><%-event.author.username %></a></span></dd>
+                </dl>
                 
             </div> <!--list-group end-->    
                 

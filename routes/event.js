@@ -34,16 +34,30 @@ var upload = multer({storage: storage});
 // DISPLAY A LIST OF ALL EVENTS
 
 router.get("/", middleware.sanitizeUserInput, middleware.validateDate, function(req,res,next) {
-    Event.find({date: req.query.dateToFind}, function(err, foundEvents) {
+    if(!req.query.dateToFind) {
+        ipLocation(getUserIPAddress(req), function (error, ipres) {
+            var today = moment().format("YYYY-MM-DD"); // server today
+            if(!error) { 
+                today = momentTZ().tz(ipres.timezone).format("YYYY-MM-DD"); // user today
+            }
+            fetchEventsOnDate(today,res,next); 
+        });
+    } else {
+        fetchEventsOnDate(req.query.dateToFind, res, next);
+    }
+});
+
+function fetchEventsOnDate(today, res,next) {
+        Event.find({date: today}, function(err, foundEvents) {
         if(err) {
             next(err); 
         } else {
             res
                .status(200)
-               .render("event/index", {date: req.query.dateToFind, events: foundEvents}); 
+               .render("event/index", {date: today, events: foundEvents}); 
         }
     });
-});
+}
 
 /* ---------------------------- NEW ROUTE ---------------------------- */
 
@@ -141,7 +155,7 @@ router.get("/:id/edit", middleware.checkEventOwnership, function(req,res,next) {
            next(err);
        } else {
            ipLocation(getUserIPAddress(req), function (error, ipres) {
-               if(err) {
+               if(error) {
                     // route based on server date
                     routeBasedOnDate(req, res,foundEvent,moment());
                } else {

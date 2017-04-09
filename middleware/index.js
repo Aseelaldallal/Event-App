@@ -78,8 +78,11 @@ middlewareObj.validateNewEvent = function(req,res,next) {
         }
         
         //Count the number of new line characters (see http://bit.ly/2mKBW4K)
-        var numberOfLineBreaks = (req.body.description.match(/\n/g)||[]).length;
-        var maxLength = MAX_DESC_LENGTH + numberOfLineBreaks;
+        var maxLength = 2200;
+        if(req.body.description) {
+            var numberOfLineBreaks = (req.body.description.match(/\n/g)||[]).length;
+            maxLength = MAX_DESC_LENGTH + numberOfLineBreaks;
+        }
         var descriptionRule = 'required|min:200|max:' + maxLength;
         
         indicative.extend('time', time, 'Invalid time');
@@ -187,10 +190,7 @@ middlewareObj.validateNewEvent = function(req,res,next) {
 // Back end validation for index page. Makes sure that user doesn't input bad date
 // If user inputs bad date, defaults to server date
 middlewareObj.validateDate = function (req,res,next) {
-    if( !req.query.dateToFind ) {
-        res.render("event/index", {date: undefined, events: undefined}); 
-        return;
-    } else {
+    if( req.query.dateToFind ) {
         var isValidDate = moment(req.query.dateToFind, "YYYY-MM-DD").format("YYYY-MM-DD") == req.query.dateToFind;
         if(!isValidDate) {
             var err = {

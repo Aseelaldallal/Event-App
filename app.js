@@ -11,7 +11,6 @@ var express             = require("express"),
     passport            = require("passport"),
     localStrategy       = require("passport-local"),
     expressSession      = require("express-session"),
-    Event               = require("./models/event"),
     User                = require("./models/user"),
     moment              = require("moment"),
     favicon             = require('serve-favicon');
@@ -71,7 +70,6 @@ app.use("/user", userRoutes);
 app.locals.moment = moment; 
 
   app.use( function(err, req, res, next) {
-    console.log("In app.use .. just error");
     var statusCode = err.status || 500;
     var statusText = '';
     var errorDetail = (process.env.NODE_ENV === 'production') ? 'Sorry about this error' : err.stack;

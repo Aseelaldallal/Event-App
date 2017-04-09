@@ -11,23 +11,18 @@ $( document ).ready(function() {
 /* ----------------- INITIALIZE ----------------- */
 
 function initializeCalendar() {
-    
+
     addListeners();
-    
-    if($('#dateToFind').val() == "") {
-        var newURL = location.pathname + "?dateToFind=" + moment().format("YYYY-MM-DD");
-        location.assign(newURL);
-    }  else {
-        var reqDateString = $('#dateToFind').val();
-        var reqDate = moment(reqDateString);
-        var day = reqDate.date(); 
-        var month = reqDate.month();
-        var monthName = moment.months()[month];
-        var year = reqDate.year(); 
-        setMonthLabel(monthName, year);
-        fillInDays(day, month, year);
-        //$('#dateToFind').attr("value", reqDate.format("YYYY-MM-DD"));
-    }
+
+    var reqDateString = $('#dateToFind').val();
+    var reqDate = moment(reqDateString);
+    var day = reqDate.date(); 
+    var month = reqDate.month();
+    var monthName = moment.months()[month];
+    var year = reqDate.year(); 
+    setMonthLabel(monthName, year);
+    fillInDays(day, month, year);
+
 }
 
 /* ------------------ LISTENERS ----------------- */

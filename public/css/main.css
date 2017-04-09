@@ -664,6 +664,27 @@ input::-webkit-calendar-picker-indicator{ /* Disable native datepicker popup */
   }
 }
 
+
+/*-------------------------------------------------------*/
+/*-------------------- NO JAVASCRIPT --------------------*/
+/*-------------------------------------------------------*/
+
+.nojs {
+  color: white;
+  background: green;
+  width: 100%;
+  min-height: 30px;
+  line-height: 30px;
+  text-align: center;
+  margin:0;
+}
+
+.nojs p {
+  margin-bottom: 0;
+}
+.nojs a {
+  color: lightsalmon;
+}
 /*-------------------------------------------------------*/
 /*--------------------- MISCELANIOUS --------------------*/
 /*-------------------------------------------------------*/
