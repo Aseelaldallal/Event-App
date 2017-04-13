@@ -72,7 +72,7 @@ strong { font-weight: 500; color: midnightblue; }
   background-image: url("../assets/images/jumbobackground.jpg");
   background-size: cover;
   background-repeat: no-repeat;
-  background-position: 0% 20%;
+  background-position: 0% 95%;
   min-height:400px;
 }
 
@@ -750,7 +750,10 @@ input::-webkit-calendar-picker-indicator{ /* Disable native datepicker popup */
   display: inline;
 }
 
-
+.errorPageImage {
+  width: 100%;
+  
+}
 /*-------------------------------------------------------*/
 /*-------------------- QUERY TESTERS --------------------*/
 /*-------------------------------------------------------*/

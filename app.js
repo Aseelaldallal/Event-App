@@ -15,6 +15,8 @@ var express             = require("express"),
     moment              = require("moment"),
     favicon             = require('serve-favicon');
     
+
+
 // favicon ignore
 app.use(favicon(__dirname + '/public/favicon.ico'));
 
@@ -69,44 +71,47 @@ app.use("/user", userRoutes);
 // Moment
 app.locals.moment = moment; 
 
-  app.use( function(err, req, res, next) {
-    var statusCode = err.status || 500;
-    var statusText = '';
-    var errorDetail = (process.env.NODE_ENV === 'production') ? 'Sorry about this error' : err.stack;
+// Error Handling
 
-    switch (statusCode) {
-    case 400:
-      statusText = 'Bad Request: ' + err.message;
-      break;
-    case 401:
-      statusText = 'Unauthorized';
-      break;
-    case 403:
-      statusText = 'Forbidden';
-      break;
-    case 500:
-      statusText = 'Internal Server Error';
-      break;
-    }
+app.use(function(req, res) {
+   res.render("error")
+});
+  
+app.use( function(err, req, res, next) {
+  var statusCode = err.status || 500;
+  var statusText = '';
+  var errorDetail = (process.env.NODE_ENV === 'production') ? 'Sorry about this error' : err.stack;
 
-    res.status(statusCode);
+  switch (statusCode) {
+  case 400:
+    statusText = 'Bad Request: ' + err.message;
+    break;
+  case 401:
+    statusText = 'Unauthorized';
+    break;
+  case 403:
+    statusText = 'Forbidden';
+    break;
+  case 500:
+    statusText = 'Internal Server Error';
+    break;
+  }
 
-    if (process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'test') {
-      console.log(errorDetail);
-    }
+  res.status(statusCode);
 
-    if (req.accepts('html')) {
-      res.render('error/', { title: statusCode + ': ' + statusText, error: errorDetail, url: req.url });
-      return;
-    }
+  if (process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'test') {
+    console.log(errorDetail);
+  }
 
-    if (req.accepts('json')) {
-      res.send({ title: statusCode + ': ' + statusText, error: errorDetail, url: req.url });
-    }
-  });
+  if (req.accepts('html')) {
+    res.render('error/', { title: statusCode + ': ' + statusText, error: errorDetail, url: req.url });
+    return;
+  }
 
-
-
+  if (req.accepts('json')) {
+    res.send({ title: statusCode + ': ' + statusText, error: errorDetail, url: req.url });
+  }
+});
 
 
 /***************************************************/

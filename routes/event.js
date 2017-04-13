@@ -252,7 +252,7 @@ router.delete("/:id", middleware.checkEventOwnership, function(req,res, next) {
                var imagePath = "public" + removedEvent.image;
                fs.unlink(imagePath, function(err) {
                    if(err) {
-                       next(err);
+                       console.log("Couldn't delete image file: " + err);
                    }
                });
             }

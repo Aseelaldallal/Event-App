@@ -9,7 +9,8 @@
     "ejs": "^2.5.2",
     "express": "^4.14.0",
     "express-session": "^1.14.2",
-    "indicative": "^2.2.1",
+    "faker": "^4.1.0",
+    "indicative": "git+https://git@github.com/Aseelaldallal/indicative.git",
     "iplocation": "^4.0.1",
     "jquery": "^3.1.1",
     "method-override": "^2.3.7",
@@ -21,8 +22,7 @@
     "passport-local": "^1.0.0",
     "passport-local-mongoose": "^4.0.0",
     "sanitize-html": "^1.14.1",
-    "serve-favicon": "^2.4.2",
-    "timepicker": "^1.11.9"
+    "serve-favicon": "^2.4.2"
   },
   "devDependencies": {},
   "scripts": {

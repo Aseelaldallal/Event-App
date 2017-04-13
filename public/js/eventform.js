@@ -65,7 +65,6 @@ function validate(form) {
 // 1. Setup Input Fields
 // 2. Add Validation Listeners to Input Fields
 $(document).ready(function() {
-
     eventTitleSetup();
     eventDateSetup();
     eventTimeSetup(); 
@@ -287,7 +286,9 @@ function eventLocationSetup() {
         $('#showMapTip').toggleClass('hidden');
         if($( "#showMap:checked" ).length > 0) {// checked
             if(map) { // If map is defined
-                $('#showMap').val(map.getCenter());
+                var coordinates = map.getCenter().toString();
+                coordinates = coordinates.substring(1,coordinates.length-1);
+                $('#showMap').val(coordinates);
             }
         } else {
             $('#showMap').val('');
@@ -436,7 +437,9 @@ function findGeocodeAndMap() {
             map.setCenter(results[0].geometry.location);
             map.setZoom(14);
             if($( "#showMap:checked" ).length > 0) {// checked
-                $('#showMap').val(map.getCenter());
+                var coordinates = map.getCenter().toString();
+                coordinates = coordinates.substring(1,coordinates.length-1);
+                $('#showMap').val(coordinates);
             }
             var infowindow = new google.maps.InfoWindow();
             var marker = new google.maps.Marker({
@@ -454,7 +457,6 @@ function findGeocodeAndMap() {
 
 // Precondition: place has a geometry. Display place on google map
 function displayMap(place) {
-
     $('#googleMap').removeClass('hidden');
     $('#noMapAvailContainer').addClass('hidden');
     map = new google.maps.Map(document.getElementById('googleMap'));
@@ -473,7 +475,9 @@ function displayMap(place) {
     map.setZoom(12);
     
     if($( "#showMap:checked" ).length > 0) {// checked
-        $('#showMap').val(map.getCenter());
+        var coordinates = map.getCenter().toString();
+        coordinates = coordinates.substring(1,coordinates.length-1);
+        $('#showMap').val(coordinates);
     }
     
     marker.setIcon(/** @type {google.maps.Icon} */({

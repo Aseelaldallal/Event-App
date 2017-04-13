@@ -34,8 +34,8 @@ $(document).ready(function() {
     var mapLatLngString = $('#mapCenter').val();
     if(mapLatLngString != undefined) {
         var latLngRawArray = mapLatLngString.split(",");
-        var lat = latLngRawArray[0].substr(1);
-        var lng = latLngRawArray[1].substring(0, latLngRawArray[1].length - 1 );
+        var lat = latLngRawArray[0];
+        var lng = latLngRawArray[1];
         var latlngObj = new google.maps.LatLng(lat, lng);
         var map = new google.maps.Map(document.getElementById('showMapp'));
         map.setCenter(latlngObj);
