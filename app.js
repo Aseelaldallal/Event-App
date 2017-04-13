@@ -27,10 +27,10 @@ var indexRoutes         = require("./routes/index"),
     userRoutes          = require("./routes/user");
 
 // DB Connect
-mongoose.connect("mongodb://localhost/event_app");
+//mongoose.connect("mongodb://localhost/event_app");
+mongoose.connect("mongodb://root:thi20MUN@ds159220.mlab.com:59220/eventful");
 
 // Configure
-
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
 app.use(methodOverride("_method"));
