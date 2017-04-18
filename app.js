@@ -27,8 +27,8 @@ var indexRoutes         = require("./routes/index"),
     userRoutes          = require("./routes/user");
 
 // DB Connect
-mongoose.connect(process.env.DATABASEURL);
-//mongodb://localhost/event_app
+var url =  process.env.DATABASEURL || "mongodb://localhost/event_app";
+mongoose.connect(url);
 
 // Configure
 app.set("view engine", "ejs");
@@ -67,9 +67,11 @@ app.use("/", indexRoutes);
 app.use("/events", eventRoutes);
 app.use("/user", userRoutes);
 
-
 // Moment
 app.locals.moment = moment; 
+
+// Image Storage
+app.locals.awspath = "https://s3.ca-central-1.amazonaws.com/eventfulcanada/";
 
 // Error Handling
 

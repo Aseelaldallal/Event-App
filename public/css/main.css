@@ -69,7 +69,7 @@ strong { font-weight: 500; color: midnightblue; }
 
 .jumbotron {
   color: white;
-  background-image: url("../assets/images/jumbobackground.jpg");
+  background-image: url("https://s3.ca-central-1.amazonaws.com/eventfulcanada/jumbobackground.jpg");
   background-size: cover;
   background-repeat: no-repeat;
   background-position: 0% 95%;

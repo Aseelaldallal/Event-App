@@ -10,23 +10,46 @@ var express         = require("express"),
     Event           = require("../models/event"),
     User            = require("../models/user"),
     middleware      = require("../middleware"), // If we require a directory, it automatically requires index.js
+    aws             = require('aws-sdk'),
     multer          = require("multer"),
+    multerS3        = require('multer-s3'),
     fs              = require('fs'),
     router          = express.Router(),
     moment          = require("moment"),
     momentTZ        = require("moment-timezone"),
     ipLocation      = require("iplocation");
 
-var storage =   multer.diskStorage({
+        
+aws.config.update({
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    region: 'ca-central-1'
+});
+
+var s3 = new aws.S3();
+
+var upload = multer({
+    storage: multerS3({
+        s3: s3,
+        bucket: process.env.S3_BUCKET_NAME,
+        key: function (req, file, cb) {
+            var fileExtension = file.originalname.split(".")[1];
+            var path = "uploads/" + req.user._id + Date.now() + "." + fileExtension;
+            cb(null, path); 
+        }
+    })
+});
+
+/*var storage =   multer.diskStorage({
   destination: function (req, file, callback) {
     callback(null, './public/uploads/eventImages');
   },
   filename: function (req, file, callback) {
     callback(null, req.user._id + Date.now());
   }
-});
+});*/
 
-var upload = multer({storage: storage});
+/*var upload = multer({storage: storage});*/
 
 
 /* --------------------------- INDEX ROUTE --------------------------- */
@@ -76,11 +99,14 @@ router.get("/new", middleware.isLoggedIn, function(req,res) {
 // Only logged in user can create event
 // User input is sanitized
 
-router.post("/", middleware.isLoggedIn, upload.single('image'),middleware.validateNewEvent, middleware.sanitizeUserInput, function(req,res,next) { 
-    var filepath = undefined;
+//router.post("/", middleware.isLoggedIn, upload.single('image'),middleware.validateNewEvent, middleware.sanitizeUserInput, function(req,res,next) { 
+
+router.post("/", middleware.isLoggedIn, upload.array('image',1),middleware.validateNewEvent, middleware.sanitizeUserInput, function(req,res,next) { 
     
-    if(req.file) {
-        filepath = req.file.path.substr(6); // Substr to remove "/public"
+    var filepath = undefined;
+
+    if(req.files[0]) {
+        filepath = req.files[0].key; // 'uploads/xxxxx.extension'
     } 
     
     var newEvent = {
@@ -206,24 +232,14 @@ function canEditEvent(eventDate, todayDate) {
 
 // UPDATE SPECIFIC EVENT IN DATABASE 
 // Only user who owns the event can edit the event in the db
-router.put("/:id", upload.single('image'), middleware.checkEventOwnership, middleware.validateNewEvent, middleware.sanitizeUserInput, function(req, res,next) {
-    if(req.file) { 
-        req.body.image = req.file.path.substr(6); // Path of uploaded file
+router.put("/:id", upload.array('image',1), middleware.checkEventOwnership, middleware.validateNewEvent, middleware.sanitizeUserInput, function(req, res,next) {
+    if(req.files[0]) { 
+        req.body.image = req.files[0].key; // Path of uploaded file
         if(req.body.previousImage !== undefined) {
-            var imagePath = "public" + req.body.previousImage;
-            fs.unlink(imagePath, function(err) {
-                if(err) {
-                    next(err);
-                } 
-            });
+            deleteFiles(req.body.previousImage);
         } 
     } else if(req.body.imageRemoved === "true") {
-        var imagePath = "public" + req.body.previousImage;
-        fs.unlink(imagePath, function(err) {
-            if(err) {
-                next(err);
-            } 
-        });
+        deleteFiles(req.body.previousImage);
         req.body.image = undefined;
     }
     req.body.mapCenter = req.body.showMap; 
@@ -249,12 +265,7 @@ router.delete("/:id", middleware.checkEventOwnership, function(req,res, next) {
        } else {
            // If event has an associated image, delete it from server
             if(removedEvent.image) { 
-               var imagePath = "public" + removedEvent.image;
-               fs.unlink(imagePath, function(err) {
-                   if(err) {
-                       console.log("Couldn't delete image file: " + err);
-                   }
-               });
+               deleteFiles(removedEvent.image);
             }
             // Update user - remove event from user
             User.findByIdAndUpdate(removedEvent.author.id , { $pull: {events: {_id: removedEvent._id} } }, function(err, updatedUser) {
@@ -270,6 +281,23 @@ router.delete("/:id", middleware.checkEventOwnership, function(req,res, next) {
        }
     });
 });
+
+function deleteFiles(imagePath) {
+    console.log("removing: " + imagePath);
+    s3.deleteObjects({
+        Bucket: process.env.S3_BUCKET_NAME,
+        Delete: {
+            Objects: [
+                 { Key: imagePath },
+            ]
+        }
+    }, function(err, data) {
+        if (err) {
+            console.log("Couldn't delete image file: " + err);
+        }
+    });
+}
+
 
 
 /* ------------------------------------------------------------------ */

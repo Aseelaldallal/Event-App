@@ -137,7 +137,8 @@
                 <!------------ IMAGE ---------->
                 <% if(event.image) { %>
                     <dl class="list-group-item">
-                         <dd class="center"><img id="sEventImage" src="../..<%=event.image%>"</dd>
+                         <% var imgsrc = awspath + event.image; %>
+                         <dd class="center"><img id="sEventImage" src=<%=imgsrc%> </dd>
                     </dl>       
                 <% } %>
                 

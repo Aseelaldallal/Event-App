@@ -45,6 +45,7 @@
                                             <script>
                                                 var src = "<%=event.image%>";
                                                 if(src != "") {
+                                                    src = "<%=awspath%>" + src;
                                                     var value = "url(" + src + ")";
                                                     $(<%=imgid%>).css("background", value);
                                                     $(<%=imgid%>).css("background-size", "cover");

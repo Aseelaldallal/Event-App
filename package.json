@@ -4,6 +4,7 @@
   "description": "this is an app that lets users post events",
   "main": "app.js",
   "dependencies": {
+    "aws-sdk": "^2.41.0",
     "body-parser": "^1.15.2",
     "connect-flash": "^0.1.1",
     "ejs": "^2.5.2",
@@ -18,6 +19,7 @@
     "moment-timezone": "^0.5.13",
     "mongoose": "^4.6.8",
     "multer": "^1.2.1",
+    "multer-s3": "^2.7.0",
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
     "passport-local-mongoose": "^4.0.0",

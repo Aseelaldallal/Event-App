@@ -77,22 +77,22 @@ body {
 }
 
 .slideshow li:nth-child(1) { 
-  background-image: url("../assets/images/image1.jpg"); 
+  background-image: url("https://s3.ca-central-1.amazonaws.com/eventfulcanada/landingPageImages/image1.jpg"); 
 }
 .slideshow li:nth-child(2) { 
-  background-image: url("../assets/images/image4.jpg"); 
+  background-image: url("https://s3.ca-central-1.amazonaws.com/eventfulcanada/landingPageImages/image4.jpg"); 
   animation-delay: 10s; /* we want each image to fade in 10s after the next */
 }
 .slideshow li:nth-child(3) { 
-  background-image: url("../assets/images/image3.jpg") ;
+  background-image: url("https://s3.ca-central-1.amazonaws.com/eventfulcanada/landingPageImages/image3.jpg") ;
   animation-delay: 20s; 
 }
 .slideshow li:nth-child(4) { 
-  background-image: url("../assets/images/image2.jpg"); 
+  background-image: url("https://s3.ca-central-1.amazonaws.com/eventfulcanada/landingPageImages/image2.jpg"); 
   animation-delay: 30s; 
 }
 .slideshow li:nth-child(5) { 
-  background-image: url("../assets/images/image5.jpg") ;
+  background-image: url("https://s3.ca-central-1.amazonaws.com/eventfulcanada/landingPageImages/image5.jpg") ;
   animation-delay: 40s;  /*so 50s total */
 }
 

@@ -14,7 +14,7 @@ $(document).ready(function() {
          $('#dropbox').addClass('hidden');
          $('#preview').removeClass('hidden');
          var img = document.createElement("img");
-         img.src = previousImage.val();
+         img.src = "https://s3.ca-central-1.amazonaws.com/eventfulcanada/" + previousImage.val();
          $('#preview').append(img);
          $('#fileSelect').text('Replace Image');
          adjustImageSize(img);
