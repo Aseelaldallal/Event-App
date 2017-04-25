@@ -41,7 +41,10 @@ router.get("/logout", function(req,res) {
 });
 
 
-
+// Dev Notes
+router.get("/devnotes", function(req,res) {
+    res.render("devnotes"); 
+});
 
 /* ------------------------------------------------------------------ */
 /* ----------------------------- EXPORT ----------------------------- */

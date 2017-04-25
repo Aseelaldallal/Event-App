@@ -1,4 +1,3 @@
-
 /*-------------------------------------------------------*/
 /*-------------------- GLOBAL STYLES --------------------*/
 /*-------------------------------------------------------*/
@@ -17,13 +16,14 @@ body {
 
 /*---------- Headings ----------*/
 
-h1, h2, h3, h4, h5 {  margin:0; padding: 0;}
+h1, h2, h3, h4, h5, h6 {  margin:0; padding: 0;}
 h1, h2, h3 {font-family: 'Roboto Slab', serif;}
 h1 { font-size: 4.5rem; font-weight: 700; }
 h2 { font-size: 3.5rem; font-weight: 700; }
 h3 { font-size: 3.0rem; font-weight: 500; }
 h4 { font-size: 2.3rem; font-weight: 500; }
 h5 { font-size: 2.1rem; font-weight: 500; }
+h6 { font-size: 1.9rem; font-weight: 500; }
 
 @media (max-width: 480px) {
   h1 { font-size: 4.0rem; font-weight: 700; }
@@ -31,6 +31,7 @@ h5 { font-size: 2.1rem; font-weight: 500; }
   h3 { font-size: 2.1rem; font-weight: 500; }
   h4 { font-size: 1.9rem; font-weight: 500; }
   h5 { font-size: 1.8rem; font-weight: 500; }
+  h6 { font-size: 1.7rem; font-weight: 500; }
 }
 
 /*------------- hr -------------*/
@@ -224,8 +225,27 @@ strong { font-weight: 500; color: midnightblue; }
 }
 
 
+/*-------------------------------------------------------*/
+/*---------------------- DEVNOTES -----------------------*/
+/*-------------------------------------------------------*/
 
+.devnotes p {
+  margin-bottom: 1.3rem;  
+}
 
+.devnotes h6 {
+  margin-top: 4rem;
+  margin-bottom: 2rem;  
+
+}
+
+.devnotes li {
+   padding-left: 2rem;
+}
+
+.devnotes a {
+  color: pink;
+}
 
 /*-------------------------------------------------------*/
 /*---------------------- PAGE TITLES --------------------*/
@@ -270,6 +290,12 @@ strong { font-weight: 500; color: midnightblue; }
 .loginTitle:before {
      font-family: FontAwesome;
      content: "\f09c";
+     margin-right: 2rem;  
+}
+
+.devNotesTitle:before {
+     font-family: FontAwesome;
+     content: "\f249";
      margin-right: 2rem;  
 }
 
@@ -792,5 +818,4 @@ input::-webkit-calendar-picker-indicator{ /* Disable native datepicker popup */
       float: right;
     }
  }
- 
  

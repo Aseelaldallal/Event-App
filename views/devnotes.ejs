@@ -1,0 +1,110 @@
+<% include partials/header %>
+
+
+<div class="container lightshadow pagePadding whiteBackground devnotes">
+    <div class="title ">
+        <h2 class="devNotesTitle">Developer Notes</h2>
+    </div> 
+    <hr class="blue pushNextDownLg"> 
+    
+    <p> This is the first web app I made. I thought I'd outline my thought process here, in case you have questions about decisions I made when coding.
+        This app is a learning exercise; it wasn't intended for public use (yet). I'd appreciate your feedback, so feel free to email me at
+        <a href="mailto:aseelaldallal@gmail.com?Subject=EventAppFeedback">aseelaldallal@gmail.com</a> </p>
+    
+    <p> <strong>Stack:</strong> NodeJS, Express, MongoDB </p>
+
+    <p> The purpose of creating this app was for me to get familiar with the following:
+        <li>Front End Data Validation</li>
+        <li>Back End Data Validation</li>
+        <li>Image Upload and Storage</li>
+        <li>Google Places and Google Maps API</li>
+        <li>Populating DB with Dummy Data</li>
+    </p>
+
+    <h6>Front End Data Validation:</h6>
+    
+    <p>Try to post an event or edit an event to see front-end data validation in action.</p>
+    
+    <p>Objective: Check that
+        <li>User input is valid</li>
+        <li>User recieves error messages in a visually appealing manner</li>
+        <li>User recieves error messages BEFORE submitting the form</li>
+    </p>
+
+    <p>Coding this was pretty straightforward. The main challenge was deciding what is and what isn't valid user input. Examples:</p>
+    
+    <p><strong>Start Time vs End Time</strong></p>
+    
+    <p>Initially, I set the end time field to required, and wrote code to ensure that the start time of the event was BEFORE the end time. This makes sense, but the following questions arise:
+        <li>What if there was no strict event end time? </li>
+        <li>What if the event began at 10 am, and ended at 1 am the next day? 1 am is BEFORE
+          10 am. To solve this problem, I'd have to have an extra field: Event End Date. </li>
+    </p>
+      
+    <p>I opted for simplicity and just made the end time field not required; I decided that
+    ensuring that the end time field makes sense is the user's responsibility.</p>
+
+    <p><strong>Event Cost</strong></p>
+    <p>Is the user allowed to type "Free"? Does the user have to type $ before the cost? 
+    Should I allow the user to type something like "$10-$15"? These are important questions.
+    Again, I opted for simplicity and allowed the user to type anything; hence "event cost"
+    making sense is the user's responsility. </p>
+
+
+    <h6>Back-End Data Validation</h6>
+    
+    <p>For the front end, I wrote my own validation methods. For the backend, I decided to use a validator called 
+    <a href="http://indicative.adonisjs.com/">indicative</a>. I really liked its simplicity. I could have used the
+    same frontend code for backend validation, but decided to use indicative because 
+    <li> I wanted to experiment with it </li>
+    <li> Having different code validate the same input is more robust (but increases the amount of code, so might not be a good idea)</li></p>
+    <p>Regarding the second point, I did find two bugs in the indicative library. Basically frontend validation for date was passing, but the backend validation was failing. I
+    realized there was a bug in how indicative was comparing dates (fixed it).</p>
+
+    <h6>Image-Upload:</h6>
+
+    <p><strong>Frontend:</strong> </p>
+    <p>I wanted to imitate <a href="http://www.blogto.com/events/add/">BlogTo's</a> image upload functionality. I could have used <a href="http://www.dropzonejs.com/">Dropzone.js</a> or another library (and it might have been better to do so), but I wanted to write the code from scratch (just as a learning exercise).</p>
+    
+    <p><strong>Backend:</strong> </p>
+    <p>I deployed my app to Heroku, and Heroku doesn't allow for image storage. After some research, I decided to use Amazon S3 for image storage. I used the npm
+    package <a href="https://www.npmjs.com/package/multer-s3">multer-s3</a> to handle image upload to Amazon S3. It was pretty straightforward.</p>
+
+    <h6>Google Places and Google Maps API:</h6>
+    
+    <p>Try to post a new event, and enter a Canadian address in the "Search for your address here" text field. </p>
+    
+    <p>Goals:
+        <li>Use google places autocomplete to suggest an address in Canada </li>
+        <li>Have the address returned by google broken down into seperate fields (venue name, address, unit number, city, province, postal code)</li>
+        <li>Have a map corresponding to the user's address input appear</li>
+        <li>Having the map update itself each time the user changes the address, city, province or postal code field</li>
+    </p>
+<p>How well this works depends on the quality of data google has. I considered using Canada Post's API since I assumed they'd have better canadian address verification  functionality, but since its not free, I decided to stick with google places API.</p>
+
+<h6>Writing Scripts to Populate DB:</h6>
+
+<p>When I was done making the app, I had to choose between 3 options:
+<li>Have no data in the db</li> 
+<li>Manually enter hundreds of events</li> 
+<li>Write a script to create hundreds of events in the db</li> 
+</p>
+<p>Obviously, I opted for the third option </p>
+
+<p> The main challenge was creating random <em>valid</em> Canadian Addresses. Although I could use random text for event title, description,
+url etc. (see <a href="https://www.npmjs.com/package/faker"> faker</a>) , I needed to use actual canadian addresses (in order for the google Maps
+functionality to work). Hence I had to write a script that uses google places API to generate random valid canadian addresses. 
+</p>
+
+
+<h6>Improvements:</h6>
+<p>
+    <li>Using AJAX! If you navigate to the front page right now, you'll see that each time
+    you click a calendar date, the page refreshes. One of my next goals is to learn Ajax.</li>
+    <li>Using a front end framework (React or Angular). </li>
+    <li>Adding functionality like search by city and event rating</li>
+</p>
+
+</div>
+
+<% include partials/footer %>
