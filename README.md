@@ -49,7 +49,7 @@ Coding this was pretty straightforward. The main challenge was deciding what is 
 For the front end, I wrote my own validation methods. For the backend, I decided to use a validator called indicative. I really liked its simplicity. I could have used the same frontend code for backend validation, but decided to use indicative because I wanted to experiment with it. Having different code validate the same input is more robust (but increases the amount of code, so might not be a good idea)
 Regarding the second point, I did find two bugs in the indicative library. Basically frontend validation for date was passing, but the backend validation was failing. I realized there was a bug in how indicative was comparing dates (fixed it).
 
-###Image-Upload:###
+### Image-Upload ###
 
 **Frontend:**
 
@@ -83,6 +83,7 @@ Obviously, I opted for the third option
 
 The main challenge was creating random valid Canadian Addresses. Although I could use random text for event title, description, url etc. (see faker) , I needed to use actual canadian addresses (in order for the google Maps functionality to work). Hence I had to write a script that uses google places API to generate random valid canadian addresses.
 
+--- 
 Improvements:
 Using AJAX! If you navigate to the front page right now, you'll see that each time you click a calendar date, the page refreshes. 
 Using a front end framework (React or Angular).
