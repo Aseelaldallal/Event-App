@@ -88,3 +88,6 @@ Improvements:
 Using AJAX! If you navigate to the front page right now, you'll see that each time you click a calendar date, the page refreshes. 
 Using a front end framework (React or Angular).
 Adding functionality like search by city and event rating
+
+![eventful](https://i.imgur.com/Qo8ZNT0.png "The APP")
+
