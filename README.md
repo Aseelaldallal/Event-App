@@ -80,15 +80,16 @@ When I was done making the app, I had to choose between 3 options:
 1. Have no data in the db
 2. Manually enter hundreds of events
 3. Write a script to create hundreds of events in the db
+
 Obviously, I opted for the third option
 
 The main challenge was creating random valid Canadian Addresses. Although I could use random text for event title, description, url etc. (see faker) , I needed to use actual canadian addresses (in order for the google Maps functionality to work). Hence I had to write a script that uses google places API to generate random valid canadian addresses.
 
 --- 
 Improvements:
-Using AJAX! If you navigate to the front page right now, you'll see that each time you click a calendar date, the page refreshes. 
+- Using AJAX! If you navigate to the front page right now, you'll see that each time you click a calendar date, the page refreshes. 
 Using a front end framework (React or Angular).
-Adding functionality like search by city and event rating
+- Adding functionality like search by city and event rating
 
 
 
