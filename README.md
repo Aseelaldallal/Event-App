@@ -33,7 +33,7 @@ This is the first web app I made. I thought I'd outline my thought process here,
 - Google Places and Google Maps API
 - Populating DB with Dummy Data
 
-###Front End Data Validation###
+### Front End Data Validation ###
 
 Try to post an event or edit an event to see front-end data validation in action.
 
@@ -44,7 +44,7 @@ Objective: Check that
 
 Coding this was pretty straightforward. The main challenge was deciding what is and what isn't valid user input. 
 
-###Back-End Data Validation###
+### Back-End Data Validation ###
 
 For the front end, I wrote my own validation methods. For the backend, I decided to use a validator called indicative. I really liked its simplicity. I could have used the same frontend code for backend validation, but decided to use indicative because I wanted to experiment with it. Having different code validate the same input is more robust (but increases the amount of code, so might not be a good idea)
 Regarding the second point, I did find two bugs in the indicative library. Basically frontend validation for date was passing, but the backend validation was failing. I realized there was a bug in how indicative was comparing dates (fixed it).
@@ -59,7 +59,7 @@ I wanted to imitate BlogTo's image upload functionality. I could have used Dropz
 
 I deployed my app to Heroku, and Heroku doesn't allow for image storage. After some research, I decided to use Amazon S3 for image storage. I used the npm package multer-s3 to handle image upload to Amazon S3. It was pretty straightforward.
 
-###Google Places and Google Maps API:###
+### Google Places and Google Maps API ###
 
 Try to post a new event, and enter a Canadian address in the "Search for your address here" text field.
 
@@ -72,7 +72,7 @@ Try to post a new event, and enter a Canadian address in the "Search for your ad
 
 How well this works depends on the quality of data google has. I considered using Canada Post's API since I assumed they'd have better canadian address verification functionality, but since its not free, I decided to stick with google places API.
 
-###Writing Scripts to Populate DB###
+### Writing Scripts to Populate DB ###
 
 When I was done making the app, I had to choose between 3 options:
 
