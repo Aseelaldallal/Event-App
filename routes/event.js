@@ -57,7 +57,7 @@ router.get("/", middleware.sanitizeUserInput, middleware.validateDate, function(
     if(!req.query.dateToFind) {
         ipLocation(getUserIPAddress(req), function (error, ipres) {
             var today = moment().format("YYYY-MM-DD"); // server today
-            if(!error) { 
+            if(!ipres.error) { 
                 today = momentTZ().tz(ipres.timezone).format("YYYY-MM-DD"); // user today
             }
             fetchEventsOnDate(today,res,next); 
